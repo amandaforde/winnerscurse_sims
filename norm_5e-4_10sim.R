@@ -137,7 +137,7 @@ ave_res_cl3 <- ave_results(res_cl3,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"norm_5e-4_flb_10sim.csv")
+write.csv(results_all,"results/norm_5e-4_flb_10sim.csv")
 
 
 
@@ -251,7 +251,7 @@ ave_res_cl3 <- ave_results(res_cl3,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"norm_5e-4_mse-change2_10sim.csv")
+write.csv(results_all,"results/norm_5e-4_mse-change2_10sim.csv")
 
 
 
@@ -365,7 +365,7 @@ ave_res_cl3 <- ave_results(res_cl3,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"norm_5e-4_mse-change_10sim.csv")
+write.csv(results_all,"results/norm_5e-4_mse-change_10sim.csv")
 
 ##############################################################################
 

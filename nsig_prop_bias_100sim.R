@@ -9,7 +9,7 @@ library(parallel)
 
 set.seed(1998)
 
-## Total number of simulations: 10
+## Total number of simulations: 100
 tot_sim <- 100
 ## Fixed total number of SNPs:
 n_snps <- 10^6
@@ -74,7 +74,7 @@ ave_res <- ave_res %>%
     prop_bias = results,
     prop_bias_sd = res_error
   )
-write.csv(ave_res, "norm_nsig_prop_bias_5e-8.csv")
+write.csv(ave_res, "results/norm_nsig_prop_bias_5e-8.csv")
 
 
 ##############################################################################
