@@ -1,7 +1,6 @@
 # Evaluating and comparing Winner's Curse correction methods 
 
 This repository contains R code for simulations to evaluate and compare various Winner's Curse correction methods. These are methods which have been designed to appropriately adjust for the bias induced by Winner's Curse in GWAS SNP-trait association estimates. The adjustment methods are applied using the R package, `winnerscurse`. For more details regarding this package and its functionalties, please see [https://amandaforde.github.io/winnerscurse/](https://amandaforde.github.io/winnerscurse/). 
->>>>>>> 9ac803d0b0cc90ce40ff762f59bd71bd3efb3a0a
 
 GWAS summary statistics are simulated under 24 individual scenarios based on different combinations of values for heritability, polygenicity, sample size and selection coefficient. Winner's Curse correction methods are applied to each of these scenarios and their performance are evaluated under three bias evaluation metrics. 
 
