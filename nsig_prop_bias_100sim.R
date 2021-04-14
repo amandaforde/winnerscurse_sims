@@ -33,47 +33,34 @@ sim_params <- expand.grid(
 ## Normal effect size distribution
 ## Significance threshold of alpha=5e-8
 
-run_sim <- function(sim,n_samples, h2, prop_effect, S)
-{
-  ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
-  out <- simulate_est(ss)
-  n_sig <- sum(abs(out$beta/out$se) > qnorm(1-(5e-8)/2))
-  return(n_sig)
-}
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
-results <- c(rep(0,nrow(sim_params)))
-for (i in 1:nrow(sim_params)){
-  results[i] <- res[[i]]
-}
-res <- cbind(sim_params,results)
-ave_res <- ave_results1(res,tot_sim)
-ave_res <- ave_res %>%
-  rename(
-    n_sig = results,
-    n_sig_sd = res_error
-  )
-run_sim2 <- function(n_samples, h2, prop_effect, S,sim)
+run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
   ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
   out <- simulate_est(ss)
   snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(5e-8)/2),]
-  if (nrow(snp_sig) == 0){return(0)}
-  prop_bias <- sum(abs(snp_sig$beta) > abs(ss$true_beta[snp_sig$rsid]))/nrow(snp_sig)
-  return(prop_bias)
+  n_sig <- nrow(snp_sig)
+  if (n_sig == 0){
+    prop_bias <- -1
+    mse <- -1
+    }else{
+    prop_bias <- sum(abs(snp_sig$beta) > abs(ss$true_beta[snp_sig$rsid]))/n_sig
+    mse <- mean((ss$true_beta[snp_sig$rsid]-snp_sig$beta)^2)
+  }
+  return(c(n_sig,prop_bias,mse))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim2, args=as.list(sim_params[i,]))}, mc.cores=1)
-results <- c(rep(0,nrow(sim_params)))
+res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+
+n_sig <- c(rep(0,nrow(sim_params)))
+prop_bias <- c(rep(0,nrow(sim_params)))
+mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  results[i] <- res[[i]]
+  n_sig[i] <- res[[i]][1]
+  prop_bias[i] <- res[[i]][2]
+  mse[i] <- res[[i]][3]
 }
-res <- cbind(sim_params,results)
-ave_res2 <- ave_results(res,tot_sim)
-ave_res <- cbind(ave_res, ave_res2[,5:6])
-ave_res <- ave_res %>%
-  rename(
-    prop_bias = results,
-    prop_bias_sd = res_error
-  )
+
+results <- cbind(sim_params,n_sig,prop_bias,mse)
+ave_res <- ave_results1(results,tot_sim)
 write.csv(ave_res, "results/norm_nsig_prop_bias_5e-8.csv")
 
 
@@ -82,48 +69,36 @@ write.csv(ave_res, "results/norm_nsig_prop_bias_5e-8.csv")
 ## Normal effect size distribution
 ## Significance threshold of alpha=5e-4
 
-run_sim <- function(sim,n_samples, h2, prop_effect, S)
-{
-  ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
-  out <- simulate_est(ss)
-  n_sig <- sum(abs(out$beta/out$se) > qnorm(1-(5e-4)/2))
-  return(n_sig)
-}
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
-results <- c(rep(0,nrow(sim_params)))
-for (i in 1:nrow(sim_params)){
-  results[i] <- res[[i]]
-}
-res <- cbind(sim_params,results)
-ave_res <- ave_results1(res,tot_sim)
-ave_res <- ave_res %>%
-  rename(
-    n_sig = results,
-    n_sig_sd = res_error
-  )
-run_sim2 <- function(n_samples, h2, prop_effect, S,sim)
+run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
   ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
   out <- simulate_est(ss)
   snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(5e-4)/2),]
-  if (nrow(snp_sig) == 0){return(0)}
-  prop_bias <- sum(abs(snp_sig$beta) > abs(ss$true_beta[snp_sig$rsid]))/nrow(snp_sig)
-  return(prop_bias)
+  n_sig <- nrow(snp_sig)
+  if (n_sig == 0){
+    prop_bias <- -1
+    mse <- -1
+  }else{
+    prop_bias <- sum(abs(snp_sig$beta) > abs(ss$true_beta[snp_sig$rsid]))/n_sig
+    mse <- mean((ss$true_beta[snp_sig$rsid]-snp_sig$beta)^2)
+  }
+  return(c(n_sig,prop_bias,mse))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim2, args=as.list(sim_params[i,]))}, mc.cores=1)
-results <- c(rep(0,nrow(sim_params)))
+res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+
+n_sig <- c(rep(0,nrow(sim_params)))
+prop_bias <- c(rep(0,nrow(sim_params)))
+mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  results[i] <- res[[i]]
+  n_sig[i] <- res[[i]][1]
+  prop_bias[i] <- res[[i]][2]
+  mse[i] <- res[[i]][3]
 }
-res <- cbind(sim_params,results)
-ave_res2 <- ave_results(res,tot_sim)
-ave_res <- cbind(ave_res, ave_res2[,5:6])
-ave_res <- ave_res %>%
-  rename(
-    prop_bias = results,
-    prop_bias_sd = res_error
-  )
-write.csv(ave_res, "norm_nsig_prop_bias_5e-4.csv")
+
+results <- cbind(sim_params,n_sig,prop_bias,mse)
+ave_res <- ave_results1(results,tot_sim)
+write.csv(ave_res, "results/norm_nsig_prop_bias_5e-4.csv")
+
 
 ##############################################################################
 ## SIMULATION SET-UP 3:
@@ -132,48 +107,37 @@ write.csv(ave_res, "norm_nsig_prop_bias_5e-4.csv")
 ## distribution - see simulate_ss_skew() in 'useful_funs.R' for more details
 ## Significance threshold of alpha=5e-8
 
-run_sim <- function(sim,n_samples, h2, prop_effect, S)
-{
-  ss <- simulate_ss_skew(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
-  out <- simulate_est(ss)
-  n_sig <- sum(abs(out$beta/out$se) > qnorm(1-(5e-8)/2))
-  return(n_sig)
-}
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
-results <- c(rep(0,nrow(sim_params)))
-for (i in 1:nrow(sim_params)){
-  results[i] <- res[[i]]
-}
-res <- cbind(sim_params,results)
-ave_res <- ave_results1(res,tot_sim)
-ave_res <- ave_res %>%
-  rename(
-    n_sig = results,
-    n_sig_sd = res_error
-  )
-run_sim2 <- function(n_samples, h2, prop_effect, S,sim)
+run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
   ss <- simulate_ss_skew(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
   out <- simulate_est(ss)
   snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(5e-8)/2),]
-  if (nrow(snp_sig) == 0){return(0)}
-  prop_bias <- sum(abs(snp_sig$beta) > abs(ss$true_beta[snp_sig$rsid]))/nrow(snp_sig)
-  return(prop_bias)
+  n_sig <- nrow(snp_sig)
+  if (n_sig == 0){
+    prop_bias <- -1
+    mse <- -1
+  }else{
+    prop_bias <- sum(abs(snp_sig$beta) > abs(ss$true_beta[snp_sig$rsid]))/n_sig
+    mse <- mean((ss$true_beta[snp_sig$rsid]-snp_sig$beta)^2)
+  }
+  return(c(n_sig,prop_bias,mse))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim2, args=as.list(sim_params[i,]))}, mc.cores=1)
-results <- c(rep(0,nrow(sim_params)))
+res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+
+n_sig <- c(rep(0,nrow(sim_params)))
+prop_bias <- c(rep(0,nrow(sim_params)))
+mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  results[i] <- res[[i]]
+  n_sig[i] <- res[[i]][1]
+  prop_bias[i] <- res[[i]][2]
+  mse[i] <- res[[i]][3]
 }
-res <- cbind(sim_params,results)
-ave_res2 <- ave_results(res,tot_sim)
-ave_res <- cbind(ave_res, ave_res2[,5:6])
-ave_res <- ave_res %>%
-  rename(
-    prop_bias = results,
-    prop_bias_sd = res_error
-  )
-write.csv(ave_res, "skew_nsig_prop_bias_5e-8.csv")
+
+
+results <- cbind(sim_params,n_sig,prop_bias,mse)
+ave_res <- ave_results1(results,tot_sim)
+write.csv(ave_res, "results/skew_nsig_prop_bias_5e-8.csv")
+
 
 
 ##############################################################################
@@ -183,45 +147,35 @@ write.csv(ave_res, "skew_nsig_prop_bias_5e-8.csv")
 ## distribution - see simulate_ss_skew() in 'useful_funs.R' for more details
 ## Significance threshold of alpha=5e-4
 
-run_sim <- function(sim,n_samples, h2, prop_effect, S)
-{
-  ss <- simulate_ss_skew(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
-  out <- simulate_est(ss)
-  n_sig <- sum(abs(out$beta/out$se) > qnorm(1-(5e-4)/2))
-  return(n_sig)
-}
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
-results <- c(rep(0,nrow(sim_params)))
-for (i in 1:nrow(sim_params)){
-  results[i] <- res[[i]]
-}
-res <- cbind(sim_params,results)
-ave_res <- ave_results1(res,tot_sim)
-ave_res <- ave_res %>%
-  rename(
-    n_sig = results,
-    n_sig_sd = res_error
-  )
-run_sim2 <- function(n_samples, h2, prop_effect, S,sim)
+run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
   ss <- simulate_ss_skew(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
   out <- simulate_est(ss)
   snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(5e-4)/2),]
-  if (nrow(snp_sig) == 0){return(0)}
-  prop_bias <- sum(abs(snp_sig$beta) > abs(ss$true_beta[snp_sig$rsid]))/nrow(snp_sig)
-  return(prop_bias)
+  n_sig <- nrow(snp_sig)
+  if (n_sig == 0){
+    prop_bias <- -1
+    mse <- -1
+  }else{
+    prop_bias <- sum(abs(snp_sig$beta) > abs(ss$true_beta[snp_sig$rsid]))/n_sig
+    mse <- mean((ss$true_beta[snp_sig$rsid]-snp_sig$beta)^2)
+  }
+  return(c(n_sig,prop_bias,mse))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim2, args=as.list(sim_params[i,]))}, mc.cores=1)
-results <- c(rep(0,nrow(sim_params)))
+res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+
+n_sig <- c(rep(0,nrow(sim_params)))
+prop_bias <- c(rep(0,nrow(sim_params)))
+mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  results[i] <- res[[i]]
+  n_sig[i] <- res[[i]][1]
+  prop_bias[i] <- res[[i]][2]
+  mse[i] <- res[[i]][3]
 }
-res <- cbind(sim_params,results)
-ave_res2 <- ave_results(res,tot_sim)
-ave_res <- cbind(ave_res, ave_res2[,5:6])
-ave_res <- ave_res %>%
-  rename(
-    prop_bias = results,
-    prop_bias_sd = res_error
-  )
-write.csv(ave_res, "skew_nsig_prop_bias_5e-4.csv")
+
+
+results <- cbind(sim_params,n_sig,prop_bias,mse)
+ave_res <- ave_results1(results,tot_sim)
+write.csv(ave_res, "results/skew_nsig_prop_bias_5e-4.csv")
+
+##############################################################################

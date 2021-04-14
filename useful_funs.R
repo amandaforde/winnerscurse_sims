@@ -97,42 +97,71 @@ std <- function(ave_vector){
 }
 
 
-## 10. Takes the 'long' results data frame which contains bias evaluation measure
-## for each simulation and outputs an average and standard deviation of this
-## bias evaluation measure over simulations of the same parameter values, in
-## which at least one significant SNP has been found
+## 10. Takes the 'long' results data frame which contains bias evaluation
+## measures for each simulation and outputs averages and standard deviations of
+## these bias evaluation measures over simulations of the same parameter values,
+## in which at least one significant SNP has been found
 ave_results <- function(res_vec, n_sim){
+  ave_flb <- c(rep(0,nrow(res_vec)/n_sim))
+  sd_flb <- c(rep(0,nrow(res_vec)/n_sim))
   ave_mse <- c(rep(0,nrow(res_vec)/n_sim))
   sd_mse <- c(rep(0,nrow(res_vec)/n_sim))
+  ave_rel_mse <- c(rep(0,nrow(res_vec)/n_sim))
+  sd_rel_mse <- c(rep(0,nrow(res_vec)/n_sim))
   for (i in 1:(nrow(res_vec)/n_sim)){
-    ave_mse[i] <- average(res_vec$results[(i*n_sim-(n_sim-1)):(i*n_sim)])
-    sd_mse[i] <- std(res_vec$results[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    ave_flb[i] <- average(res_vec$flb[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    sd_flb[i] <- std(res_vec$flb[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    ave_mse[i] <- average(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    sd_mse[i] <- std(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    ave_rel_mse[i] <- average(res_vec$rel_mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    sd_rel_mse[i] <- std(res_vec$rel_mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
   }
   keep <- seq(from=1,to=nrow(res_vec)-n_sim+1,by=n_sim)
   res_vec_ave <- res_vec[rownames(res_vec) %in% keep,]
-  res_vec_ave$results <- ave_mse
-  res_vec_ave$res_error <- sd_mse
+  res_vec_ave$flb <- ave_flb
+  res_vec_ave$flb_error <- sd_flb
+  res_vec_ave$mse <- ave_mse
+  res_vec_ave$mse_error <- sd_mse
+  res_vec_ave$rel_mse <- ave_rel_mse
+  res_vec_ave$rel_mse_error <- sd_rel_mse
   res_vec_ave <- subset(res_vec_ave, select = -sim )
   return(res_vec_ave)
 }
 
 
-## 11. Takes the 'long' results data frame which contains bias evaluation
-## measure for each simulation and outputs an average and standard deviation of
-## this bias evaluation measure over all simulations of the same parameter
-## values - currently only used in finding average number of significant SNPs in
-## nsig_prop_bias_100sim.R
-ave_results1 <- ave_results <- function(res_vec, n_sim){
+## 11. Takes the 'long' results data frame which contains number of significant
+## SNPs and proportion of these SNP that are 'biased' for each simulation and
+## outputs averages and standard deviations for both quantities over all
+## simulations of the same parameter values
+## NOTE: statistics for proportion of biased significant SNPs are only obtained
+## over simulations in which at least one significant SNP was detected
+ave_results1 <- function(res_vec, n_sim){
+  ave_nsig <- c(rep(0,nrow(res_vec)/n_sim))
+  sd_nsig <- c(rep(0,nrow(res_vec)/n_sim))
+  ave_pb <- c(rep(0,nrow(res_vec)/n_sim))
+  sd_pb <- c(rep(0,nrow(res_vec)/n_sim))
   ave_mse <- c(rep(0,nrow(res_vec)/n_sim))
   sd_mse <- c(rep(0,nrow(res_vec)/n_sim))
   for (i in 1:(nrow(res_vec)/n_sim)){
-    ave_mse[i] <- mean(res_vec$results[(i*n_sim-(n_sim-1)):(i*n_sim)])
-    sd_mse[i] <- sd(res_vec$results[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    ave_nsig[i] <- mean(res_vec$n_sig[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    sd_nsig[i] <- sd(res_vec$n_sig[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    ave_pb[i] <- mean(res_vec$prop_bias[(i*n_sim-(n_sim-1)):(i*n_sim)][which(res_vec$prop_bias[(i*n_sim-(n_sim-1)):(i*n_sim)] != -1)])
+    sd_pb[i] <- sd(res_vec$prop_bias[(i*n_sim-(n_sim-1)):(i*n_sim)][which(res_vec$prop_bias[(i*n_sim-(n_sim-1)):(i*n_sim)] != -1)])
+    ave_mse[i] <- mean(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)][which(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)] != -1)])
+    sd_mse[i] <- sd(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)][which(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)] != -1)])
   }
   keep <- seq(from=1,to=nrow(res_vec)-n_sim+1,by=n_sim)
   res_vec_ave <- res_vec[rownames(res_vec) %in% keep,]
-  res_vec_ave$results <- ave_mse
-  res_vec_ave$res_error <- sd_mse
+  res_vec_ave$n_sig <- ave_nsig
+  res_vec_ave$n_sig_sd <- sd_nsig
+  res_vec_ave$prop_bias <- ave_pb
+  res_vec_ave$prop_bias_sd <- sd_pb
+  res_vec_ave$mse <- ave_mse
+  res_vec_ave$mse_sd <- sd_mse
   res_vec_ave <- subset(res_vec_ave, select = -sim )
   return(res_vec_ave)
 }
+
+
+
+
