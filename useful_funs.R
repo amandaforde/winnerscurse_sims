@@ -45,7 +45,7 @@ simulate_est <- function(stats){
 ## 4. Evaluating MSE for significant SNPs
 mse_sig_evaluate <- function(out,true_beta,i=4,alpha=5e-8){
   snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(alpha)/2),]
-  if (nrow(snp_sig) == 0){return(0)}
+  if (nrow(snp_sig) == 0){return(100)}
   mse_sig <- mean((true_beta[snp_sig$rsid]-snp_sig[,i])^2)
   return(mse_sig)
 }
@@ -54,7 +54,7 @@ mse_sig_evaluate <- function(out,true_beta,i=4,alpha=5e-8){
 ## implementation
 mse_sig_improve <- function(out,true_beta,i=4,alpha=5e-8){
   snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(alpha)/2),]
-  if (nrow(snp_sig) == 0){return(0)}
+  if (nrow(snp_sig) == 0){return(100)}
   mse_sig_improve <- mean((true_beta[snp_sig$rsid]-snp_sig[,i])^2)-mean((true_beta[snp_sig$rsid]-snp_sig$beta)^2)
   return(mse_sig_improve)
 }
@@ -63,7 +63,7 @@ mse_sig_improve <- function(out,true_beta,i=4,alpha=5e-8){
 ## to method implementation
 mse_sig_improve_per <- function(out,true_beta,i=4,alpha=5e-8){
   snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(alpha)/2),]
-  if (nrow(snp_sig) == 0){return(0)}
+  if (nrow(snp_sig) == 0){return(100)}
   mse_sig_improve <- (mean((true_beta[snp_sig$rsid]-snp_sig[,i])^2)-mean((true_beta[snp_sig$rsid]-snp_sig$beta)^2))/(mean((true_beta[snp_sig$rsid]-snp_sig$beta)^2))
   return(mse_sig_improve)
 }
@@ -73,7 +73,7 @@ mse_sig_improve_per <- function(out,true_beta,i=4,alpha=5e-8){
 ## implementation
 frac_sig_less_bias <- function(out,true_beta,i=4,alpha=5e-8){
   snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(alpha)/2),]
-  if (nrow(snp_sig) == 0){return(0)}
+  if (nrow(snp_sig) == 0){return(100)}
   flb <- sum(abs(true_beta[snp_sig$rsid] - snp_sig$beta)>abs(true_beta[snp_sig$rsid] - snp_sig[,i]))/length(snp_sig$rsid)
   return(flb)
 }
@@ -82,7 +82,7 @@ frac_sig_less_bias <- function(out,true_beta,i=4,alpha=5e-8){
 ## 8. Obtains mean of bias evaluation measure over only those simulations in
 ## which at least one significant SNP has been found
 average <- function(ave_vector){
-  ave_vector <- ave_vector[which(ave_vector !=0)]
+  ave_vector <- ave_vector[which(ave_vector != 100)]
   ave <- mean(ave_vector)
   return(ave)
 }
@@ -91,7 +91,7 @@ average <- function(ave_vector){
 ## 9. Obtains standard deviation of bias evaluation measure over only those
 ## simulations in which at least one significant SNP has been found
 std <- function(ave_vector){
-  ave_vector <- ave_vector[which(ave_vector !=0)]
+  ave_vector <- ave_vector[which(ave_vector != 100)]
   error <- sd(ave_vector)
   return(error)
 }

@@ -18,7 +18,7 @@ sim_params <- expand.grid(
   sim = c(1:tot_sim),
   n_samples = c(30000,300000),
   h2 = c(0.3,0.8),
-  prop_effect = c(0.01, 0.001),
+  prop_effect = c(0.01,0.001),
   S = c(-1, 0, 1)
 )
 
@@ -192,6 +192,5 @@ results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(si
 write.csv(results_all,"results/norm_5e-8_10sim.csv")
 
 ################################################################################
-
 
 

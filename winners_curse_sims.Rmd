@@ -107,7 +107,7 @@ $~$
 $~$
 $~$
 
-It is important to note here that for scenarios 1, 9 and 17, very few significant SNPs are detected on average. In some instances, we may even find that no SNPs are deemed significant at a threshold of $5 \times 10^{-8}$. We must keep this observation in mind going forward as we investigate the performance of methods under these three scenarios.   
+<span class="star">&#x2605;</span>   It is important to note here that for scenarios 1, 9 and 17, very few significant SNPs are detected on average. In some instances, we may even find that no SNPs are deemed significant at a threshold of $5 \times 10^{-8}$. We must keep this observation in mind going forward as we investigate the performance of methods under these three scenarios.   
 
 For both thresholds, the average number of significant SNPs increases as sample size increases, as expected. It also increases with heritability. However, the effect of changing `prop_effect` is more interesting. Decreasing the proportion of effect SNPs from 0.01 to 0.001 results in the number of significant SNPs increasing for a sample size of 30,000 while we witness the number of SNPs passing the genome-wide significance threshold decreasing for a larger sample size of 300,000. 
 
