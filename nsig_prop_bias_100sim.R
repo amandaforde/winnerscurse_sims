@@ -102,14 +102,14 @@ write.csv(ave_res, "results/norm_nsig_prop_bias_5e-4.csv")
 
 ##############################################################################
 ## SIMULATION SET-UP 3:
-## Skewed effect size distribution: when S=0, 50% of effect sizes are generated
+## Bimodal effect size distribution: when S=0, 50% of effect sizes are generated
 ## from a N(0,1) distribution while the other 50% are generated from a N(2.5,1)
-## distribution - see simulate_ss_skew() in 'useful_funs.R' for more details
+## distribution - see simulate_ss_bim() in 'useful_funs.R' for more details
 ## Significance threshold of alpha=5e-8
 
 run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
-  ss <- simulate_ss_skew(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
+  ss <- simulate_ss_bim(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
   out <- simulate_est(ss)
   snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(5e-8)/2),]
   n_sig <- nrow(snp_sig)
@@ -142,14 +142,14 @@ write.csv(ave_res, "results/skew_nsig_prop_bias_5e-8.csv")
 
 ##############################################################################
 ## SIMULATION SET-UP 4:
-## Skewed effect size distribution: when S=0, 50% of effect sizes are generated
+## Bimodal effect size distribution: when S=0, 50% of effect sizes are generated
 ## from a N(0,1) distribution while the other 50% are generated from a N(2.5,1)
-## distribution - see simulate_ss_skew() in 'useful_funs.R' for more details
+## distribution - see simulate_ss_bim() in 'useful_funs.R' for more details
 ## Significance threshold of alpha=5e-4
 
 run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
-  ss <- simulate_ss_skew(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
+  ss <- simulate_ss_bim(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
   out <- simulate_est(ss)
   snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(5e-4)/2),]
   n_sig <- nrow(snp_sig)

@@ -36,19 +36,55 @@ sim_params <- expand.grid(
 ## method implementation
 
 
-## Empirical Bayes:
-run_sim_EB <- function(n_samples, h2, prop_effect, S,sim)
+run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
   ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
   disc_stats <- simulate_est(ss)
-  out <- empirical_bayes(disc_stats)
-  flb <- frac_sig_less_bias(out,ss$true_beta,alpha=5e-4)
-  mse <- mse_sig_improve(out,ss$true_beta,alpha=5e-4)
-  rel_mse <- mse_sig_improve_per(out,ss$true_beta,alpha=5e-4)
-  return(c(flb,mse,rel_mse))
-}
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim_EB, args=as.list(sim_params[i,]))}, mc.cores=1)
 
+  ## Empirical Bayes:
+  out_EB <- empirical_bayes(disc_stats)
+  flb_EB <- frac_sig_less_bias(out_EB,ss$true_beta,alpha=5e-4)
+  mse_EB <- mse_sig_improve(out_EB,ss$true_beta,alpha=5e-4)
+  rel_mse_EB <- mse_sig_improve_per(out_EB,ss$true_beta,alpha=5e-4)
+
+  ## FIQT:
+  out_FIQT <- FDR_IQT(disc_stats)
+  flb_FIQT <- frac_sig_less_bias(out_FIQT,ss$true_beta,alpha=5e-4)
+  mse_FIQT <- mse_sig_improve(out_FIQT,ss$true_beta,alpha=5e-4)
+  rel_mse_FIQT <- mse_sig_improve_per(out_FIQT,ss$true_beta,alpha=5e-4)
+
+  ## Bootstrap:
+  out_BR <- BR_ss(disc_stats)
+  flb_BR <- frac_sig_less_bias(out_BR,ss$true_beta,alpha=5e-4)
+  mse_BR <- mse_sig_improve(out_BR,ss$true_beta,alpha=5e-4)
+  rel_mse_BR <- mse_sig_improve_per(out_BR,ss$true_beta,alpha=5e-4)
+
+  ## cl1:
+  out_cl <- conditional_likelihood(disc_stats,alpha=5e-4)
+  flb_cl1 <- frac_sig_less_bias(out_cl,ss$true_beta,alpha=5e-4)
+  mse_cl1 <- mse_sig_improve(out_cl,ss$true_beta,alpha=5e-4)
+  rel_mse_cl1 <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-4)
+
+  ## cl2:
+  flb_cl2 <- frac_sig_less_bias(out_cl,ss$true_beta,alpha=5e-4,i=5)
+  mse_cl2 <- mse_sig_improve(out_cl,ss$true_beta,alpha=5e-4,i=5)
+  rel_mse_cl2 <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-4,i=5)
+
+  ## cl3:
+  flb_cl3 <- frac_sig_less_bias(out_cl,ss$true_beta,alpha=5e-4,i=6)
+  mse_cl3 <- mse_sig_improve(out_cl,ss$true_beta,alpha=5e-4,i=6)
+  rel_mse_cl3 <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-4,i=6)
+
+  return(c(flb_EB,mse_EB,rel_mse_EB,flb_FIQT,mse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rel_mse_BR,flb_cl1,mse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rel_mse_cl3))
+}
+res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+
+
+################################################################################
+
+## Organising results:
+
+## Empirical Bayes:
 flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
@@ -60,131 +96,65 @@ for (i in 1:nrow(sim_params)){
 res_EB <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_EB <- ave_results(res_EB,tot_sim)
 
-
 ## FIQT:
-run_sim_FIQT <- function(n_samples, h2, prop_effect, S,sim)
-{
-  ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
-  disc_stats <- simulate_est(ss)
-  out <- FDR_IQT(disc_stats)
-  flb <- frac_sig_less_bias(out,ss$true_beta,alpha=5e-4)
-  mse <- mse_sig_improve(out,ss$true_beta,alpha=5e-4)
-  rel_mse <- mse_sig_improve_per(out,ss$true_beta,alpha=5e-4)
-  return(c(flb,mse,rel_mse))
-}
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim_FIQT, args=as.list(sim_params[i,]))}, mc.cores=1)
-
 flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  flb[i] <- res[[i]][1]
-  mse[i] <- res[[i]][2]
-  rel_mse[i] <- res[[i]][3]
+  flb[i] <- res[[i]][4]
+  mse[i] <- res[[i]][5]
+  rel_mse[i] <- res[[i]][6]
 }
 res_FIQT <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_FIQT <- ave_results(res_FIQT,tot_sim)
 
-
 ## Bootstrap:
-run_sim_BR <- function(n_samples, h2, prop_effect, S,sim)
-{
-  ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
-  disc_stats <- simulate_est(ss)
-  out <- BR_ss(disc_stats)
-  flb <- frac_sig_less_bias(out,ss$true_beta,alpha=5e-4)
-  mse <- mse_sig_improve(out,ss$true_beta,alpha=5e-4)
-  rel_mse <- mse_sig_improve_per(out,ss$true_beta,alpha=5e-4)
-  return(c(flb,mse,rel_mse))
-}
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim_BR, args=as.list(sim_params[i,]))}, mc.cores=1)
-
 flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  flb[i] <- res[[i]][1]
-  mse[i] <- res[[i]][2]
-  rel_mse[i] <- res[[i]][3]
+  flb[i] <- res[[i]][7]
+  mse[i] <- res[[i]][8]
+  rel_mse[i] <- res[[i]][9]
 }
 res_BR <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_BR <- ave_results(res_BR,tot_sim)
 
-
 ## Conditional Likelihood 1:
-run_sim_cl1 <- function(n_samples, h2, prop_effect, S,sim)
-{
-  ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
-  disc_stats <- simulate_est(ss)
-  out <- conditional_likelihood(disc_stats,alpha=5e-4)
-  flb <- frac_sig_less_bias(out,ss$true_beta,alpha=5e-4)
-  mse <- mse_sig_improve(out,ss$true_beta,alpha=5e-4)
-  rel_mse <- mse_sig_improve_per(out,ss$true_beta,alpha=5e-4)
-  return(c(flb,mse,rel_mse))
-}
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim_cl1, args=as.list(sim_params[i,]))}, mc.cores=1)
-
 flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  flb[i] <- res[[i]][1]
-  mse[i] <- res[[i]][2]
-  rel_mse[i] <- res[[i]][3]
+  flb[i] <- res[[i]][10]
+  mse[i] <- res[[i]][11]
+  rel_mse[i] <- res[[i]][12]
 }
 res_cl1 <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_cl1 <- ave_results(res_cl1,tot_sim)
 
-
 ## Conditional Likelihood 2:
-run_sim_cl2 <- function(n_samples, h2, prop_effect, S,sim)
-{
-  ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
-  disc_stats <- simulate_est(ss)
-  out <- conditional_likelihood(disc_stats,alpha=5e-4)
-  flb <- frac_sig_less_bias(out,ss$true_beta,alpha=5e-4,i=5)
-  mse <- mse_sig_improve(out,ss$true_beta,alpha=5e-4,i=5)
-  rel_mse <- mse_sig_improve_per(out,ss$true_beta,alpha=5e-4,i=5)
-  return(c(flb,mse,rel_mse))
-}
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim_cl2, args=as.list(sim_params[i,]))}, mc.cores=1)
-
 flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  flb[i] <- res[[i]][1]
-  mse[i] <- res[[i]][2]
-  rel_mse[i] <- res[[i]][3]
+  flb[i] <- res[[i]][13]
+  mse[i] <- res[[i]][14]
+  rel_mse[i] <- res[[i]][15]
 }
 res_cl2 <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_cl2 <- ave_results(res_cl2,tot_sim)
 
-
 ## Conditional Likelihood 3:
-run_sim_cl3 <- function(n_samples, h2, prop_effect, S,sim)
-{
-  ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
-  disc_stats <- simulate_est(ss)
-  out <- conditional_likelihood(disc_stats,alpha=5e-4)
-  flb <- frac_sig_less_bias(out,ss$true_beta,alpha=5e-4,i=6)
-  mse <- mse_sig_improve(out,ss$true_beta,alpha=5e-4,i=6)
-  rel_mse <- mse_sig_improve_per(out,ss$true_beta,alpha=5e-4,i=6)
-  return(c(flb,mse,rel_mse))
-}
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim_cl3, args=as.list(sim_params[i,]))}, mc.cores=1)
-
 flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  flb[i] <- res[[i]][1]
-  mse[i] <- res[[i]][2]
-  rel_mse[i] <- res[[i]][3]
+  flb[i] <- res[[i]][16]
+  mse[i] <- res[[i]][17]
+  rel_mse[i] <- res[[i]][18]
 }
 res_cl3 <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_cl3 <- ave_results(res_cl3,tot_sim)
-
 
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3)

@@ -1,5 +1,7 @@
-## SIMULATION SET-UP 1:
-## Normal effect size distribution
+## SIMULATION SET-UP 3:
+## Bimodal effect size distribution: when S=0, 50% of effect sizes are generated
+## from a N(0,1) distribution while the other 50% are generated from a N(2.5,1)
+## distribution - see simulate_ss_bim() in 'useful_funs.R' for more details
 ## Significance threshold of alpha=5e-8
 
 library(winnerscurse)
@@ -8,8 +10,8 @@ library(parallel)
 
 set.seed(1998)
 
-## Total number of simulations: 20
-tot_sim <- 20
+## Total number of simulations: 10
+tot_sim <- 10
 ## Fixed total number of SNPs:
 n_snps <- 10^6
 
@@ -18,7 +20,7 @@ sim_params <- expand.grid(
   sim = c(1:tot_sim),
   n_samples = c(30000,300000),
   h2 = c(0.3,0.8),
-  prop_effect = c(0.01,0.001),
+  prop_effect = c(0.01, 0.001),
   S = c(-1, 0, 1)
 )
 
@@ -28,19 +30,17 @@ sim_params <- expand.grid(
 
 
 ## Bias Evaluation Metrics:
-## 1. Evaluating the fraction of significant SNPs that have been improved due to
-## method implementation - effect size estimates have been adjusted so that they
-## are closer to the true effect size
+## 1. Evaluating the fraction of significant SNPs that are now less biased due
+## to method implementation
 ## 2. Evaluating the change in average MSE of significant SNPs due to method
 ## implementation
 ## 3. Evaluating the relative change in average MSE of significant SNPs due to
 ## method implementation
 
 
-
 run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
-  ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
+  ss <- simulate_ss_bim(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
   disc_stats <- simulate_est(ss)
 
   ## Empirical Bayes:
@@ -158,11 +158,13 @@ for (i in 1:nrow(sim_params)){
 res_cl3 <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_cl3 <- ave_results(res_cl3,tot_sim)
 
+
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"results/norm_5e-8_20sim.csv")
+write.csv(results_all,"results/bimod_5e-8_10sim.csv")
 
 ################################################################################
+
 
 

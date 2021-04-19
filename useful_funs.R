@@ -20,10 +20,10 @@ simulate_ss <- function(H,Pi,nid,sc){
 ## 2. Given values for heritability (H), polygenicity (Pi), sample size (nid)
 ## and selection coefficient (S), 'true' values of effect size and corresponding
 ## standard error are simulated in which effect sizes are assumed to have a
-## skewed distribution, i.e. 50% of effect sizes come from a normal distribution
+## bimodal distribution, i.e. 50% of effect sizes come from a normal distribution
 ## centered at 0 while the other half are generated from a normal distribution
 ## with mean 2.5
-simulate_ss_skew <- function(H,Pi,nid,sc){
+simulate_ss_bim <- function(H,Pi,nid,sc){
   effect_snps <- Pi*n_snps
   maf <- runif(n_snps,0.01,0.5)
   true_beta <- c(rnorm(0.5*effect_snps,2.5,sd=sqrt((2*maf*(1-maf))^sc)),rnorm(0.5*effect_snps,0,sd=sqrt((2*maf[(0.5*effect_snps+1):effect_snps]*(1-maf[(0.5*effect_snps+1):effect_snps]))^sc)))

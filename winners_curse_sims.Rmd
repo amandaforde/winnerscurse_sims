@@ -101,6 +101,8 @@ full_width = FALSE,position="center") %>%
   column_spec(16, background = "#F5F5F5", italic=TRUE) %>%
   column_spec(17, background = "#F5F5F5", italic=TRUE) %>%
   scroll_box(width = "100%", height = "300px")
+
+
 ```
 
 $~$
@@ -150,6 +152,11 @@ simulate_ss_skew <- function(H,Pi,nid,sc){
   return(stats)
 }
 ```
+
+
+
+
+
 
 
 
@@ -520,16 +527,16 @@ geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",siz
 
 ### 2. Evaluating methods using a significance threshold of $5 \times 10^{-8}$
 
-Using the code detailed in `norm_5e-8_10sim.R` and a total of 10 simulations, we evaluated six different Winner's Curse methods across each of the 24 scenarios using the following three bias evaluation metrics: 
+Using the code detailed in `norm_5e-8_20sim.R` and a total of 20 simulations, we evaluated six different Winner's Curse methods across each of the 24 scenarios using the following three bias evaluation metrics: 
 
-1. The average fraction of significant SNPs in which their association estimates are *less* biased due to method implementation - `flb`
+1. The average fraction of significant SNPs in which their association estimates have been improved due to method implementation - `flb`
 2. The average change in average MSE of significant SNPs due to method implementation - `mse`
 3. The average *relative* change in average MSE of significant SNPs due to method implementation - `rel_mse`
 
 **Note:** All averages are obtained over only those simulations in which at least one significant SNP was detected. 
 
 
-Firstly, the fraction of $n$ significant SNPs in which their association estimates are less biased due to method implementation may be mathematically described as: $$\frac{1}{n} \; \sum_{i=1}^{n}\mathbb{I} \left\{ \left| \hat\beta_i - \beta_i \right|  >  \left|\hat\beta_{\text{adj,}i} - \beta_i\right| \right\},$$in which $\left| \frac{\hat\beta_i}{\hat\sigma_i} \right| > Z_{\frac{\alpha}{2}}$ for all $i = 1,...,n$, where $\hat\beta_i$ is the estimated naive effect size of SNP $i$, $\beta_i$ is its true effect size and $\hat\beta_{\text{adj,}i}$ is its new effect size estimate obtained as a result of application of the Winner's Curse adjustment method of interest. The significance threshold is represented by $\alpha$.
+Firstly, the fraction of $n$ significant SNPs in which their association estimates have been improved due to method implementation may be mathematically described as: $$\frac{1}{n} \; \sum_{i=1}^{n}\mathbb{I} \left\{ \left| \hat\beta_i - \beta_i \right|  >  \left|\hat\beta_{\text{adj,}i} - \beta_i\right| \right\},$$in which $\left| \frac{\hat\beta_i}{\hat\sigma_i} \right| > Z_{\frac{\alpha}{2}}$ for all $i = 1,...,n$, where $\hat\beta_i$ is the estimated naive effect size of SNP $i$, $\beta_i$ is its true effect size and $\hat\beta_{\text{adj,}i}$ is its new effect size estimate obtained as a result of application of the Winner's Curse adjustment method of interest. The significance threshold is represented by $\alpha$.
 
 Using the same notation, the average MSE over $n$ significant SNPs is defined as: $$\frac{1}{n} \sum^n_{i=1} (\hat\beta_i - \beta_i)^2.$$ Thus, using the above, we may formally define the change in average MSE of significant SNPs as: $$\frac{1}{n} \sum^n_{i=1} (\hat\beta_{\text{adj,}i} - \beta_i)^2 - \frac{1}{n} \sum^n_{i=1} (\hat\beta_i - \beta_i)^2$$ and the relative change in average MSE of significant SNPs as: $$\frac{\frac{1}{n} \sum^n_{i=1} (\hat\beta_{\text{adj,}i} - \beta_i)^2 - \frac{1}{n} \sum^n_{i=1} (\hat\beta_i - \beta_i)^2}{\frac{1}{n} \sum^n_{i=1} (\hat\beta_i - \beta_i)^2}.$$ 
 
@@ -540,12 +547,12 @@ Results of the simulations are plotted. Error bars are also included in the plot
 
 
 
-Summary of results for `flb` contained in `norm_5e-8_10sim.csv`:
+Summary of results for `flb` contained in `norm_5e-8_20sim.csv`:
 
 ```{r,echo=FALSE}
 
-norm_5e_8_10sim <- read.csv("results/norm_5e-8_10sim.csv")
-results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = norm_5e_8_10sim$h2[1:24], prop_effect = norm_5e_8_10sim$prop_effect[1:24], S= norm_5e_8_10sim$S[1:24], EB = round(norm_5e_8_10sim$flb[1:24],4), FIQT = round(norm_5e_8_10sim$flb[(1+24):(24+24)],4), BR = round(norm_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1 = round(norm_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2 = round(norm_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3 = round(norm_5e_8_10sim$flb[(1+5*24):(24+5*24)],4))
+norm_5e_8_20sim <- read.csv("results/norm_5e-8_20sim.csv")
+results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = norm_5e_8_20sim$h2[1:24], prop_effect = norm_5e_8_20sim$prop_effect[1:24], S= norm_5e_8_20sim$S[1:24], EB = round(norm_5e_8_20sim$flb[1:24],4), FIQT = round(norm_5e_8_20sim$flb[(1+24):(24+24)],4), BR = round(norm_5e_8_20sim$flb[(1+2*24):(24+2*24)],4), cl1 = round(norm_5e_8_20sim$flb[(1+3*24):(24+3*24)],4), cl2 = round(norm_5e_8_20sim$flb[(1+4*24):(24+4*24)],4), cl3 = round(norm_5e_8_20sim$flb[(1+5*24):(24+5*24)],4))
 
 
 results_flb %>%
@@ -567,47 +574,47 @@ $~$
 $~$
 $~$
 
-**Fraction of significant SNPs** ***less*** **biased due to method implementation, using a significance threshold of $5 \times 10^{-8}$:**
+**Fraction of significant SNPs with improved association estimates due to method implementation, using a significance threshold of $5 \times 10^{-8}$:**
 
 ```{r,echo=FALSE, fig.show="hold", out.width="50%",fig.height=3.6}
 
 ## plot results
-norm_5e_8_10sim$scenario <- c(rep(c(1:24),6))
-norm_5e_8_10sim$scenario <- factor(norm_5e_8_10sim$scenario)
+norm_5e_8_20sim$scenario <- c(rep(c(1:24),6))
+norm_5e_8_20sim$scenario <- factor(norm_5e_8_20sim$scenario)
 
 par(mar = c(4, 4, .1, .1))
 
 
-data_negS <- norm_5e_8_10sim[which(norm_5e_8_10sim$S==-1),]
+data_negS <- norm_5e_8_20sim[which(norm_5e_8_20sim$S==-1),]
 data_negSa <- data_negS[data_negS$scenario == 1 | data_negS$scenario == 2 |data_negS$scenario == 3 |data_negS$scenario == 4,]
 ggplot(data_negSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 1 - 4", subtitle="S=-1   prop_effect=0.01")  + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6]))  +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + xlab("") + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10), plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + xlab("") + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10), plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_negSb <- data_negS[data_negS$scenario == 5 | data_negS$scenario == 6 |data_negS$scenario == 7 |data_negS$scenario == 8,]
 ggplot(data_negSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 5 - 8", subtitle="S=-1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
-data_neutralS <- norm_5e_8_10sim[which(norm_5e_8_10sim$S==0),]
+data_neutralS <- norm_5e_8_20sim[which(norm_5e_8_20sim$S==0),]
 data_neutralSa <- data_neutralS[data_neutralS$scenario == 9 | data_neutralS$scenario == 10 |data_neutralS$scenario == 11 |data_neutralS$scenario == 12,]
 ggplot(data_neutralSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") + ggtitle("Scenarios 9 - 12", subtitle="S=0   prop_effect=0.01") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_neutralSb <- data_neutralS[data_neutralS$scenario == 13 | data_neutralS$scenario == 14 |data_neutralS$scenario == 15 |data_neutralS$scenario == 16,]
 ggplot(data_neutralSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 13 - 16", subtitle="S=0   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
-data_posS <- norm_5e_8_10sim[which(norm_5e_8_10sim$S==1),]
+data_posS <- norm_5e_8_20sim[which(norm_5e_8_20sim$S==1),]
 data_posSa <- data_posS[data_posS$scenario == 17 | data_posS$scenario == 18 |data_posS$scenario == 19 |data_posS$scenario == 20,]
 ggplot(data_posSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 17 - 20", subtitle="S=1   prop_effect=0.01") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_posSb <- data_posS[data_posS$scenario == 21 | data_posS$scenario == 22 |data_posS$scenario == 23 |data_posS$scenario == 24,]
 ggplot(data_posSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 21 - 24", subtitle="S=1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 ```
 $~$
 $~$
@@ -619,11 +626,11 @@ $~$
 
  
 
-Summary of results for `mse` contained in `norm_5e-8_10sim.csv`:
+Summary of results for `mse` contained in `norm_5e-8_20sim.csv`:
 
 ```{r,echo=FALSE}
 
-results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = norm_5e_8_10sim$h2[1:24], prop_effect = norm_5e_8_10sim$prop_effect[1:24], S= norm_5e_8_10sim$S[1:24], EB = round(norm_5e_8_10sim$mse[1:24],6), FIQT = round(norm_5e_8_10sim$mse[(1+24):(24+24)],6), BR = round(norm_5e_8_10sim$mse[(1+2*24):(24+2*24)],6), cl1 = round(norm_5e_8_10sim$mse[(1+3*24):(24+3*24)],6), cl2 = round(norm_5e_8_10sim$mse[(1+4*24):(24+4*24)],6), cl3 = round(norm_5e_8_10sim$mse[(1+5*24):(24+5*24)],6))
+results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = norm_5e_8_20sim$h2[1:24], prop_effect = norm_5e_8_20sim$prop_effect[1:24], S= norm_5e_8_20sim$S[1:24], EB = round(norm_5e_8_20sim$mse[1:24],6), FIQT = round(norm_5e_8_20sim$mse[(1+24):(24+24)],6), BR = round(norm_5e_8_20sim$mse[(1+2*24):(24+2*24)],6), cl1 = round(norm_5e_8_20sim$mse[(1+3*24):(24+3*24)],6), cl2 = round(norm_5e_8_20sim$mse[(1+4*24):(24+4*24)],6), cl3 = round(norm_5e_8_20sim$mse[(1+5*24):(24+5*24)],6))
 
 results_mse %>%
 kable() %>%
@@ -682,11 +689,11 @@ $~$
 
 
 
-Summary of results for `rel_mse` contained in `norm_5e-8_10sim.csv`:
+Summary of results for `rel_mse` contained in `norm_5e-8_20sim.csv`:
 
 ```{r,echo=FALSE}
 
-results_rel_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = norm_5e_8_10sim$h2[1:24], prop_effect = norm_5e_8_10sim$prop_effect[1:24], S= norm_5e_8_10sim$S[1:24], EB = round(norm_5e_8_10sim$rel_mse[1:24],4), FIQT = round(norm_5e_8_10sim$rel_mse[(1+24):(24+24)],4), BR = round(norm_5e_8_10sim$rel_mse[(1+2*24):(24+2*24)],4), cl1 = round(norm_5e_8_10sim$rel_mse[(1+3*24):(24+3*24)],4), cl2 = round(norm_5e_8_10sim$rel_mse[(1+4*24):(24+4*24)],4), cl3 = round(norm_5e_8_10sim$rel_mse[(1+5*24):(24+5*24)],4))
+results_rel_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = norm_5e_8_20sim$h2[1:24], prop_effect = norm_5e_8_20sim$prop_effect[1:24], S= norm_5e_8_20sim$S[1:24], EB = round(norm_5e_8_20sim$rel_mse[1:24],4), FIQT = round(norm_5e_8_20sim$rel_mse[(1+24):(24+24)],4), BR = round(norm_5e_8_20sim$rel_mse[(1+2*24):(24+2*24)],4), cl1 = round(norm_5e_8_20sim$rel_mse[(1+3*24):(24+3*24)],4), cl2 = round(norm_5e_8_20sim$rel_mse[(1+4*24):(24+4*24)],4), cl3 = round(norm_5e_8_20sim$rel_mse[(1+5*24):(24+5*24)],4))
 
 results_rel_mse %>%
 kable() %>%
@@ -769,7 +776,7 @@ $~$
 $~$
 $~$
 
-**Fraction of significant SNPs** ***less*** **biased due to method implementation, using a significance threshold of $5 \times 10^{-4}$:**
+**Fraction of significant SNPs with improved association estimates due to method implementation, using a significance threshold of $5 \times 10^{-4}$:**
 
 ```{r,echo=FALSE, fig.show="hold", out.width="50%",fig.height=3.6}
 
@@ -783,33 +790,33 @@ par(mar = c(4, 4, .1, .1))
 data_negS <- norm_5e_4_10sim[which(norm_5e_4_10sim$S==-1),]
 data_negSa <- data_negS[data_negS$scenario == 1 | data_negS$scenario == 2 |data_negS$scenario == 3 |data_negS$scenario == 4,]
 ggplot(data_negSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 1 - 4", subtitle="S=-1   prop_effect=0.01")  + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6]))  +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + xlab("") + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10), plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + xlab("") + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10), plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_negSb <- data_negS[data_negS$scenario == 5 | data_negS$scenario == 6 |data_negS$scenario == 7 |data_negS$scenario == 8,]
 ggplot(data_negSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 5 - 8", subtitle="S=-1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_neutralS <- norm_5e_4_10sim[which(norm_5e_4_10sim$S==0),]
 data_neutralSa <- data_neutralS[data_neutralS$scenario == 9 | data_neutralS$scenario == 10 |data_neutralS$scenario == 11 |data_neutralS$scenario == 12,]
 ggplot(data_neutralSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") + ggtitle("Scenarios 9 - 12", subtitle="S=0   prop_effect=0.01") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_neutralSb <- data_neutralS[data_neutralS$scenario == 13 | data_neutralS$scenario == 14 |data_neutralS$scenario == 15 |data_neutralS$scenario == 16,]
 ggplot(data_neutralSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 13 - 16", subtitle="S=0   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+ ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 data_posS <- norm_5e_4_10sim[which(norm_5e_4_10sim$S==1),]
 data_posSa <- data_posS[data_posS$scenario == 17 | data_posS$scenario == 18 |data_posS$scenario == 19 |data_posS$scenario == 20,]
 ggplot(data_posSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 17 - 20", subtitle="S=1   prop_effect=0.01") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_posSb <- data_posS[data_posS$scenario == 21 | data_posS$scenario == 22 |data_posS$scenario == 23 |data_posS$scenario == 24,]
 ggplot(data_posSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 21 - 24", subtitle="S=1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+ ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#641E16'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 ```
 
 $~$
@@ -917,7 +924,7 @@ ggplot(data_negSa,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position
 
 
 ggplot(data_negSb,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 5 - 8", subtitle="S=-1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("%", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#0B5345'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#0B5345'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 ggplot(data_neutralSa,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") + ggtitle("Scenarios 9 - 12", subtitle="S=0   prop_effect=0.01") +
@@ -925,7 +932,7 @@ ggplot(data_neutralSa,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(posi
 
 
 ggplot(data_neutralSb,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 13 - 16", subtitle="S=0   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("%", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#0B5345'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#0B5345'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 ggplot(data_posSa,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 17 - 20", subtitle="S=1   prop_effect=0.01") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
   ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#0B5345'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
@@ -938,9 +945,9 @@ ggplot(data_posSb,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position
 
 
 
-### 4. Skewed distribution of effect sizes
+### 4. Bimodal distribution of effect sizes
 
-Here we investigate the 24 different scenarios under a ***skewed*** distribution of effect sizes. In order to create a bimodal distribution, we simulate 50% of effect sizes of the true effect SNPs from a normal distribution centered at 0 while the other half are generated from a normal distribution with mean 2.5. As above, we first have a look at the expected number of significant SNPs and the expected proportion of those in which their association estimate is exaggerated. 
+Here we investigate the 24 different scenarios under a ***bimodal*** distribution of effect sizes. In order to create a bimodal distribution, we simulate 50% of effect sizes of the true effect SNPs from a normal distribution centered at 0 while the other half are generated from a normal distribution with mean 2.5. As above, we first have a look at the expected number of significant SNPs and the expected proportion of those in which their association estimate is exaggerated. 
 
 
 
@@ -995,7 +1002,7 @@ set.seed(1998)
 par(mar = c(4, 4, .1, .1))
 
 ## Scenario 11
-ss <- simulate_ss_skew(H=0.8,Pi=0.01,nid=30000,sc=0)
+ss <- simulate_ss_bim(H=0.8,Pi=0.01,nid=30000,sc=0)
 out <- simulate_est(ss)
 out$z <- out$beta/out$se
 out$bias <- out$beta - ss$true_beta
@@ -1009,7 +1016,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + xlab("z") +
   )
 
 ## Scenario 12
-ss <- simulate_ss_skew(H=0.8,Pi=0.01,nid=300000,sc=0)
+ss <- simulate_ss_bim(H=0.8,Pi=0.01,nid=300000,sc=0)
 out <- simulate_est(ss)
 out$z <- out$beta/out$se
 out$bias <- out$beta - ss$true_beta
@@ -1027,11 +1034,11 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + xlab("z") +
 
 Next, we repeat the process illustrated in Section 2 using the same bias evaluation metrics with a significance threshold of $5 \times 10^{-8}$.  
 
-Summary of results for `flb` contained in `skew_5e-8_10sim.csv`:
+Summary of results for `flb` contained in `bimod_5e-8_10sim.csv`:
 
 ```{r,echo=FALSE}
 
-skew_5e_8_10sim <- read.csv("results/skew_5e-8_10sim.csv")
+skew_5e_8_10sim <- read.csv("results/bimod_5e-8_10sim.csv")
 results_flb_skew <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = skew_5e_8_10sim$h2[1:24], prop_effect = skew_5e_8_10sim$prop_effect[1:24], S= skew_5e_8_10sim$S[1:24], EB = round(skew_5e_8_10sim$flb[1:24],4), FIQT = round(skew_5e_8_10sim$flb[(1+24):(24+24)],4), BR = round(skew_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1 = round(skew_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2 = round(skew_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3 = round(skew_5e_8_10sim$flb[(1+5*24):(24+5*24)],4))
 
 
@@ -1054,7 +1061,7 @@ $~$
 $~$
 $~$
 
-**Fraction of significant SNPs** ***less*** **biased due to method implementation, using a significance threshold of $5 \times 10^{-8}$ and a** ***skewed*** **distribution of effect sizes:**
+**Fraction of significant SNPs with improved association estimates due to method implementation, using a significance threshold of $5 \times 10^{-8}$ and a** ***bimodal*** **distribution of effect sizes:**
 
 ```{r,echo=FALSE, fig.show="hold", out.width="50%",fig.height=3.6}
 
@@ -1068,33 +1075,33 @@ par(mar = c(4, 4, .1, .1))
 data_negS <- skew_5e_8_10sim[which(skew_5e_8_10sim$S==-1),]
 data_negSa <- data_negS[data_negS$scenario == 1 | data_negS$scenario == 2 |data_negS$scenario == 3 |data_negS$scenario == 4,]
 ggplot(data_negSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 1 - 4", subtitle="S=-1   prop_effect=0.01")  + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6]))  +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + xlab("") + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10), plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + xlab("") + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10), plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_negSb <- data_negS[data_negS$scenario == 5 | data_negS$scenario == 6 |data_negS$scenario == 7 |data_negS$scenario == 8,]
 ggplot(data_negSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 5 - 8", subtitle="S=-1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_neutralS <- skew_5e_8_10sim[which(skew_5e_8_10sim$S==0),]
 data_neutralSa <- data_neutralS[data_neutralS$scenario == 9 | data_neutralS$scenario == 10 |data_neutralS$scenario == 11 |data_neutralS$scenario == 12,]
 ggplot(data_neutralSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") + ggtitle("Scenarios 9 - 12", subtitle="S=0   prop_effect=0.01") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_neutralSb <- data_neutralS[data_neutralS$scenario == 13 | data_neutralS$scenario == 14 |data_neutralS$scenario == 15 |data_neutralS$scenario == 16,]
 ggplot(data_neutralSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 13 - 16", subtitle="S=0   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 data_posS <- skew_5e_8_10sim[which(skew_5e_8_10sim$S==1),]
 data_posSa <- data_posS[data_posS$scenario == 17 | data_posS$scenario == 18 |data_posS$scenario == 19 |data_posS$scenario == 20,]
 ggplot(data_posSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 17 - 20", subtitle="S=1   prop_effect=0.01") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+ ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 
 
 data_posSb <- data_posS[data_posS$scenario == 21 | data_posS$scenario == 22 |data_posS$scenario == 23 |data_posS$scenario == 24,]
 ggplot(data_posSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.35),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 21 - 24", subtitle="S=1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,15,17)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[6])) + xlab("") +
-  ylab(expression(paste("Fraction of sig. SNPs", italic(" less "), "biased"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
+  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.35)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#1B2631'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 ```
 $~$
 $~$
@@ -1104,7 +1111,7 @@ $~$
 
 
 
-Summary of results for `mse` contained in `skew_5e-8_10sim.csv`:
+Summary of results for `mse` contained in `bimod_5e-8_10sim.csv`:
 
 ```{r,echo=FALSE}
 
@@ -1130,7 +1137,7 @@ $~$
 $~$
 $~$
 
-***Change*** **in average MSE over all significant SNPs due to method implementation, using a significance threshold of $5 \times 10^{-8}$ and a** ***skewed*** **distribution of effect sizes:**
+***Change*** **in average MSE over all significant SNPs due to method implementation, using a significance threshold of $5 \times 10^{-8}$ and a** ***bimodal*** **distribution of effect sizes:**
 
 ```{r,echo=FALSE, fig.show="hold", out.width="50%",fig.height=3.6}
 
@@ -1162,7 +1169,7 @@ $~$
 $~$
 
 
-Summary of results for `rel_mse` contained in `skew_5e-8_10sim.csv`:
+Summary of results for `rel_mse` contained in `bimod_5e-8_10sim.csv`:
 
 ```{r,echo=FALSE}
 
@@ -1190,7 +1197,7 @@ $~$
 
 
 
-***Relative change*** **in average MSE over all significant SNPs due to method implementation, using a significance threshold of $5 \times 10^{-8}$ and a** ***skewed*** **distribution of effect sizes:**
+***Relative change*** **in average MSE over all significant SNPs due to method implementation, using a significance threshold of $5 \times 10^{-8}$ and a** ***bimodal*** **distribution of effect sizes:**
 
 ```{r,echo=FALSE, fig.show="hold", out.width="50%",fig.height=3.6}
 
@@ -1220,4 +1227,6 @@ $~$
 $~$
 $~$
 $~$
+
+
 
