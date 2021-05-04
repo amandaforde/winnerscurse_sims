@@ -15,11 +15,13 @@ library(kableExtra)
 col <- brewer.pal(8,"Dark2")
 ```
 
-In this document, we intend to investigate the following key questions, assuming a fixed array of $10^6$ SNPs and a quantitative trait in which SNP effect sizes follow a ***normal*** distribution: 
+In this document, we intend to investigate the following key questions, assuming a fixed array of $10^6$ SNPs: 
 
 - When should I be concerned about Winner's Curse or about my association estimates being more extreme than their corresponding true effect sizes?
 - If I adjust SNP-trait association estimates using a Winner's Curse method, how much should I expect this to improve the association estimates of significant SNPs? 
 - If I do use a Winner's Curse method, which one should I use? 
+
+We first focus on a quantitative trait in which SNP effect sizes follow a ***normal*** distribution.
 
 
 ### 1. When is Winner's Curse a problem? 
@@ -915,7 +917,7 @@ $~$
 
 ### 3. Observations and discussion of above simulations
 
-It is worth noting from the above simulations how the Winner's Curse methods tend to break down, or equivalently, no longer make improvements based on the third evaluation metric, `rel_mse` when the proportion of effect SNPs is 0.001. This is a measure of polygenicity. That said, the empirical Bayes method performs extremely similar to just taking a replication estimate when the replication sample is of the same size as the discovery GWAS, i.e. `n_samples` is equivalent in both data sets and as we will see later, the empirical Bayes will outperform the replication method when the replication GWAS sample size becomes smaller than that of the discovery, at this threshold of `5e-8`. This observation **strongly supports the use of empirical Bayes** as a Winner's Curse adjustment method, particularly when a replication GWAS is not available. 
+It is worth noting from the above simulations how the Winner's Curse methods tend to break down, or equivalently, no longer make improvements based on the third evaluation metric, `rel_mse` when the proportion of effect SNPs is 0.001. This is a measure of polygenicity. That said, the empirical Bayes method performs extremely similar to just taking a replication estimate when the replication sample is of the same size as the discovery GWAS, i.e. `n_samples` is equivalent in both data sets and as we will see later, the empirical Bayes will outperform the replication method when the replication GWAS sample size becomes smaller than that of the discovery, at this threshold of `5e-8`. This observation *strongly supports the use of empirical Bayes* as a Winner's Curse adjustment method, particularly when a replication GWAS is not available. 
 
 For `prop_effect = 0.01`, our proposed bootstrap method for summary statistics performs in a comparable manner to both empirical Bayes and the replication method. However, the bootstrap method ceases to perform as well at obtaining less biased association estimates when the proportion of effect SNPs is reduced to 0.001. 
 

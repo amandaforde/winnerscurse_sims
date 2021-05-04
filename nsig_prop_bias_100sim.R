@@ -1,8 +1,9 @@
 ## PRELIMINARY SIMULATIONS:
-## Obtain the average number of significant SNPs and the average proportion of
+## Obtain the average number of significant SNPs, the average proportion of
 ## these SNPs for which their association estimate is more extreme than their
-## true effect size over simulations in which at least one significant SNP has
-## been detected, for four different simulation set-ups
+## true effect size and the average proportion of these SNPs which are
+## significantly overexaggerated over simulations in which at least one
+## significant SNP has been detected, for three different simulation set-ups
 
 library(tidyverse)
 library(parallel)
@@ -29,7 +30,8 @@ sim_params <- expand.grid(
 
 
 ##############################################################################
-## SIMULATION SET-UP 1:
+## SIMULATION SET-UP A:
+## Quantitative trait
 ## Normal effect size distribution
 ## Significance threshold of alpha=5e-8
 
@@ -69,7 +71,8 @@ write.csv(ave_res, "results/norm_nsig_prop_bias_5e-8.csv")
 
 
 ##############################################################################
-## SIMULATION SET-UP 2:
+## SIMULATION SET-UP B:
+## Quantitative trait
 ## Normal effect size distribution
 ## Significance threshold of alpha=5e-4
 
@@ -109,7 +112,8 @@ write.csv(ave_res, "results/norm_nsig_prop_bias_5e-4.csv")
 
 
 ##############################################################################
-## SIMULATION SET-UP 3:
+## SIMULATION SET-UP C:
+## Quantitative trait
 ## Bimodal effect size distribution: when S=0, 50% of effect sizes are generated
 ## from a N(0,1) distribution while the other 50% are generated from a N(2.5,1)
 ## distribution - see simulate_ss_bim() in 'useful_funs.R' for more details
