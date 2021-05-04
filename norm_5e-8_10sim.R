@@ -1,7 +1,13 @@
 ## SIMULATION SET-UP 1:
+## Discovery GWAS only
+## Quantitative trait
 ## Normal effect size distribution
 ## Significance threshold of alpha=5e-8
 
+################################################################################
+
+#library(devtools)
+#devtools::install_github("amandaforde/winnerscurse")
 library(winnerscurse)
 library(tidyverse)
 library(parallel)
@@ -77,7 +83,15 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   mse_cl3 <- mse_sig_improve(out_cl,ss$true_beta,alpha=5e-8,i=6)
   rel_mse_cl3 <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-8,i=6)
 
-  return(c(flb_EB,mse_EB,rel_mse_EB,flb_FIQT,mse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rel_mse_BR,flb_cl1,mse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rel_mse_cl3))
+  ## replication
+  ss2 <- data.frame(true_beta=ss$true_beta,se=ss$rep_se)
+  rep_stats <- simulate_est(ss2)
+  out_rep <- cbind(disc_stats,rep_stats$beta)
+  flb_rep <- frac_sig_less_bias(out_rep,ss$true_beta,alpha=5e-8)
+  mse_rep <- mse_sig_improve(out_rep,ss$true_beta,alpha=5e-8)
+  rel_mse_rep <- mse_sig_improve_per(out_rep,ss$true_beta,alpha=5e-8)
+
+  return(c(flb_EB,mse_EB,rel_mse_EB,flb_FIQT,mse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rel_mse_BR,flb_cl1,mse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rel_mse_cl3,flb_rep,mse_rep,rel_mse_rep))
 }
 res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
 
@@ -158,9 +172,22 @@ for (i in 1:nrow(sim_params)){
 res_cl3 <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_cl3 <- ave_results(res_cl3,tot_sim)
 
+## replication
+flb <- c(rep(0,nrow(sim_params)))
+mse <- c(rep(0,nrow(sim_params)))
+rel_mse <- c(rep(0,nrow(sim_params)))
+for (i in 1:nrow(sim_params)){
+  flb[i] <- res[[i]][19]
+  mse[i] <- res[[i]][20]
+  rel_mse[i] <- res[[i]][21]
+}
+res_rep <- cbind(sim_params,flb,mse,rel_mse)
+ave_res_rep <- ave_results(res_rep,tot_sim)
+
+
 ## Combine all results:
-results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3)
-results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)))
+results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3,ave_res_rep)
+results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)),rep("rep",(nrow(sim_params)/tot_sim)))
 write.csv(results_all,"results/norm_5e-8_20sim.csv")
 
 ################################################################################

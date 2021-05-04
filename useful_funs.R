@@ -4,7 +4,7 @@
 ## and selection coefficient (S), 'true' values of effect size and corresponding
 ## standard error are simulated in which effect sizes are assumed to be normally
 ## distributed
-simulate_ss <- function(H,Pi,nid,sc){
+simulate_ss <- function(H,Pi,nid,sc,rep_nid=1){
   effect_snps <- Pi*n_snps
   maf <- runif(n_snps,0.01,0.5)
   true_beta <- rnorm(effect_snps,0,sd=sqrt((2*maf*(1-maf))^sc))
@@ -12,7 +12,8 @@ simulate_ss <- function(H,Pi,nid,sc){
   true_beta <- true_beta/sqrt(var_y)
   true_beta <- c(true_beta, rep(0,n_snps-effect_snps))
   se <- sqrt((1 - 2*maf*(1-maf)*true_beta^2)/(2*(nid-2)*maf*(1-maf)))
-  stats <- data.frame(true_beta,se)
+  rep_se <- sqrt((1 - 2*maf*(1-maf)*true_beta^2)/(2*(rep_nid*nid-2)*maf*(1-maf)))
+  stats <- data.frame(true_beta,se,rep_se)
   return(stats)
 }
 
@@ -23,7 +24,7 @@ simulate_ss <- function(H,Pi,nid,sc){
 ## bimodal distribution, i.e. 50% of effect sizes come from a normal distribution
 ## centered at 0 while the other half are generated from a normal distribution
 ## with mean 2.5
-simulate_ss_bim <- function(H,Pi,nid,sc){
+simulate_ss_bim <- function(H,Pi,nid,sc,rep_nid=1){
   effect_snps <- Pi*n_snps
   maf <- runif(n_snps,0.01,0.5)
   true_beta <- c(rnorm(0.5*effect_snps,2.5,sd=sqrt((2*maf*(1-maf))^sc)),rnorm(0.5*effect_snps,0,sd=sqrt((2*maf[(0.5*effect_snps+1):effect_snps]*(1-maf[(0.5*effect_snps+1):effect_snps]))^sc)))
@@ -31,7 +32,8 @@ simulate_ss_bim <- function(H,Pi,nid,sc){
   true_beta <- true_beta/sqrt(var_y)
   true_beta <- c(true_beta, rep(0,n_snps-effect_snps))
   se <- sqrt((1 - 2*maf*(1-maf)*true_beta^2)/(2*(nid-2)*maf*(1-maf)))
-  stats <- data.frame(true_beta,se)
+  rep_se <- sqrt((1 - 2*maf*(1-maf)*true_beta^2)/(2*(rep_nid*nid-2)*maf*(1-maf)))
+  stats <- data.frame(true_beta,se,rep_se)
   return(stats)
 }
 
@@ -140,6 +142,8 @@ ave_results1 <- function(res_vec, n_sim){
   sd_nsig <- c(rep(0,nrow(res_vec)/n_sim))
   ave_pb <- c(rep(0,nrow(res_vec)/n_sim))
   sd_pb <- c(rep(0,nrow(res_vec)/n_sim))
+  ave_px <- c(rep(0,nrow(res_vec)/n_sim))
+  sd_px <- c(rep(0,nrow(res_vec)/n_sim))
   ave_mse <- c(rep(0,nrow(res_vec)/n_sim))
   sd_mse <- c(rep(0,nrow(res_vec)/n_sim))
   for (i in 1:(nrow(res_vec)/n_sim)){
@@ -147,6 +151,8 @@ ave_results1 <- function(res_vec, n_sim){
     sd_nsig[i] <- sd(res_vec$n_sig[(i*n_sim-(n_sim-1)):(i*n_sim)])
     ave_pb[i] <- mean(res_vec$prop_bias[(i*n_sim-(n_sim-1)):(i*n_sim)][which(res_vec$prop_bias[(i*n_sim-(n_sim-1)):(i*n_sim)] != -1)])
     sd_pb[i] <- sd(res_vec$prop_bias[(i*n_sim-(n_sim-1)):(i*n_sim)][which(res_vec$prop_bias[(i*n_sim-(n_sim-1)):(i*n_sim)] != -1)])
+    ave_px[i] <- mean(res_vec$prop_x[(i*n_sim-(n_sim-1)):(i*n_sim)][which(res_vec$prop_x[(i*n_sim-(n_sim-1)):(i*n_sim)] != -1)])
+    sd_px[i] <- sd(res_vec$prop_x[(i*n_sim-(n_sim-1)):(i*n_sim)][which(res_vec$prop_x[(i*n_sim-(n_sim-1)):(i*n_sim)] != -1)])
     ave_mse[i] <- mean(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)][which(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)] != -1)])
     sd_mse[i] <- sd(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)][which(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)] != -1)])
   }
@@ -156,6 +162,8 @@ ave_results1 <- function(res_vec, n_sim){
   res_vec_ave$n_sig_sd <- sd_nsig
   res_vec_ave$prop_bias <- ave_pb
   res_vec_ave$prop_bias_sd <- sd_pb
+  res_vec_ave$prop_x <- ave_px
+  res_vec_ave$prop_x_sd <- sd_px
   res_vec_ave$mse <- ave_mse
   res_vec_ave$mse_sd <- sd_mse
   res_vec_ave <- subset(res_vec_ave, select = -sim )
