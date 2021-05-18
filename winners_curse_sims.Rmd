@@ -3279,3 +3279,105 @@ ggplot(data_posSb,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position
 
 
 
+### 8. Comparison of the Empirical Bayes method with the true Bayes rule
+
+
+
+Summary of results for `rel_mse` contained in `norm_5e-8_10sim_bayes_compare.csv`:
+
+```{r,echo=FALSE}
+
+norm_5e_8_5sim_bayes <- read.csv("results/norm_5e-8_10sim_bayes_compare.csv")
+
+results_rel_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = norm_5e_8_5sim_bayes$h2[1:24], prop_effect = norm_5e_8_5sim_bayes$prop_effect[1:24], S= norm_5e_8_5sim_bayes$S[1:24], EB = round(norm_5e_8_5sim_bayes$rel_mse[1:24],4), bayes = round(norm_5e_8_5sim_bayes$rel_mse[(1+24):(24+24)],4), rep = round(norm_5e_8_5sim_bayes$rel_mse[(1+2*24):(24+2*24)],4))
+
+results_rel_mse %>%
+kable() %>%
+  kable_classic_2() %>%
+kable_styling(bootstrap_options = "bordered",
+full_width = FALSE,position="center") %>%
+  row_spec(row = 0,bold = TRUE) %>%
+  column_spec(1,background="#D4EFDF") %>%
+  column_spec(2,background="#E9F7EF") %>%
+  column_spec(3,background="#E9F7EF") %>%
+  column_spec(4,background="#E9F7EF") %>%
+  column_spec(5,background="#E9F7EF",extra_css="border-right: 1px solid") %>%
+  scroll_box(width = "60%", height = "300px")
+```
+
+
+
+$~$
+$~$
+$~$
+$~$
+
+
+The *mean* relative change in average MSE over all significant SNPs across the 24 scenarios is obtained for each method: 
+```{r, echo=FALSE}
+ranking <- results_rel_mse[,6:8]
+summary2 <- apply(ranking,2,mean,na.rm=TRUE)
+summary2
+```
+
+
+The methods are ranked according to the results above in ascending order:
+```{r, echo=FALSE}
+rank(summary2)
+```
+
+
+
+$~$
+$~$
+$~$
+$~$
+
+
+
+***Relative change*** **in average MSE over all significant SNPs due to method implementation, using a significance threshold of $5 \times 10^{-8}$:**
+
+```{r,echo=FALSE, fig.show="hold", out.width="50%",fig.height=3.6, warning=FALSE}
+
+norm_5e_8_5sim_bayes$scenario <- c(rep(c(1:24),3))
+norm_5e_8_5sim_bayes$scenario <- factor(norm_5e_8_5sim_bayes$scenario)
+
+par(mar = c(4, 4, .1, .1))
+
+
+data_negS <- norm_5e_8_5sim_bayes[which(norm_5e_8_5sim_bayes$S==-1),]
+data_negSa <- data_negS[data_negS$scenario == 1 | data_negS$scenario == 2 |data_negS$scenario == 3 |data_negS$scenario == 4,]
+data_negSb <- data_negS[data_negS$scenario == 5 | data_negS$scenario == 6 |data_negS$scenario == 7 |data_negS$scenario == 8,]
+
+data_neutralS <- norm_5e_8_5sim_bayes[which(norm_5e_8_5sim_bayes$S==0),]
+data_neutralSa <- data_neutralS[data_neutralS$scenario == 9 | data_neutralS$scenario == 10 |data_neutralS$scenario == 11 |data_neutralS$scenario == 12,]
+data_neutralSb <- data_neutralS[data_neutralS$scenario == 13 | data_neutralS$scenario == 14 |data_neutralS$scenario == 15 |data_neutralS$scenario == 16,]
+
+data_posS <- norm_5e_8_5sim_bayes[which(norm_5e_8_5sim_bayes$S==1),]
+data_posSa <- data_posS[data_posS$scenario == 17 | data_posS$scenario == 18 |data_posS$scenario == 19 |data_posS$scenario == 20,]
+data_posSb <- data_posS[data_posS$scenario == 21 | data_posS$scenario == 22 |data_posS$scenario == 23 |data_posS$scenario == 24,]
+
+
+ggplot(data_negSa,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 1 - 4", subtitle="S=-1   prop_effect=0.01")  + scale_shape_manual(values=c(15,17,16)) + scale_color_manual(values=c(col[1],col[2],col[3]))  +
+  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + xlab("") + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10), plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
+
+ggplot(data_negSb,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 5 - 8", subtitle="S=-1   prop_effect=0.001") + scale_shape_manual(values=c(15,17,16)) + scale_color_manual(values=c(col[1],col[2],col[3])) + xlab("") +
+  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
+
+ggplot(data_neutralSa,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + scale_shape_manual(values=c(15,17,16)) + scale_color_manual(values=c(col[1],col[2],col[3])) + xlab("") + ggtitle("Scenarios 9 - 12", subtitle="S=0   prop_effect=0.01") +
+  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
+
+ggplot(data_neutralSb,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 13 - 16", subtitle="S=0   prop_effect=0.001") + scale_shape_manual(values=c(15,17,16)) + scale_color_manual(values=c(col[1],col[2],col[3])) + xlab("") +
+  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
+
+ggplot(data_posSa,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 17 - 20", subtitle="S=1   prop_effect=0.01") + scale_shape_manual(values=c(15,17,16)) + scale_color_manual(values=c(col[1],col[2],col[3])) + xlab("") +
+  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
+
+ggplot(data_posSb,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 21 - 24", subtitle="S=1   prop_effect=0.001") + scale_shape_manual(values=c(15,17,16)) + scale_color_manual(values=c(col[1],col[2],col[3])) + xlab("") +
+  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
+```
+
+$~$
+$~$
+$~$
+$~$

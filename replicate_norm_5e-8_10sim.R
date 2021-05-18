@@ -32,6 +32,57 @@ sim_params <- expand.grid(
 ## simulations below.
 ## NOTE: Simulations currently being run on Windows, hence mc.cores=1.
 
+## Define new version of MSE_minimizer with spline:
+MSE_minimizer_sp2 <- function(summary_disc, summary_rep, alpha){
+
+  c <- stats::qnorm(1-(alpha)/2)
+
+  if(sum(abs(summary_disc$beta/summary_disc$se) > c) == 0){
+    summary_data <- cbind(summary_disc[1:3],summary_rep[2:3])
+    names(summary_data)[2] <- "beta_disc"
+    names(summary_data)[3] <- "se_disc"
+    names(summary_data)[4] <- "beta_rep"
+    names(summary_data)[5] <- "se_rep"
+    return(summary_data)
+  }
+
+  summary_disc_ord <- arrange(summary_disc, desc(summary_disc$beta/summary_disc$se))
+
+  ## partition into top and bottom significant SNPs
+  if (sum(summary_disc_ord$beta/summary_disc_ord$se > c) == 0){
+    summary_disc_sig_up <- summary_disc_ord[1:100,]
+  }else{
+    summary_disc_sig_up <- summary_disc_ord[1:(max(which(summary_disc_ord$beta/summary_disc_ord$se > c))+100),]
+  }
+  summary_rep_sig_up <- summary_rep[summary_disc_sig_up$rsid,]
+  B_up <- summary_disc_sig_up$beta - summary_rep_sig_up$beta
+  z_up <- summary_disc_sig_up$beta/summary_disc_sig_up$se
+  B1_up <- stats::predict(stats::smooth.spline(x=z_up,y=B_up)$fit, z_up)$y
+  w_up <- ((summary_rep_sig_up$se^2)^-1)/(((summary_rep_sig_up$se^2)^-1) + ((summary_rep_sig_up$se^2 + B1_up^2)^-1))
+  beta_joint_up <- w_up*summary_rep_sig_up$beta + (1-w_up)*summary_disc_sig_up$beta
+
+
+  if (sum(summary_disc_ord$beta/summary_disc_ord$se < -c) == 0){
+    summary_disc_sig_down <- summary_disc_ord[(nrow(summary_disc_ord)-100):nrow(summary_disc_ord),]
+  }else{
+    summary_disc_sig_down <- summary_disc_ord[(min(which(summary_disc_ord$beta/summary_disc_ord$se < -c))-100):nrow(summary_disc_ord),]
+  }
+  summary_rep_sig_down <- summary_rep[summary_disc_sig_down$rsid,]
+  B_down <- summary_disc_sig_down$beta - summary_rep_sig_down$beta
+  z_down <- summary_disc_sig_down$beta/summary_disc_sig_down$se
+  B1_down <- stats::predict(stats::smooth.spline(x=z_down,y=B_down)$fit, z_down)$y
+  w_down <- ((summary_rep_sig_down$se^2)^-1)/(((summary_rep_sig_down$se^2)^-1) + ((summary_rep_sig_down$se^2 + B1_down^2)^-1))
+  beta_joint_down <- w_down*summary_rep_sig_down$beta + (1-w_down)*summary_disc_sig_down$beta
+
+
+  betas <- data.frame(rsid = c(summary_disc_sig_up$rsid,summary_disc_sig_down$rsid), beta_disc = c(summary_disc_sig_up$beta,summary_disc_sig_down$beta), se_disc  = c(summary_disc_sig_up$se,summary_disc_sig_down$se), beta_rep = c(summary_rep_sig_up$beta,summary_rep_sig_down$beta), se_rep = c(summary_rep_sig_up$se,summary_rep_sig_down$se), beta_joint=c(beta_joint_up,beta_joint_down))
+  betas <- betas[abs(betas$beta_disc/betas$se_disc) > c,]
+  ## reorder based on significance in first set up!
+  out <- dplyr::arrange(betas, dplyr::desc(abs(betas$beta_disc/betas$se_disc)))
+  return(out)
+}
+
+
 
 ## Bias Evaluation Metrics:
 ## 1. Evaluating the fraction of significant SNPs that have been improved due to
@@ -99,8 +150,8 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   mse_joint <- mse_sig_improve(out_joint,ss$true_beta,alpha=5e-8,i=6)
   rel_mse_joint <- mse_sig_improve_per(out_joint,ss$true_beta,alpha=5e-8,i=6)
 
-  ## MSE minimizer - joint spline
-  out_joint_sp <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8,spline=TRUE)
+  ## MSE minimizer - joint spline version 2
+  out_joint_sp <- MSE_minimizer_sp2(disc_stats,rep_stats,alpha=5e-8)
   names(out_joint_sp)[names(out_joint_sp) == "beta_disc"] <- "beta"
   names(out_joint_sp)[names(out_joint_sp) == "se_disc"] <- "se"
   flb_joint_sp <- frac_sig_less_bias(out_joint_sp,ss$true_beta,alpha=5e-8,i=6)
@@ -300,8 +351,8 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   mse_joint <- mse_sig_improve(out_joint,ss$true_beta,alpha=5e-8,i=6)
   rel_mse_joint <- mse_sig_improve_per(out_joint,ss$true_beta,alpha=5e-8,i=6)
 
-  ## MSE minimizer - joint spline
-  out_joint_sp <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8,spline=TRUE)
+  ## MSE minimizer - joint spline version 2
+  out_joint_sp <- MSE_minimizer_sp2(disc_stats,rep_stats,alpha=5e-8)
   names(out_joint_sp)[names(out_joint_sp) == "beta_disc"] <- "beta"
   names(out_joint_sp)[names(out_joint_sp) == "se_disc"] <- "se"
   flb_joint_sp <- frac_sig_less_bias(out_joint_sp,ss$true_beta,alpha=5e-8,i=6)
@@ -501,8 +552,8 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   mse_joint <- mse_sig_improve(out_joint,ss$true_beta,alpha=5e-8,i=6)
   rel_mse_joint <- mse_sig_improve_per(out_joint,ss$true_beta,alpha=5e-8,i=6)
 
-  ## MSE minimizer - joint spline
-  out_joint_sp <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8,spline=TRUE)
+  ## MSE minimizer - joint spline version 2
+  out_joint_sp <- MSE_minimizer_sp2(disc_stats,rep_stats,alpha=5e-8)
   names(out_joint_sp)[names(out_joint_sp) == "beta_disc"] <- "beta"
   names(out_joint_sp)[names(out_joint_sp) == "se_disc"] <- "se"
   flb_joint_sp <- frac_sig_less_bias(out_joint_sp,ss$true_beta,alpha=5e-8,i=6)
@@ -702,8 +753,8 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   mse_joint <- mse_sig_improve(out_joint,ss$true_beta,alpha=5e-8,i=6)
   rel_mse_joint <- mse_sig_improve_per(out_joint,ss$true_beta,alpha=5e-8,i=6)
 
-  ## MSE minimizer - joint spline
-  out_joint_sp <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8,spline=TRUE)
+  ## MSE minimizer - joint spline version 2
+  out_joint_sp <- MSE_minimizer_sp2(disc_stats,rep_stats,alpha=5e-8)
   names(out_joint_sp)[names(out_joint_sp) == "beta_disc"] <- "beta"
   names(out_joint_sp)[names(out_joint_sp) == "se_disc"] <- "se"
   flb_joint_sp <- frac_sig_less_bias(out_joint_sp,ss$true_beta,alpha=5e-8,i=6)
@@ -905,7 +956,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   rel_mse_joint <- mse_sig_improve_per(out_joint,ss$true_beta,alpha=5e-8,i=6)
 
   ## MSE minimizer - joint spline
-  out_joint_sp <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8,spline=TRUE)
+  out_joint_sp <- MSE_minimizer_sp2(disc_stats,rep_stats,alpha=5e-8)
   names(out_joint_sp)[names(out_joint_sp) == "beta_disc"] <- "beta"
   names(out_joint_sp)[names(out_joint_sp) == "se_disc"] <- "se"
   flb_joint_sp <- frac_sig_less_bias(out_joint_sp,ss$true_beta,alpha=5e-8,i=6)
