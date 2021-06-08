@@ -285,8 +285,8 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   mse_bayes_10 <- mse_sig_evaluate_10(out_bayes,ss$true_beta,i=8,alpha=5e-8)
   mse_bayes_100 <- mse_sig_evaluate_100(out_bayes,ss$true_beta,i=8,alpha=5e-8)
 
-  perc_opt_EB_10_exp <- mse_EB_10/mse_bayes_10
-  perc_opt_EB_100_exp <- mse_EB_100/mse_bayes_100
+  perc_opt_EB_10_skew <- mse_EB_10/mse_bayes_10
+  perc_opt_EB_100_skew <- mse_EB_100/mse_bayes_100
 
 
   return(c(perc_opt_EB_10_norm,perc_opt_EB_100_norm,perc_opt_EB_10_bim,perc_opt_EB_100_bim,perc_opt_EB_10_skew,perc_opt_EB_100_skew))
@@ -323,17 +323,17 @@ ave_results_EB <- function(res_vec, n_sim){
   keep <- seq(from=1,to=nrow(res_vec)-n_sim+1,by=n_sim)
   res_vec_ave <- res_vec[rownames(res_vec) %in% keep,]
   res_vec_ave$perc_opt_EB_10_norm <- ave_perc_opt_EB_10_norm
-  res_vec_ave$perc_opt_EB_10_norm <- sd_perc_opt_EB_10_norm
+  res_vec_ave$perc_opt_EB_10_norm_error <- sd_perc_opt_EB_10_norm
   res_vec_ave$perc_opt_EB_100_norm <- ave_perc_opt_EB_100_norm
-  res_vec_ave$perc_opt_EB_100_norm <- sd_perc_opt_EB_100_norm
+  res_vec_ave$perc_opt_EB_100_norm_error <- sd_perc_opt_EB_100_norm
   res_vec_ave$perc_opt_EB_10_bim <- ave_perc_opt_EB_10_bim
-  res_vec_ave$perc_opt_EB_10_bim <- sd_perc_opt_EB_10_bim
+  res_vec_ave$perc_opt_EB_10_bim_error <- sd_perc_opt_EB_10_bim
   res_vec_ave$perc_opt_EB_100_bim <- ave_perc_opt_EB_100_bim
-  res_vec_ave$perc_opt_EB_100_bim <- sd_perc_opt_EB_100_bim
+  res_vec_ave$perc_opt_EB_100_bim_error <- sd_perc_opt_EB_100_bim
   res_vec_ave$perc_opt_EB_10_skew <- ave_perc_opt_EB_10_skew
-  res_vec_ave$perc_opt_EB_10_skew <- sd_perc_opt_EB_10_skew
+  res_vec_ave$perc_opt_EB_10_skew_error <- sd_perc_opt_EB_10_skew
   res_vec_ave$perc_opt_EB_100_skew <- ave_perc_opt_EB_100_skew
-  res_vec_ave$perc_opt_EB_100_skew <- sd_perc_opt_EB_100_skew
+  res_vec_ave$perc_opt_EB_100_skew_error <- sd_perc_opt_EB_100_skew
   res_vec_ave <- subset(res_vec_ave, select = -sim )
   return(res_vec_ave)
 }
