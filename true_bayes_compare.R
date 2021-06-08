@@ -158,3 +158,136 @@ write.csv(results_all,"results/norm_5e-8_10sim_bayes_compare.csv")
 
 ################################################################################
 
+
+
+## compare with old empirical bayes approach!
+
+empirical_bayes_old <- function(summary_data)
+
+{
+
+  if(nrow(summary_data) == 1){return(summary_data)}
+
+  z <- summary_data$beta/summary_data$se
+
+  bins <- seq(min(z),max(z),length.out=120)
+  mids <- (bins[-length(bins)]+bins[-1])/2
+  counts <- graphics::hist(z,breaks=bins,plot=F)$counts
+
+  most_extreme <- 10
+  boundary_lower <- sort(z)[most_extreme]
+  boundary_upper <- sort(z,decreasing=TRUE)[most_extreme]
+
+  df <- 7
+  AIC_vector <- c(rep(0,28))
+  for (best_df in 3:30){
+    model <- stats::glm(counts ~ splines::ns(mids,knots = (seq(from=boundary_lower,to=boundary_upper,length=best_df+1)[2:best_df]), Boundary.knots=c(boundary_lower,boundary_upper)),stats::poisson,weights=rep(10^-50,length(counts)))
+    minus2loglike <- 10^50*(model$deviance)
+    AIC_vector[best_df-2] <- minus2loglike + 2*(best_df-2)
+  }
+  df <- 2 + which.min(AIC_vector)
+
+  f <- stats::glm(counts ~ splines::ns(mids,knots = (seq(from=boundary_lower,to=boundary_upper,length=df+1)[2:df]), Boundary.knots=c(boundary_lower,boundary_upper)),stats::poisson,weight=rep(10^-50,length(counts)))$fit
+  f[f==0] <- min(f[f>0])
+
+  log_f <- as.vector(log(f))
+  diff <- diff(log_f)/diff(mids)
+  mids2 <- (mids[-length(mids)]+mids[-1])/2
+
+  diff_interpol <- stats::approx(mids2,diff,mids,rule=2,ties=mean)$y
+
+  mids_est <- c(rep(0,length(mids)))
+  mids_est[mids>0] <- pmax(0, mids[mids>0] + diff_interpol[mids>0])
+  mids_est[mids<0] <- pmin(0, mids[mids<0] + diff_interpol[mids<0])
+
+  z_hat <- stats::approx(mids,mids_est,z,rule=2,ties=mean)$y
+  z_hat <- sign(z)*pmin(abs(z),abs(z_hat))
+
+  beta_EB <- z_hat*summary_data$se
+  summary_data <- cbind(summary_data,beta_EB)
+
+  summary_data <- dplyr::arrange(summary_data,dplyr::desc(abs(summary_data$beta/summary_data$se)))
+
+  return(summary_data)
+
+}
+
+
+run_sim <- function(n_samples, h2, prop_effect, S,sim)
+{
+  ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
+  disc_stats <- simulate_est(ss)
+
+  ## Empirical Bayes:
+  out_EB <- empirical_bayes(disc_stats)
+  flb_EB <- frac_sig_less_bias(out_EB,ss$true_beta,alpha=5e-8)
+  mse_EB <- mse_sig_improve(out_EB,ss$true_beta,alpha=5e-8)
+  rel_mse_EB <- mse_sig_improve_per(out_EB,ss$true_beta,alpha=5e-8)
+
+  ## True Bayes:
+  out_EB_2 <- empirical_bayes_old(disc_stats)
+  flb_EB_2 <- frac_sig_less_bias(out_EB_2,ss$true_beta,alpha=5e-8)
+  mse_EB_2 <- mse_sig_improve(out_EB_2,ss$true_beta,alpha=5e-8)
+  rel_mse_EB_2 <- mse_sig_improve_per(out_EB_2,ss$true_beta,alpha=5e-8)
+
+  ## replication
+  ss2 <- data.frame(true_beta=ss$true_beta,se=ss$rep_se)
+  rep_stats <- simulate_est(ss2)
+  out_rep <- cbind(disc_stats,rep_stats$beta)
+  flb_rep <- frac_sig_less_bias(out_rep,ss$true_beta,alpha=5e-8)
+  mse_rep <- mse_sig_improve(out_rep,ss$true_beta,alpha=5e-8)
+  rel_mse_rep <- mse_sig_improve_per(out_rep,ss$true_beta,alpha=5e-8)
+
+  return(c(flb_EB,mse_EB,rel_mse_EB,flb_EB_2,mse_EB_2,rel_mse_EB_2,flb_rep,mse_rep,rel_mse_rep))
+}
+res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+
+
+################################################################################
+
+## Organising results:
+
+## Empirical Bayes:
+flb <- c(rep(0,nrow(sim_params)))
+mse <- c(rep(0,nrow(sim_params)))
+rel_mse <- c(rep(0,nrow(sim_params)))
+for (i in 1:nrow(sim_params)){
+  flb[i] <- res[[i]][1]
+  mse[i] <- res[[i]][2]
+  rel_mse[i] <- res[[i]][3]
+}
+res_EB <- cbind(sim_params,flb,mse,rel_mse)
+ave_res_EB <- ave_results(res_EB,tot_sim)
+
+## old empirical BAYES:
+flb <- c(rep(0,nrow(sim_params)))
+mse <- c(rep(0,nrow(sim_params)))
+rel_mse <- c(rep(0,nrow(sim_params)))
+for (i in 1:nrow(sim_params)){
+  flb[i] <- res[[i]][4]
+  mse[i] <- res[[i]][5]
+  rel_mse[i] <- res[[i]][6]
+}
+res_EB_2 <- cbind(sim_params,flb,mse,rel_mse)
+ave_res_EB_2 <- ave_results(res_EB_2,tot_sim)
+
+
+## replication
+flb <- c(rep(0,nrow(sim_params)))
+mse <- c(rep(0,nrow(sim_params)))
+rel_mse <- c(rep(0,nrow(sim_params)))
+for (i in 1:nrow(sim_params)){
+  flb[i] <- res[[i]][7]
+  mse[i] <- res[[i]][8]
+  rel_mse[i] <- res[[i]][9]
+}
+res_rep <- cbind(sim_params,flb,mse,rel_mse)
+ave_res_rep <- ave_results(res_rep,tot_sim)
+
+
+## Combine all results:
+results_all <- rbind(ave_res_EB,ave_res_EB_2,ave_res_rep)
+results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("old EB",(nrow(sim_params)/tot_sim)),rep("rep",(nrow(sim_params)/tot_sim)))
+write.csv(results_all,"results/norm_5e-8_10sim_EB_compare.csv")
+
+################################################################################

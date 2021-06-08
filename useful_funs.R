@@ -171,5 +171,20 @@ ave_results1 <- function(res_vec, n_sim){
 }
 
 
+## 12. Given values for heritability (H), polygenicity (Pi), sample size (nid)
+## and selection coefficient (S), 'true' values of effect size and corresponding
+## standard error are simulated in which effect sizes are assumed to have a
+## skewed distribution
 
-
+simulate_ss_exp <- function(H,Pi,nid,sc,rep_nid=1){
+  effect_snps <- Pi*n_snps
+  maf <- runif(n_snps,0.01,0.5)
+  true_beta <- c(-rexp(n=.1*effect_snps,rate = 1/sqrt((2*maf*(1-maf))^sc)), rexp(n=.9*effect_snps,rate = 1/sqrt((2*maf*(1-maf))^sc)))
+  var_y <- sum(2*maf[1:effect_snps]*(1-maf[1:effect_snps])*true_beta^2)/H
+  true_beta <- true_beta/sqrt(var_y)
+  true_beta <- c(true_beta, rep(0,n_snps-effect_snps))
+  se <- sqrt((1 - 2*maf*(1-maf)*true_beta^2)/(2*(nid-2)*maf*(1-maf)))
+  rep_se <- sqrt((1 - 2*maf*(1-maf)*true_beta^2)/(2*(rep_nid*nid-2)*maf*(1-maf)))
+  stats <- data.frame(true_beta,se,rep_se)
+  return(stats)
+}
