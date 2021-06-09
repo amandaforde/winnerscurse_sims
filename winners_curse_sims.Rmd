@@ -2166,7 +2166,7 @@ In this section, we proceed to comparing Winner's Curse adjustment methods which
 
 ```{r,echo=FALSE,include=FALSE}
 
-rep_norm_5e_8_10sim <- read.csv("results/replicate_norm_5e-8_10sim.csv")
+rep_norm_5e_8_10sim <- read.csv("results/replicate_norm_5e-8_100sim.csv")
 results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$flb[1:24],4), rep = round(rep_norm_5e_8_10sim$flb[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$flb[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$flb[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$flb[(1+8*24):(24+8*24)],4))
 
 
@@ -2272,7 +2272,7 @@ ggplot(data_posSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=pos
   ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=mse-mse_error, ymax=mse+mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#7D6608'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 ```
 
-Summary of results for `rel_mse` contained in `replicate_norm_5e-8_10sim.csv`:
+Summary of results for `rel_mse` contained in `replicate_norm_5e-8_100sim.csv`:
 
 ```{r,echo=FALSE}
 
@@ -2363,7 +2363,7 @@ We also look at how the methods compare when the replication data set is *50%* t
 
 ```{r,echo=FALSE,include=FALSE}
 
-rep_norm_5e_8_10sim <- read.csv("results/replicate_norm_5e-8_10sim_halfrep.csv")
+rep_norm_5e_8_10sim <- read.csv("results/replicate_norm_5e-8_100sim_halfrep.csv")
 results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$flb[1:24],4), rep = round(rep_norm_5e_8_10sim$flb[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$flb[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$flb[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$flb[(1+8*24):(24+8*24)],4))
 
 
@@ -2568,7 +2568,7 @@ Next, we look at how the methods compare when the replication data set is *10%* 
 
 ```{r,echo=FALSE,include=FALSE}
 
-rep_norm_5e_8_10sim <- read.csv("results/replicate_norm_5e-8_10sim_10pc.csv")
+rep_norm_5e_8_10sim <- read.csv("results/replicate_norm_5e-8_100sim_10pc.csv")
 results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$flb[1:24],4), rep = round(rep_norm_5e_8_10sim$flb[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$flb[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$flb[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$flb[(1+8*24):(24+8*24)],4))
 
 
@@ -2675,7 +2675,7 @@ ggplot(data_posSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=pos
 ```
 
 
-Summary of results for `rel_mse` contained in `replicate_norm_5e-8_10sim_10pc.csv`:
+Summary of results for `rel_mse` contained in `replicate_norm_5e-8_100sim_10pc.csv`:
 
 ```{r,echo=FALSE}
 
@@ -2768,7 +2768,7 @@ Following this, we look at how the methods compare when the replication data set
 
 ```{r,echo=FALSE,include=FALSE}
 
-rep_norm_5e_8_10sim <- read.csv("results/replicate_norm_5e-8_10sim_2.csv")
+rep_norm_5e_8_10sim <- read.csv("results/replicate_norm_5e-8_100sim_2.csv")
 results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$flb[1:24],4), rep = round(rep_norm_5e_8_10sim$flb[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$flb[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$flb[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$flb[(1+8*24):(24+8*24)],4))
 
 
@@ -2875,7 +2875,7 @@ ggplot(data_posSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=pos
 ```
 
 
-Summary of results for `rel_mse` contained in `replicate_norm_5e-8_10sim_2.csv`:
+Summary of results for `rel_mse` contained in `replicate_norm_5e-8_100sim_2.csv`:
 
 ```{r,echo=FALSE}
 
@@ -2965,7 +2965,7 @@ As the next step in this section, we investigate the behaviour of methods when t
 
 ```{r,echo=FALSE,include=FALSE}
 
-rep_norm_5e_8_10sim <- read.csv("results/replicate_bim_5e-8_10sim.csv")
+rep_norm_5e_8_10sim <- read.csv("results/replicate_bim_5e-8_100sim.csv")
 results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$flb[1:24],4), rep = round(rep_norm_5e_8_10sim$flb[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$flb[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$flb[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$flb[(1+8*24):(24+8*24)],4))
 
 
@@ -3071,7 +3071,7 @@ ggplot(data_posSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=pos
   ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=mse-mse_error, ymax=mse+mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#7D6608'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 ```
 
-Summary of results for `rel_mse` contained in `replicate_bim_5e-8_10sim.csv`:
+Summary of results for `rel_mse` contained in `replicate_bim_5e-8_100sim.csv`:
 
 ```{r,echo=FALSE}
 
@@ -3162,7 +3162,7 @@ As a final step in this section, we investigate the behaviour of methods when th
 
 ```{r,echo=FALSE,include=FALSE}
 
-rep_norm_5e_8_10sim <- read.csv("results/replicate_skew_exp_5e-8_10sim.csv")
+rep_norm_5e_8_10sim <- read.csv("results/replicate_skew_exp_5e-8_100sim.csv")
 results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$flb[1:24],4), rep = round(rep_norm_5e_8_10sim$flb[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$flb[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$flb[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$flb[(1+8*24):(24+8*24)],4))
 
 
@@ -3268,7 +3268,7 @@ ggplot(data_posSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=pos
   ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=mse-mse_error, ymax=mse+mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#7D6608'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
 ```
 
-Summary of results for `rel_mse` contained in `replicate_skew_exp_5e-8_10sim.csv`:
+Summary of results for `rel_mse` contained in `replicate_skew_exp_5e-8_100sim.csv`:
 
 ```{r,echo=FALSE}
 
@@ -4447,7 +4447,7 @@ data_neutralS <- EB_perform_10sim_summarized[which(EB_perform_10sim_summarized$S
 
 ## plot 1
 ggplot(data_neutralS,aes(x=n_samples,y=EB_perform_top10,colour=distribution)) + geom_point(position=position_dodge(0.4),size=3.5,aes(shape=distribution, color=distribution)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_shape_manual(values=c(15,17,16)) + scale_color_manual(values=c(col[1],col[2],col[3])) + xlab("Sample size") + 
-    ylab(expression(paste("MSE_naive/MSE_rep for top 10 sig. SNPs"))) + theme_bw() + geom_errorbar(aes(ymin=EB_perform_top10-EB_perform_top10_error, ymax=EB_perform_top10+EB_perform_top10_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=1, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10))
+    ylab(expression(paste("MSE_EB/MSE_Bayes for top 10 sig. SNPs"))) + theme_bw() + geom_errorbar(aes(ymin=EB_perform_top10-EB_perform_top10_error, ymax=EB_perform_top10+EB_perform_top10_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=1, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10))
 ```
 
 $~$
@@ -4482,14 +4482,14 @@ $~$
 ```{r, echo=FALSE}
 ## plot 2
 ggplot(data_neutralS,aes(x=n_samples,y=EB_perform_top100,colour=distribution)) + geom_point(position=position_dodge(0.4),size=3.5,aes(shape=distribution, color=distribution)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_shape_manual(values=c(15,17,16)) + scale_color_manual(values=c(col[1],col[2],col[3])) + xlab("Sample size") + 
-    ylab(expression(paste("MSE_naive/MSE_rep for top 100 sig. SNPs"))) + theme_bw() + geom_errorbar(aes(ymin=EB_perform_top100-EB_perform_top100_error, ymax=EB_perform_top100+EB_perform_top100_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=1, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10)) 
+    ylab(expression(paste("MSE_EB/MSE_Bayes for top 100 sig. SNPs"))) + theme_bw() + geom_errorbar(aes(ymin=EB_perform_top100-EB_perform_top100_error, ymax=EB_perform_top100+EB_perform_top100_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=1, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10)) 
 ```
 
 $~$
 $~$
 
 
-## A Measure of Winner's Curse across the various scenarios 
+### 10. A Measure of Winner's Curse across the various scenarios 
 
 In this final section, using 100 simulations, we have computed $$\frac{\text{MSE}_{\text{naive}}}{\text{MSE}_{\text{rep}}} = \frac{\frac{1}{n} \sum^n_{i=1} (\hat\beta_{\text{naive,}i} - \beta_i)^2}{\frac{1}{n} \sum^n_{i=1} (\hat\beta_{\text{rep,}i} - \beta_i)^2}$$ over the top 10 significant SNPs and the top 100 significant SNPs for each combination of our considered scenarios and three effect size distributions: normal, skewed and bimodal, for a quantitative trait. This can be thought of as a measure of the extent of the winner's curse induced bias in each case. As above, the first set of results relate to where we have looked at just the top 10 significant SNPs. Note that we have merely plotted results for neutral selection as we have witnessed that the selection coefficient, S does not seem to have a great impact on our findings. The results are contained in `wc_measure_rank_100sim.csv`. 
  

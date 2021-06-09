@@ -15,7 +15,7 @@ library(parallel)
 set.seed(1998)
 
 ## Total number of simulations: 10
-tot_sim <- 10
+tot_sim <- 100
 ## Fixed total number of SNPs:
 n_snps <- 10^6
 
@@ -91,7 +91,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   rel_mse_MSE <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-8,i=8)
 
   ## MSE minimizer - joint
-  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8)
+  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8,spline=FALSE)
   names(out_joint)[names(out_joint) == "beta_disc"] <- "beta"
   names(out_joint)[names(out_joint) == "se_disc"] <- "se"
   flb_joint <- frac_sig_less_bias(out_joint,ss$true_beta,alpha=5e-8,i=6)
@@ -239,7 +239,7 @@ ave_res_EB_com <- ave_results(res_EB_com,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_rep,ave_res_UMVCUE,ave_res_com,ave_res_MLE,ave_res_MSE,ave_res_joint,ave_res_joint_sp,ave_res_EB_com)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("rep",(nrow(sim_params)/tot_sim)),rep("UMVCUE",(nrow(sim_params)/tot_sim)),rep("cl1_com",(nrow(sim_params)/tot_sim)),rep("cl2_MLE",(nrow(sim_params)/tot_sim)),rep("cl3_MSE",(nrow(sim_params)/tot_sim)),rep("MSE_min",(nrow(sim_params)/tot_sim)), rep("MSE_min_sp",(nrow(sim_params)/tot_sim)), rep("EB_com",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"results/replicate_norm_5e-8_10sim.csv")
+write.csv(results_all,"results/replicate_norm_5e-8_100sim.csv")
 
 ################################################################################
 
@@ -292,7 +292,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   rel_mse_MSE <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-8,i=8)
 
   ## MSE minimizer - joint
-  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8)
+  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8, spline=FALSE)
   names(out_joint)[names(out_joint) == "beta_disc"] <- "beta"
   names(out_joint)[names(out_joint) == "se_disc"] <- "se"
   flb_joint <- frac_sig_less_bias(out_joint,ss$true_beta,alpha=5e-8,i=6)
@@ -439,7 +439,7 @@ ave_res_EB_com <- ave_results(res_EB_com,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_rep,ave_res_UMVCUE,ave_res_com,ave_res_MLE,ave_res_MSE,ave_res_joint,ave_res_joint_sp,ave_res_EB_com)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("rep",(nrow(sim_params)/tot_sim)),rep("UMVCUE",(nrow(sim_params)/tot_sim)),rep("cl1_com",(nrow(sim_params)/tot_sim)),rep("cl2_MLE",(nrow(sim_params)/tot_sim)),rep("cl3_MSE",(nrow(sim_params)/tot_sim)),rep("MSE_min",(nrow(sim_params)/tot_sim)), rep("MSE_min_sp",(nrow(sim_params)/tot_sim)), rep("EB_com", (nrow(sim_params)/tot_sim)))
-write.csv(results_all,"results/replicate_norm_5e-8_10sim_halfrep.csv")
+write.csv(results_all,"results/replicate_norm_5e-8_100sim_halfrep.csv")
 
 ################################################################################
 
@@ -493,7 +493,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   rel_mse_MSE <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-8,i=8)
 
   ## MSE minimizer - joint
-  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8)
+  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8, spline=FALSE)
   names(out_joint)[names(out_joint) == "beta_disc"] <- "beta"
   names(out_joint)[names(out_joint) == "se_disc"] <- "se"
   flb_joint <- frac_sig_less_bias(out_joint,ss$true_beta,alpha=5e-8,i=6)
@@ -640,7 +640,7 @@ ave_res_EB_com <- ave_results(res_EB_com,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_rep,ave_res_UMVCUE,ave_res_com,ave_res_MLE,ave_res_MSE,ave_res_joint,ave_res_joint_sp,ave_res_EB_com)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("rep",(nrow(sim_params)/tot_sim)),rep("UMVCUE",(nrow(sim_params)/tot_sim)),rep("cl1_com",(nrow(sim_params)/tot_sim)),rep("cl2_MLE",(nrow(sim_params)/tot_sim)),rep("cl3_MSE",(nrow(sim_params)/tot_sim)),rep("MSE_min",(nrow(sim_params)/tot_sim)), rep("MSE_min_sp",(nrow(sim_params)/tot_sim)), rep("EB_com", (nrow(sim_params)/tot_sim)))
-write.csv(results_all,"results/replicate_norm_5e-8_10sim_10pc.csv")
+write.csv(results_all,"results/replicate_norm_5e-8_100sim_10pc.csv")
 
 ################################################################################
 
@@ -694,7 +694,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   rel_mse_MSE <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-8,i=8)
 
   ## MSE minimizer - joint
-  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8)
+  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8, spline=FALSE)
   names(out_joint)[names(out_joint) == "beta_disc"] <- "beta"
   names(out_joint)[names(out_joint) == "se_disc"] <- "se"
   flb_joint <- frac_sig_less_bias(out_joint,ss$true_beta,alpha=5e-8,i=6)
@@ -841,7 +841,7 @@ ave_res_EB_com <- ave_results(res_EB_com,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_rep,ave_res_UMVCUE,ave_res_com,ave_res_MLE,ave_res_MSE,ave_res_joint,ave_res_joint_sp,ave_res_EB_com)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("rep",(nrow(sim_params)/tot_sim)),rep("UMVCUE",(nrow(sim_params)/tot_sim)),rep("cl1_com",(nrow(sim_params)/tot_sim)),rep("cl2_MLE",(nrow(sim_params)/tot_sim)),rep("cl3_MSE",(nrow(sim_params)/tot_sim)),rep("MSE_min",(nrow(sim_params)/tot_sim)), rep("MSE_min_sp",(nrow(sim_params)/tot_sim)), rep("EB_com", (nrow(sim_params)/tot_sim)))
-write.csv(results_all,"results/replicate_norm_5e-8_10sim_2.csv")
+write.csv(results_all,"results/replicate_norm_5e-8_100sim_2.csv")
 
 ################################################################################
 
@@ -896,7 +896,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   rel_mse_MSE <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-8,i=8)
 
   ## MSE minimizer - joint
-  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8)
+  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8, spline=FALSE)
   names(out_joint)[names(out_joint) == "beta_disc"] <- "beta"
   names(out_joint)[names(out_joint) == "se_disc"] <- "se"
   flb_joint <- frac_sig_less_bias(out_joint,ss$true_beta,alpha=5e-8,i=6)
@@ -1043,7 +1043,7 @@ ave_res_EB_com <- ave_results(res_EB_com,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_rep,ave_res_UMVCUE,ave_res_com,ave_res_MLE,ave_res_MSE,ave_res_joint,ave_res_joint_sp,ave_res_EB_com)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("rep",(nrow(sim_params)/tot_sim)),rep("UMVCUE",(nrow(sim_params)/tot_sim)),rep("cl1_com",(nrow(sim_params)/tot_sim)),rep("cl2_MLE",(nrow(sim_params)/tot_sim)),rep("cl3_MSE",(nrow(sim_params)/tot_sim)),rep("MSE_min",(nrow(sim_params)/tot_sim)), rep("MSE_min_sp",(nrow(sim_params)/tot_sim)), rep("EB_com", (nrow(sim_params)/tot_sim)))
-write.csv(results_all,"results/replicate_bim_5e-8_10sim.csv")
+write.csv(results_all,"results/replicate_bim_5e-8_100sim.csv")
 
 ################################################################################
 
@@ -1099,7 +1099,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   rel_mse_MSE <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-8,i=8)
 
   ## MSE minimizer - joint
-  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8)
+  out_joint <- MSE_minimizer(disc_stats,rep_stats,alpha=5e-8, spline=FALSE)
   names(out_joint)[names(out_joint) == "beta_disc"] <- "beta"
   names(out_joint)[names(out_joint) == "se_disc"] <- "se"
   flb_joint <- frac_sig_less_bias(out_joint,ss$true_beta,alpha=5e-8,i=6)
@@ -1246,6 +1246,6 @@ ave_res_EB_com <- ave_results(res_EB_com,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_rep,ave_res_UMVCUE,ave_res_com,ave_res_MLE,ave_res_MSE,ave_res_joint,ave_res_joint_sp,ave_res_EB_com)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("rep",(nrow(sim_params)/tot_sim)),rep("UMVCUE",(nrow(sim_params)/tot_sim)),rep("cl1_com",(nrow(sim_params)/tot_sim)),rep("cl2_MLE",(nrow(sim_params)/tot_sim)),rep("cl3_MSE",(nrow(sim_params)/tot_sim)),rep("MSE_min",(nrow(sim_params)/tot_sim)), rep("MSE_min_sp",(nrow(sim_params)/tot_sim)), rep("EB_com", (nrow(sim_params)/tot_sim)))
-write.csv(results_all,"results/replicate_skew_exp_5e-8_10sim.csv")
+write.csv(results_all,"results/replicate_skew_exp_5e-8_100sim.csv")
 
 ################################################################################
