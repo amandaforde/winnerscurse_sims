@@ -1965,7 +1965,7 @@ Next, we repeat the process illustrated in Section 2 using the third bias evalua
 
 ```{r,echo=FALSE,include=FALSE}
 
-skew_5e_8_10sim <- read.csv("results/skew_exp_5e-8_10sim.csv")
+skew_5e_8_10sim <- read.csv("results/skew_exp_5e-8_100sim.csv")
 results_flb_skew <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = skew_5e_8_10sim$h2[1:24], prop_effect = skew_5e_8_10sim$prop_effect[1:24], S= skew_5e_8_10sim$S[1:24], EB = round(skew_5e_8_10sim$flb[1:24],4), FIQT = round(skew_5e_8_10sim$flb[(1+24):(24+24)],4), BR = round(skew_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1 = round(skew_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2 = round(skew_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3 = round(skew_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), rep = round(skew_5e_8_10sim$flb[(1+6*24):(24+6*24)],4))
 
 
@@ -2071,7 +2071,7 @@ ggplot(data_posSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=pos
 ```
 
 
-Summary of results for `rel_mse` contained in `skew_exp_5e-8_10sim.csv`:
+Summary of results for `rel_mse` contained in `skew_exp_5e-8_100sim.csv`:
 
 ```{r,echo=FALSE}
 
