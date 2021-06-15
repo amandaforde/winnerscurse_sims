@@ -2979,7 +2979,7 @@ $~$
 
 As the next step in this section, we investigate the behaviour of methods when the replication and discovery GWASs are of *equal size* and the effect sizes follow the previously described *bimodal* distribution.
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,include=FALSE}
 
 rep_norm_5e_8_10sim <- read.csv("results/replicate_bim_5e-8_100sim.csv")
 results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$flb[1:24],4), rep = round(rep_norm_5e_8_10sim$flb[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$flb[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$flb[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$flb[(1+8*24):(24+8*24)],4))
@@ -3167,6 +3167,9 @@ ggplot(data_neutralS,aes(x=n_samples,y=rel_mse,colour=method)) + geom_point(posi
     ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_bw  () + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10))
 
 ```
+$~$
+$~$
+
 The fact that the results here remain quite similar to those that we viewed previously under a normal distribution of true effect sizes is reassuring. In fact, we note the slightly improved performance of the empirical Bayes method which uses only the discovery GWAS  with this bimodal distribution. Again, the combined empirical Bayes approach makes the greatest improvement to the average MSE of significant SNPs in almost all scenarios while the UMVCUE method continues to behave in a very similar manner to using only the replication GWAS to obtain estimates for the effect sizes.  
 
 
