@@ -1,4 +1,4 @@
-## SIMULATION SET-UP 5: BINARY TRAIT
+## SIMULATION SET-UP 6: BINARY TRAIT
 
 
 ##library(devtools)
@@ -72,7 +72,7 @@ simulate_ss_bin <- function(H,Pi,nid,sc){
 
 ################################################################################
 
-## SIMULATION SET-UP 5a.:
+## SIMULATION SET-UP 6a.:
 ## Obtain the average number of significant SNPs, the average proportion of
 ## these SNPs for which their association estimate is more extreme than their
 ## true effect size and the average proportion of these SNPs which are
@@ -140,11 +140,11 @@ write.csv(ave_res, "results/binary_norm_nsig_prop_bias_5e-8_10sim.csv")
 
 ##############################################################################
 
-## SIMULATION SET-UP 5b.:
+## SIMULATION SET-UP 6b.:
 ## Obtain the average number of significant SNPs, the average proportion of
 ## these SNPs for which their association estimate is more extreme than their
 ## true effect size and the average proportion of these SNPs which are
-## significantly overexaggerated over simulations in which at least one
+## significantly over-exaggerated over simulations in which at least one
 ## significant SNP has been detected
 ## Normal effect size distribution
 ## Significance threshold of alpha=5e-4
@@ -188,7 +188,7 @@ write.csv(ave_res, "results/binary_norm_nsig_prop_bias_5e-4_10sim.csv")
 ################################################################################
 
 
-## SIMULATION SET-UP 5c.:
+## SIMULATION SET-UP 6c.:
 ## Evaluating Winner's Curse adjustment methods with a binary trait
 ## Discovery GWAS only
 ## Normal effect size distribution

@@ -694,7 +694,7 @@ geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",siz
 
 ### 2. Evaluating methods using a significance threshold of $5 \times 10^{-8}$
 
-Using the code detailed in `norm_5e-8_20sim.R` and a total of 20 simulations, we evaluated six different Winner's Curse methods across each of the 24 scenarios using the following three bias evaluation metrics: 
+Using the code detailed in `norm_5e-8_100sim.R` and a total of 100 simulations, we evaluated six different Winner's Curse methods across each of the 24 scenarios using the following three bias evaluation metrics: 
 
 1. The average fraction of significant SNPs in which their association estimates have been improved due to method implementation - `flb`
 2. The average change in average MSE of significant SNPs due to method implementation - `mse`
@@ -792,7 +792,7 @@ ggplot(data_neutralS,aes(x=n_samples,y=flb,colour=method)) + geom_point(position
 ```
 
 
-Summary of results for `mse` contained in `norm_5e-8_20sim.csv`:
+Summary of results for `mse` contained in `norm_5e-8_100sim.csv`:
 
 ```{r,echo=FALSE}
 
@@ -864,7 +864,7 @@ $~$
 
 
 
-Summary of results for `rel_mse` contained in `norm_5e-8_20sim.csv`:
+Summary of results for `rel_mse` contained in `norm_5e-8_100sim.csv`:
 
 ```{r,echo=FALSE}
 
@@ -955,11 +955,11 @@ $~$
 
 ### 3. Observations and discussion of above simulations
 
-It is worth noting from the above simulations how the Winner's Curse methods tend to break down, or equivalently, no longer make improvements based on the third evaluation metric, `rel_mse` when the proportion of effect SNPs is 0.001. This is a measure of polygenicity. That said, the empirical Bayes method performs extremely similar to just taking a replication estimate when the replication sample is of the same size as the discovery GWAS, i.e. `n_samples` is equivalent in both data sets and as we will see later, the empirical Bayes will outperform the replication method when the replication GWAS sample size becomes smaller than that of the discovery, at this threshold of `5e-8`. This observation *strongly supports the use of empirical Bayes* as a Winner's Curse adjustment method, particularly when a replication GWAS is not available. 
+It is worth noting from the above simulations how the Winner's Curse methods tend to break down, or equivalently, no longer make improvements based on the third evaluation metric, `rel_mse` when the proportion of effect SNPs is 0.001. This is a measure of polygenicity. That said, the empirical Bayes method performs very similar to just taking a replication estimate when the replication sample is of the same size as the discovery GWAS, i.e. `n_samples` is equivalent in both data sets and as we will see later, the empirical Bayes will outperform the replication method when the replication GWAS sample size becomes smaller than that of the discovery, at this threshold of `5e-8`. This observation *strongly supports the use of empirical Bayes* as a Winner's Curse adjustment method, particularly when a replication GWAS is not available. The consistency of the empirical Bayes method is what makes it stand out above the other considered methods. Unlike the bootstrap and FIQT, it is rare that it will result in an increase in the relative average MSE or average MSE over all significant SNPs. For that reason, employing this method gives us confidence that we have not adjusted our estimated effect sizes so that they are now less accurate, regardless of the underlying genetic architecture or number of samples.   
 
 For `prop_effect = 0.01`, our proposed bootstrap method for summary statistics performs in a comparable manner to both empirical Bayes and the replication method. However, the bootstrap method ceases to perform as well at obtaining less biased association estimates when the proportion of effect SNPs is reduced to 0.001. 
 
-On all occasions, the conditional likelihood methods tend to perform poorly compared to the other methods.
+On all occasions, the conditional likelihood methods tend to perform poorly compared to the other methods. This is likely due to the fact that the conditional likelihood approach can over-correct estimated effect sizes, especially those that lie close to the significance threshold. 
 
 Clearly, even though we also look at using a significance threshold of $5 \times 10^{-4}$, it is the genome-wide significance threshold of $5 \times 10^{-8}$ that is of most interest to us as using the higher threshold of $5 \times 10^{-4}$ often results in the detection of many false positives.  
 
@@ -967,7 +967,7 @@ Clearly, even though we also look at using a significance threshold of $5 \times
 
 ### 4. Evaluating methods using a significance threshold of $5 \times 10^{-4}$
 
-Similar to part 2 above, we use the code detailed in `norm_5e-4_10sim.R` with a total of 10 simulations in order to evaluate seven different Winner's Curse methods across each of the 24 scenarios. In the following investigations, we will concentrate on the final bias evaluation metric, `rel_mse`.
+Similar to part 2 above but with only 10 simulations, we use the code detailed in `norm_5e-4_10sim.R` in order to evaluate seven different Winner's Curse methods across each of the 24 scenarios. In the following investigations, we will concentrate on the final bias evaluation metric, `rel_mse`.
 
 
 ```{r,echo=FALSE,include=FALSE}
@@ -1076,13 +1076,6 @@ ggplot(data_posSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=pos
 ```
 
 
-$~$
-$~$
-$~$
-$~$
-
-
-
 Summary of results for `rel_mse` contained in `norm_5e-4_10sim.csv`: 
 
 ```{r,echo=FALSE}
@@ -1171,10 +1164,13 @@ $~$
 $~$
 $~$
 
+Here we see that all methods result in a negative change in average MSE as desired. However, as mentioned above, we must bear in mind that when using this lower threshold, we risk capturing SNPs which in fact have no effect, i.e. they have a true effect size of 0 and are false positives. Thus, as all of these methods may be to some degree considered as 'shrinkage' methods, it is expected that we would see an improvement in the average MSE over all significant SNPs. The approach of obtaining replication estimates clearly outperforms all methods. However, it is still the empirical Bayes method that seems to be second best. 
+
+
 
 ### 5. Bimodal distribution of effect sizes
 
-Here we investigate the 24 different scenarios under a ***bimodal*** distribution of effect sizes. In order to create a bimodal distribution, we simulate 50% of effect sizes of the true effect SNPs from a normal distribution centered at 0 while the other half are generated from a normal distribution with mean 2.5. As above, we first have a look at the expected number of significant SNPs and the expected proportion of those in which their association estimate is *significantly* exaggerated. 
+A major limitation of the evaluation of methods using simulations is that informing the simulations correctly can be very difficult. For example, not all traits will have a normally distributed true effect size distribution. Therefore, in order to see if the methods perform differently when the distribution is changed, we decide to investigate the 24 different scenarios under a ***bimodal*** distribution of effect sizes. In order to create a bimodal distribution, we simulate 50% of effect sizes of the true effect SNPs from a normal distribution centered at 0 while the other half are generated from a normal distribution with mean 2.5. As above, we first have a look at the expected number of significant SNPs and the expected proportion of those in which their association estimate is *significantly* exaggerated. 
 
 Running the code provided in `nsig_prop_bias_100sim.R`, we obtain the following results: 
 
@@ -1220,7 +1216,9 @@ $~$
 $~$
 $~$
 
-```{r, warning=FALSE,echo=FALSE,eval=FALSE,fig.show="hold", out.width="50%"}
+To give an idea of what this bimodal distribution looks like, we have a look at the $z$ vs $\text{bias}$ plot for Scenarios 11 and 12. 
+
+```{r, warning=FALSE,echo=FALSE,fig.show="hold", out.width="50%"}
 set.seed(1998)
 
 par(mar = c(4, 4, .1, .1))
@@ -1230,7 +1228,11 @@ ss <- simulate_ss_bim(H=0.8,Pi=0.01,nid=30000,sc=0)
 out <- simulate_est(ss)
 out$z <- out$beta/out$se
 out$bias <- out$beta - ss$true_beta
-ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + xlab("z") +
+subout <- out[(abs(out$beta) > (abs(ss$true_beta) + 1.96*ss$se)) & (abs(out$beta/out$se) > qnorm(1-(5e-4)/2)),]
+ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout, 
+             aes(x=z,y=bias), 
+             color='navy',
+             size=1) + xlab("z") +
   ylab("bias") + ggtitle("Scenario 11", subtitle="n_samples=30,000   h2=0.8   prop_effect=0.01   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
   geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) +
   geom_hline(yintercept=0) +
@@ -1244,7 +1246,11 @@ ss <- simulate_ss_bim(H=0.8,Pi=0.01,nid=300000,sc=0)
 out <- simulate_est(ss)
 out$z <- out$beta/out$se
 out$bias <- out$beta - ss$true_beta
-ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + xlab("z") +
+subout <- out[(abs(out$beta) > (abs(ss$true_beta) + 1.96*ss$se)) & (abs(out$beta/out$se) > qnorm(1-(5e-4)/2)),]
+ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout, 
+             aes(x=z,y=bias), 
+             color='navy',
+             size=1) + xlab("z") +
   ylab("bias") + ggtitle("Scenario 12", subtitle="n_samples=300,000   h2=0.8   prop_effect=0.01   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
   geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) +
   geom_hline(yintercept=0) +
@@ -1261,7 +1267,7 @@ Next, we repeat the process illustrated in Section 2 using the third bias evalua
 
 ```{r,echo=FALSE,include=FALSE}
 
-skew_5e_8_10sim <- read.csv("results/bimod_5e-8_10sim.csv")
+skew_5e_8_10sim <- read.csv("results/bimod_5e-8_100sim.csv")
 results_flb_skew <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = skew_5e_8_10sim$h2[1:24], prop_effect = skew_5e_8_10sim$prop_effect[1:24], S= skew_5e_8_10sim$S[1:24], EB = round(skew_5e_8_10sim$flb[1:24],4), FIQT = round(skew_5e_8_10sim$flb[(1+24):(24+24)],4), BR = round(skew_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1 = round(skew_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2 = round(skew_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3 = round(skew_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), rep = round(skew_5e_8_10sim$flb[(1+6*24):(24+6*24)],4))
 
 
@@ -1367,7 +1373,7 @@ ggplot(data_posSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=pos
 ```
 
 
-Summary of results for `rel_mse` contained in `bimod_5e-8_10sim.csv`:
+Summary of results for `rel_mse` contained in `bimod_5e-8_100sim.csv`:
 
 ```{r,echo=FALSE}
 
@@ -1454,10 +1460,14 @@ $~$
 $~$
 $~$
 
+We see that the empirical Bayes method continues to perform well under this distribution of true effect sizes, with it even outperforming using replication estimates in some instances. Our proposed bootstrap method behaves very competitively when the proportion of true effect SNPs is 0.01. Again, the simulations suggest that the conditional likelihood methods should not be employed to assist in reducing the bias induced by winner's curse.  
+
+
+
 
 ### 6. Skewed distribution of effect sizes
 
-Here we investigate the 24 different scenarios under a ***skewed*** distribution of effect sizes. Details for the manner in which this skewed distribution is simulated may be found in `useful_funs.R`. As above, we first have a look at the expected number of significant SNPs and the expected proportion of those in which their association estimate is *significantly* exaggerated. 
+Next we investigate the 24 different scenarios under a ***skewed*** distribution of effect sizes. Details for the manner in which this skewed distribution is simulated may be found in `useful_funs.R` with the function named `simulate_ss_exp`. As above, we first have a look at the expected number of significant SNPs and the expected proportion of those in which their association estimate is *significantly* exaggerated. 
 
 Running the code provided in `nsig_prop_bias_100sim.R`, we obtain the following results: 
 
@@ -2159,6 +2169,9 @@ $~$
 $~$
 $~$
 
+With 100 simulations for this form of distribution of effect sizes, we see that we can make very similar conclusions to those we made when the true effect sizes were normally distributed. Again, the empirical Bayes method performs the most consistently at improving the average MSE over all significant SNPs. We note that the second and third conditional likelihood methods, `cl2` and `cl3` have been removed from a section of the plot. This is due to their very poor performance in this instance in which the average MSE is actually greatly increased. 
+
+
 
 ### 7. Evaluating methods which use both replication and discovery summary statistics
 
@@ -2359,6 +2372,9 @@ $~$
 $~$
 $~$
 
+The very large error bar visible here for the empirical Bayes method is most likely due to the fact that in that situation, very few SNPs pass the significance threshold and sometimes there may even not be any SNPs deemed significant. We see here that the best method seems to be the empirical Bayes method when it is applied to $(\hat\beta_{\text{com}}, \sigma_{\text{com}})$ in which:$$\hat\beta_{\text{com}} = \frac{\sigma_2^2 \hat\beta_1 + \sigma_1^2 \hat\beta_2}{\sigma_1^2 + \sigma_2^2} \; \;\ \; \text{and} \; \; \; \sigma^2_{\text{com}} = \frac{\sigma_1^2 \sigma_2^2}{\sigma_1^2 + \sigma_2^2}.$$ Interestingly, UMVCUE behaves almost identically to just using the replication estimates. We see that the conditional likelihood methods, the MSE minimization method (particularly when the spline approach is employed) and the empirical Bayes combination method all ensure that the average MSE over all significant SNPs in the discovery GWAS is reduced in comparison to using just the replication data set or UMVCUE. 
+
+
 We also look at how the methods compare when the replication data set is *50%* that of the discovery data set. 
 
 ```{r,echo=FALSE,include=FALSE}
@@ -2557,14 +2573,14 @@ ggplot(data_neutralS,aes(x=n_samples,y=rel_mse,colour=method)) + geom_point(posi
 ```
 
 
-It is very interesting here how the empirical Bayes method behaves better in nearly all of the scenarios compared to UMVCUE, the replication method and the original MSE minimization method. 
+Here, the most interesting point to note is how the empirical Bayes method using just the discovery data set alone behaves better in nearly all of the scenarios compared to UMVCUE, the replication method and the original MSE minimization method. However, again we see a similar pattern to that above in which the empirical Bayes combination method is the clear winner. 
 
 $~$
 $~$
 $~$
 $~$
 
-Next, we look at how the methods compare when the replication data set is *10%* that of the discovery data set. 
+Following this, we look at how the methods compare when the replication data set is *10%* that of the discovery data set. 
 
 ```{r,echo=FALSE,include=FALSE}
 
@@ -2757,14 +2773,14 @@ ggplot(data_neutralS,aes(x=n_samples,y=rel_mse,colour=method)) + geom_point(posi
 ```
 
 
-In this situation, the empirical Bayes method tends to behave better than all of the other methods.
+In this situation, the empirical Bayes method tends to behave better than all of the other methods bar the empirical Bayes combination method. This suggests that if a replication data set is available, we must take into account the size of it relative to the discovery GWAS. If it is a lot smaller, using just the replication GWAS to obtain more accurate effect size estimates is certainly inadvisable. One should at the very least consider obtaining $(\hat\beta_{\text{com}}, \sigma_{\text{com}})$, this is the method named `cl1_com`. 
 
 $~$
 $~$
 $~$
 $~$
 
-Following this, we look at how the methods compare when the replication data set is *twice* that of the discovery data set. 
+In addition, we look at how the methods compare when the replication data set is *twice* that of the discovery data set in which we see that the results are very similar to those obtained when the two data sets are of a similar size. 
 
 ```{r,echo=FALSE,include=FALSE}
 
@@ -2963,7 +2979,7 @@ $~$
 
 As the next step in this section, we investigate the behaviour of methods when the replication and discovery GWASs are of *equal size* and the effect sizes follow the previously described *bimodal* distribution.
 
-```{r,echo=FALSE,include=FALSE}
+```{r,echo=FALSE}
 
 rep_norm_5e_8_10sim <- read.csv("results/replicate_bim_5e-8_100sim.csv")
 results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$flb[1:24],4), rep = round(rep_norm_5e_8_10sim$flb[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$flb[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$flb[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$flb[(1+8*24):(24+8*24)],4))
@@ -3151,162 +3167,7 @@ ggplot(data_neutralS,aes(x=n_samples,y=rel_mse,colour=method)) + geom_point(posi
     ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_bw  () + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10))
 
 ```
-
-
-$~$
-$~$
-$~$
-$~$
-
-As a final step in this section, we investigate the behaviour of methods when the replication and discovery GWASs are of *equal size* and the effect sizes follow the previously described *skewed* distribution.
-
-```{r,echo=FALSE,include=FALSE}
-
-rep_norm_5e_8_10sim <- read.csv("results/replicate_skew_exp_5e-8_100sim.csv")
-results_flb <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$flb[1:24],4), rep = round(rep_norm_5e_8_10sim$flb[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$flb[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$flb[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$flb[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$flb[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$flb[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$flb[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$flb[(1+8*24):(24+8*24)],4))
-
-
-results_flb %>%
-kable() %>%
-  kable_classic_2() %>%
-kable_styling(bootstrap_options = "bordered",
-full_width = FALSE,position="center") %>%
-  row_spec(row = 0,bold = TRUE) %>%
-  column_spec(1,background="#D4E6F1") %>%
-  column_spec(2,background="#EAF2F8") %>%
-  column_spec(3,background="#EAF2F8") %>%
-  column_spec(4,background="#EAF2F8") %>%
-  column_spec(5,background="#EAF2F8",extra_css="border-right: 1px solid") %>%
-  scroll_box(width = "100%", height = "300px")
-
-```
-
-```{r,echo=FALSE, fig.show="hold", include=FALSE, out.width="50%",fig.height=3.6}
-
-## plot results
-rep_norm_5e_8_10sim$scenario <- c(rep(c(1:24),9))
-rep_norm_5e_8_10sim$scenario <- factor(rep_norm_5e_8_10sim$scenario)
-
-par(mar = c(4, 4, .1, .1))
-
-
-data_negS <- rep_norm_5e_8_10sim[which(rep_norm_5e_8_10sim$S==-1),]
-data_negSa <- data_negS[data_negS$scenario == 1 | data_negS$scenario == 2 |data_negS$scenario == 3 |data_negS$scenario == 4,]
-ggplot(data_negSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 1 - 4", subtitle="S=-1   prop_effect=0.01")  + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7]))  +
-  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + xlab("") + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10), plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-
-
-data_negSb <- data_negS[data_negS$scenario == 5 | data_negS$scenario == 6 |data_negS$scenario == 7 |data_negS$scenario == 8,]
-ggplot(data_negSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 5 - 8", subtitle="S=-1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0.5, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-
-
-data_neutralS <- rep_norm_5e_8_10sim[which(rep_norm_5e_8_10sim$S==0),]
-data_neutralSa <- data_neutralS[data_neutralS$scenario == 9 | data_neutralS$scenario == 10 |data_neutralS$scenario == 11 |data_neutralS$scenario == 12,]
-ggplot(data_neutralSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") + ggtitle("Scenarios 9 - 12", subtitle="S=0   prop_effect=0.01") +
-  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-
-
-data_neutralSb <- data_neutralS[data_neutralS$scenario == 13 | data_neutralS$scenario == 14 |data_neutralS$scenario == 15 |data_neutralS$scenario == 16,]
-ggplot(data_neutralSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 13 - 16", subtitle="S=0   prop_effect=0.001") +scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-
-data_posS <- rep_norm_5e_8_10sim[which(rep_norm_5e_8_10sim$S==1),]
-data_posSa <- data_posS[data_posS$scenario == 17 | data_posS$scenario == 18 |data_posS$scenario == 19 |data_posS$scenario == 20,]
-ggplot(data_posSa,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 17 - 20", subtitle="S=1   prop_effect=0.01") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-
-
-data_posSb <- data_posS[data_posS$scenario == 21 | data_posS$scenario == 22 |data_posS$scenario == 23 |data_posS$scenario == 24,]
-ggplot(data_posSb,aes(x=scenario,y=flb,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 21 - 24", subtitle="S=1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste("Fraction of", italic(" improved "), "sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=flb-flb_error, ymax=flb+flb_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0.5, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#154360'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-```
-
-```{r,echo=FALSE,include=FALSE}
-
-results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$mse[1:24],4), rep = round(rep_norm_5e_8_10sim$mse[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$mse[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$mse[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$mse[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$mse[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$mse[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$mse[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$mse[(1+8*24):(24+8*24)],4))
-
-results_mse %>%
-kable() %>%
-  kable_classic_2() %>%
-kable_styling(bootstrap_options = "bordered",
-full_width = FALSE,position="center") %>%
-  row_spec(row = 0,bold = TRUE) %>%
-  column_spec(1,background="#FCF3CF") %>%
-  column_spec(2,background="#FEF9E7") %>%
-  column_spec(3,background="#FEF9E7") %>%
-  column_spec(4,background="#FEF9E7") %>%
-  column_spec(5,background="#FEF9E7",extra_css="border-right: 1px solid") %>%
-  scroll_box(width = "100%", height = "300px")
-```
-
-```{r,echo=FALSE, fig.show="hold", include=FALSE,out.width="50%",fig.height=3.6}
-
-par(mar = c(4, 4, .1, .1))
-
-ggplot(data_negSa,aes(x=scenario,y=mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 1 - 4", subtitle="S=-1   prop_effect=0.01")  + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7]))  +
-  ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_classic() + xlab("") + geom_errorbar(aes(ymin=mse-mse_error, ymax=mse+mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10), plot.title = element_text(hjust = 0.5, face="bold", colour='#7D6608'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-
-
-ggplot(data_negSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 5 - 8", subtitle="S=-1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=mse-mse_error, ymax=mse+mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#7D6608'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-
-
-ggplot(data_neutralSa,aes(x=scenario,y=mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") + ggtitle("Scenarios 9 - 12", subtitle="S=0   prop_effect=0.01") +
-  ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=mse-mse_error, ymax=mse+mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#7D6608'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-
-
-ggplot(data_neutralSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 13 - 16", subtitle="S=0   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=mse-mse_error, ymax=mse+mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#7D6608'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-
-
-ggplot(data_posSa,aes(x=scenario,y=mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 17 - 20", subtitle="S=1   prop_effect=0.01") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=mse-mse_error, ymax=mse+mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#7D6608'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-
-
-ggplot(data_posSb,aes(x=scenario,y=mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 21 - 24", subtitle="S=1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=mse-mse_error, ymax=mse+mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#7D6608'),plot.subtitle = element_text(hjust = 0.5, face="italic"))
-```
-
-Summary of results for `rel_mse` contained in `replicate_skew_exp_5e-8_100sim.csv`:
-
-```{r,echo=FALSE}
-
-results_rel_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = rep_norm_5e_8_10sim$h2[1:24], prop_effect = rep_norm_5e_8_10sim$prop_effect[1:24], S= rep_norm_5e_8_10sim$S[1:24], EB = round(rep_norm_5e_8_10sim$rel_mse[1:24],4), rep = round(rep_norm_5e_8_10sim$rel_mse[(1+1*24):(24+1*24)],4), UMVCUE = round(rep_norm_5e_8_10sim$rel_mse[(1+2*24):(24+2*24)],4), cl1_com = round(rep_norm_5e_8_10sim$rel_mse[(1+3*24):(24+3*24)],4), cl2_MLE = round(rep_norm_5e_8_10sim$rel_mse[(1+4*24):(24+4*24)],4), cl3_MSE = round(rep_norm_5e_8_10sim$rel_mse[(1+5*24):(24+5*24)],4), MSE_min = round(rep_norm_5e_8_10sim$rel_mse[(1+6*24):(24+6*24)],4), MSE_min_sp = round(rep_norm_5e_8_10sim$rel_mse[(1+7*24):(24+7*24)],4), EB_com = round(rep_norm_5e_8_10sim$rel_mse[(1+8*24):(24+8*24)],4))
-
-results_rel_mse %>%
-kable() %>%
-  kable_classic_2() %>%
-kable_styling(bootstrap_options = "bordered",
-full_width = FALSE,position="center") %>%
-  row_spec(row = 0,bold = TRUE) %>%
-  column_spec(1,background="#D4EFDF") %>%
-  column_spec(2,background="#E9F7EF") %>%
-  column_spec(3,background="#E9F7EF") %>%
-  column_spec(4,background="#E9F7EF") %>%
-  column_spec(5,background="#E9F7EF",extra_css="border-right: 1px solid") %>%
-  scroll_box(width = "100%", height = "300px")
-```
-
-
-$~$
-$~$
-$~$
-$~$
-
-
-The *mean* relative change in average MSE over all significant SNPs across the 24 scenarios is obtained for each method: 
-```{r, echo=FALSE}
-ranking <- results_rel_mse[,6:14]
-summary2 <- apply(ranking,2,mean,na.rm=TRUE)
-summary2
-```
-
-
-The methods are ranked according to the results above in ascending order:
-```{r, echo=FALSE}
-rank(summary2)
-```
+The fact that the results here remain quite similar to those that we viewed previously under a normal distribution of true effect sizes is reassuring. In fact, we note the slightly improved performance of the empirical Bayes method which uses only the discovery GWAS  with this bimodal distribution. Again, the combined empirical Bayes approach makes the greatest improvement to the average MSE of significant SNPs in almost all scenarios while the UMVCUE method continues to behave in a very similar manner to using only the replication GWAS to obtain estimates for the effect sizes.  
 
 
 
@@ -3316,48 +3177,13 @@ $~$
 $~$
 
 
-
-***Relative change*** **in average MSE over all significant SNPs due to method implementation with a replication and discovery GWAS of** ***equal*** **size, using a significance threshold of $5 \times 10^{-8}$ and a** ***skewed*** **distribution of effect sizes:**
-
-```{r,echo=FALSE, fig.show="hold", include=FALSE, out.width="50%",fig.height=3.6, warning=FALSE}
-
-par(mar = c(4, 4, .1, .1))
-
-ggplot(data_negSa,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 1 - 4", subtitle="S=-1   prop_effect=0.01")  + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7]))  +
-  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + xlab("") + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10), plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
-
-ggplot(data_negSb,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 5 - 8", subtitle="S=-1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") + theme(axis.text.x = element_text(face ="bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
-
-ggplot(data_neutralSa,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") + ggtitle("Scenarios 9 - 12", subtitle="S=0   prop_effect=0.01") +
-  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
-
-ggplot(data_neutralSb,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 13 - 16", subtitle="S=0   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
-
-ggplot(data_posSa,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 17 - 20", subtitle="S=1   prop_effect=0.01") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
-
-ggplot(data_posSb,aes(x=scenario,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=4.5,aes(shape=method, color=method)) + ggtitle("Scenarios 21 - 24", subtitle="S=1   prop_effect=0.001") + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("") +
-  ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_classic() + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x = element_text(face = "bold",size=rel(1.25)),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10),plot.title = element_text(hjust = 0.5, face="bold", colour='#145A32'),plot.subtitle = element_text(hjust = 0.5, face="italic")) 
-```
-
-```{r, echo=FALSE}
-data_neutralS$n_samples <- c(rep(c("30,000","300,000"),36))
-ggplot(data_neutralS,aes(x=n_samples,y=rel_mse,colour=method)) + geom_point(position=position_dodge(0.4),size=3.5,aes(shape=method, color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_shape_manual(values=c(6,18,10,20,20,15,17,16,7)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],'red3',col[5],col[6],col[3],col[7])) + xlab("Sample size") + 
-    ylab(expression(paste("Rel.", italic(" change "), "in MSE of sig. SNPs"))) + theme_bw  () + geom_errorbar(aes(ymin=rel_mse-rel_mse_error, ymax=rel_mse+rel_mse_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=0, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10))
-
-```
-
-$~$
-$~$
-$~$
-$~$
+ 
 
 ### 8. Winner's Curse and Binary Traits
 
-Under the same 24 scenarios, we investigate simulating summary statistics for a binary trait with disease prevalence of 0.1 and the corresponding performance of the various Winner's Curse adjustment methods. Below is a summary of the results contained in `binary_norm_nsig_prop_bias_5e-8_10sim.csv` and `binary_norm_nsig_prop_bias_5e-4_10sim.csv`. Compared to the quantitative trait above, we witness a lot less SNPs meeting the significance threshold of `5e-8` under many of the scenarios. 
+Under the same 24 scenarios, we investigate simulating summary statistics for a binary trait with disease prevalence of 0.1 and the corresponding performance of the various Winner's Curse adjustment methods.  Below is a summary of the results contained in `binary_norm_nsig_prop_bias_5e-8_10sim.csv` and `binary_norm_nsig_prop_bias_5e-4_10sim.csv`. Compared to the quantitative trait above, we witness a lot less SNPs meeting the significance threshold of `5e-8` under many of the scenarios. 
 
+Details as to how we have simulated this binary trait can be found in `binary_traits.R`. However, it is worth noting that it can be very computationally intensive and hence why our investigation here has been restricted to a mere total of 10 simulations for each scenario. The reason for this being that given values for the true effect size of a SNP, $\beta$ and its minor allele frequency, we must also simulate a value $\beta_0$ in order to obtain an appropriate value for $\text{se}(\hat\beta)$. Our grid-like set-up has reduced the computing time immensely but in comparison to simulating a quantitative trait, it still takes considerably longer. 
 
 ```{r, echo=FALSE}
 results_nsig_5e_8 <- read.csv("results/binary_norm_nsig_prop_bias_5e-8_10sim.csv")
@@ -3868,11 +3694,6 @@ geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",siz
   )
 ```
 
-$~$
-$~$
-$~$
-$~$
-
 
 
 ```{r,echo=FALSE,include=FALSE}
@@ -4080,7 +3901,9 @@ $~$
 $~$
 $~$
 
-Note the absence of data for Scenario 13 in the above plot which is due to the fact that across all 10 simulations, no SNPs reached the significance threshold. Refer back to the first table in this section in order to gain an insight into the expected number of significant SNPs under each scenario.  
+Note the absence of data for Scenario 13 in the above plot which is due to the fact that across all 10 simulations, no SNPs reached the significance threshold. Refer back to the first table in this section in order to gain an insight into the expected number of significant SNPs under each scenario. The plot above shows all methods performing extremely similarly in the top right corner but differences between the methods are clearly visible on the left in which again, it can be concluded that the empirical Bayes method behaves the best. 
+
+We also briefly look at the performance of methods at the lower threshold of $5 \times 10^{-4}$ for this binary trait. As one can see from the obtained plot, the results are as expected with all methods making improvements to the average MSE and the empirical Bayes method being the most reliable. 
 
 ```{r,echo=FALSE,include=FALSE,warning=FALSE}
 
@@ -4489,9 +4312,9 @@ $~$
 $~$
 
 
-### 10. A Measure of Winner's Curse across the various scenarios 
+### 10. Measuring the degree of Winner's Curse across the various scenarios 
 
-In this final section, using 100 simulations, we have computed $$\frac{\text{MSE}_{\text{naive}}}{\text{MSE}_{\text{rep}}} = \frac{\frac{1}{n} \sum^n_{i=1} (\hat\beta_{\text{naive,}i} - \beta_i)^2}{\frac{1}{n} \sum^n_{i=1} (\hat\beta_{\text{rep,}i} - \beta_i)^2}$$ over the top 10 significant SNPs and the top 100 significant SNPs for each combination of our considered scenarios and three effect size distributions: normal, skewed and bimodal, for a quantitative trait. This can be thought of as a measure of the extent of the winner's curse induced bias in each case. As above, the first set of results relate to where we have looked at just the top 10 significant SNPs. Note that we have merely plotted results for neutral selection as we have witnessed that the selection coefficient, S does not seem to have a great impact on our findings. The results are contained in `wc_measure_rank_100sim.csv`. 
+In this final section, using 100 simulations, we have computed $$\frac{\text{MSE}_{\text{naive}}}{\text{MSE}_{\text{rep}}} = \frac{\frac{1}{n} \sum^n_{i=1} (\hat\beta_{\text{naive,}i} - \beta_i)^2}{\frac{1}{n} \sum^n_{i=1} (\hat\beta_{\text{rep,}i} - \beta_i)^2}$$ over the top 10 significant SNPs and the top 100 significant SNPs for each combination of our considered scenarios and three effect size distributions: normal, skewed and bimodal, for a quantitative trait. This can be thought of as a measure of the extent of the winner's curse induced bias in each case, in which it is important to note that the number of samples in the replication data set is equivalent to that in the discovery. As above, the first set of results relate to where we have looked at just the top 10 significant SNPs. Note that we have merely plotted results for neutral selection as we have witnessed that the selection coefficient, S does not seem to have a great impact on our findings. The results are contained in `wc_measure_rank_100sim.csv`. 
  
 
 ```{r, echo=FALSE}
@@ -4576,3 +4399,10 @@ ggplot(data_neutralS,aes(x=n_samples,y=wc_measure_top100,colour=distribution)) +
     ylab(expression(paste("MSE_naive/MSE_rep for top 100 sig. SNPs"))) + theme_bw() + geom_errorbar(aes(ymin=wc_measure_top10-wc_measure_top10_error, ymax=wc_measure_top10+wc_measure_top10_error), width=.25,position=position_dodge(0.4)) + geom_hline(yintercept=1, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), legend.text = element_text(size=10)) 
 ```
 
+$~$
+$~$
+
+The fact that we witness in every scenario that the average of $\frac{\text{MSE}_{\text{naive}}}{\text{MSE}_{\text{rep}}}$ across our 100 simulations is greater than 1 is certain evidence of the existence of winner's curse. However, the extent of the bias induced by winner's curse varies drastically depending on the values of our parameters of interest and the distribution of true effects. Most noticeably, it is a normal effect size distribution that suffers the greatest out of our three considered distributions. In particular, a large degree of winner's curse is seen when the heritability is 0.3, the proportion of true effect SNPs is 0.01 and we have 30,000 samples. This is the case for all three distributions. The same pattern is visible for the case in which we consider the top 10 SNPs and for the case in which we take a look at the top 100 SNPs. We chose to compare this metric for a fixed number of SNPs in each scenario instead of for just those SNPs that reached the specified threshold in each scenario to ensure that witnessed changes in $\frac{\text{MSE}_{\text{naive}}}{\text{MSE}_{\text{rep}}}$ were not due to the differing numbers of significant SNPs.  
+
+$~$
+$~$

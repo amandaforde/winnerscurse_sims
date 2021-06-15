@@ -1,17 +1,23 @@
-## More formal analyses of factors which influence degree of winner's curse and
-## optimal performance of EB...
-
-## What we want to do is compute mse_naive/mse_rep for all DISCOVERY only
-## scenarios... normal quantitative/binary trait, skewed and bimodal
-## quantitative trait .. do this first! compare lets say mse for top 10 SNPs and
-## top 100 SNPs - ensure fair comparisons across situations!
-
-## then after.. when does EB behave optimally?? repeat but with
-## mse_EB/mse_true_bayes .. compute this again for top 10 SNPs and top 100 SNPs
+## Sections 9b. and 10 of Simulation Study:
+## A more formal analysis of the parameters which influence the degree of
+## winner's curse present as well as an investigation of their impact of the
+## optimality of the empirical Bayes method
 
 
+## First, MSE_naive/MSE_rep is computed for all of our 24 scenarios which are a
+## combination of various values of n_samples, S, prop_effect and h2, under
+## three different forms of effect size distributions for a quantitative trait:
+## normal, bimodal and skewed. This metric is first averaged over the top 10
+## significant SNPs and then, over the top 100 significant SNPs. This ensures a
+## fair comparison between different scenarios and that we can be confident that
+## changes in MSE_naive/MSE_rep is not due to differing numbers of SNPs with
+## effect sizes passing the genome-wide significant threshold.
 
-## normal distribution, 1e+6 SNPs, 5e-8 threshold
+
+## Second, we have almost the exact same set-up but in which
+## MSE_EB/MSE_true_bayes is computed. More details on the true bayes rule can be
+## found at the beginning of Section 9 of
+## https://amandaforde.github.io/winnerscurse_sims/.
 
 
 library(tidyverse)
@@ -38,6 +44,8 @@ sim_params <- expand.grid(
 ## NOTE: Simulations currently being run on Windows, hence mc.cores=1.
 
 
+## Following functions also required:
+
 true_bayes <- function(ss, summary_disc, alpha=5e-8){
   stats <- data.frame(rsid=summary_disc$rsid, true_beta = ss$true_beta, beta = summary_disc$beta, se = ss$se, mu = ss$true_beta/ss$se, z = summary_disc$beta/ss$se)
   #if (sum(abs(stats$z) > qnorm(1-(alpha)/2))== 0){return(stats)}
@@ -52,7 +60,6 @@ true_bayes <- function(ss, summary_disc, alpha=5e-8){
   }
 
   mu_prob <- data.frame(mu_mid,prob_mid)
-
   stats <- dplyr::arrange(stats,desc(abs(stats$z)))
   stats_sig <- stats[1:100,]
   stats_sig$mu_bayes <- c(rep(0,nrow(stats_sig)))
@@ -62,7 +69,6 @@ true_bayes <- function(ss, summary_disc, alpha=5e-8){
       stats_sig$mu_bayes[i] <- sum(mu_prob$mu_mid*mu_prob$prob_mid*dnorm(stats_sig$z[i] - mu_prob$mu_mid))/sum(mu_prob$prob_mid*dnorm(stats_sig$z[i] - mu_prob$mu_mid))
     }
   }
-
   stats_sig$beta_bayes <- stats_sig$mu_bayes*stats_sig$se
   return(stats_sig)
 
@@ -84,8 +90,8 @@ mse_sig_evaluate_100 <- function(out,true_beta,i=4,alpha=5e-8){
 }
 
 
-## consider different architectures..
-
+################################################################################
+## PART A.
 
 run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
@@ -215,25 +221,15 @@ ave_res <- ave_results_2(res_2,tot_sim)
 write.csv(ave_res,"results/wc_measure_rank_100sim.csv")
 
 
-################################################################################
 
-## optimality of empirical Bayes
+################################################################################
+## PART B. Optimality of Empirical Bayes
 
 set.seed(1998)
 
-## Total number of simulations: 100
+## running the true bayes rule can be very computationally intensive, hence we
+## reduce the total number of simulations for each scenario to 10
 tot_sim <- 10
-## Fixed total number of SNPs:
-n_snps <- 10^6
-
-## Set of scenarios to be tested
-sim_params <- expand.grid(
-  sim = c(1:tot_sim),
-  n_samples = c(30000,300000),
-  h2 = c(0.3,0.8),
-  prop_effect = c(0.01, 0.001),
-  S = c(-1, 0, 1)
-)
 
 run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
