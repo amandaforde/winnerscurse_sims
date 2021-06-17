@@ -179,7 +179,7 @@ ave_results1 <- function(res_vec, n_sim){
 simulate_ss_exp <- function(H,Pi,nid,sc,rep_nid=1){
   effect_snps <- Pi*n_snps
   maf <- runif(n_snps,0.01,0.5)
-  true_beta <- c(-rexp(n=.1*effect_snps,rate = 1/sqrt((2*maf*(1-maf))^sc)), rexp(n=.9*effect_snps,rate = 1/sqrt((2*maf*(1-maf))^sc)))
+  true_beta <- c(-rexp(n=.1*effect_snps,rate = 1/sqrt((2*maf*(1-maf))^sc)), rexp(n=.9*effect_snps,rate = 1/sqrt((2*maf[(0.1*effect_snps+1):effect_snps]*(1-maf[(0.1*effect_snps+1):effect_snps]))^sc)))
   var_y <- sum(2*maf[1:effect_snps]*(1-maf[1:effect_snps])*true_beta^2)/H
   true_beta <- true_beta/sqrt(var_y)
   true_beta <- c(true_beta, rep(0,n_snps-effect_snps))
