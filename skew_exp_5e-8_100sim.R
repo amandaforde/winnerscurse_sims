@@ -10,11 +10,12 @@
 library(winnerscurse)
 library(tidyverse)
 library(parallel)
+library(scam)
 
 set.seed(1998)
 
 ## Total number of simulations: 10
-tot_sim <- 10
+tot_sim <- 20
 ## Fixed total number of SNPs:
 n_snps <- 10^6
 
@@ -52,6 +53,12 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   mse_EB <- mse_sig_improve(out_EB,ss$true_beta,alpha=5e-8)
   rel_mse_EB <- mse_sig_improve_per(out_EB,ss$true_beta,alpha=5e-8)
 
+  ## Empirical Bayes scam:
+  out_EB2 <- empirical_bayes_scam(disc_stats)
+  flb_EB2 <- frac_sig_less_bias(out_EB2,ss$true_beta,alpha=5e-8)
+  mse_EB2 <- mse_sig_improve(out_EB2,ss$true_beta,alpha=5e-8)
+  rel_mse_EB2 <- mse_sig_improve_per(out_EB2,ss$true_beta,alpha=5e-8)
+
   ## FIQT:
   out_FIQT <- FDR_IQT(disc_stats)
   flb_FIQT <- frac_sig_less_bias(out_FIQT,ss$true_beta,alpha=5e-8)
@@ -88,7 +95,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   mse_rep <- mse_sig_improve(out_rep,ss$true_beta,alpha=5e-8)
   rel_mse_rep <- mse_sig_improve_per(out_rep,ss$true_beta,alpha=5e-8)
 
-  return(c(flb_EB,mse_EB,rel_mse_EB,flb_FIQT,mse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rel_mse_BR,flb_cl1,mse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rel_mse_cl3,flb_rep,mse_rep,rel_mse_rep))
+  return(c(flb_EB,mse_EB,rel_mse_EB,flb_EB2,mse_EB2,rel_mse_EB2,flb_FIQT,mse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rel_mse_BR,flb_cl1,mse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rel_mse_cl3,flb_rep,mse_rep,rel_mse_rep))
 }
 res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
 
@@ -109,7 +116,7 @@ for (i in 1:nrow(sim_params)){
 res_EB <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_EB <- ave_results(res_EB,tot_sim)
 
-## FIQT:
+## Empirical Bayes scam:
 flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
@@ -117,6 +124,18 @@ for (i in 1:nrow(sim_params)){
   flb[i] <- res[[i]][4]
   mse[i] <- res[[i]][5]
   rel_mse[i] <- res[[i]][6]
+}
+res_EB2 <- cbind(sim_params,flb,mse,rel_mse)
+ave_res_EB2 <- ave_results(res_EB2,tot_sim)
+
+## FIQT:
+flb <- c(rep(0,nrow(sim_params)))
+mse <- c(rep(0,nrow(sim_params)))
+rel_mse <- c(rep(0,nrow(sim_params)))
+for (i in 1:nrow(sim_params)){
+  flb[i] <- res[[i]][7]
+  mse[i] <- res[[i]][8]
+  rel_mse[i] <- res[[i]][9]
 }
 res_FIQT <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_FIQT <- ave_results(res_FIQT,tot_sim)
@@ -126,9 +145,9 @@ flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  flb[i] <- res[[i]][7]
-  mse[i] <- res[[i]][8]
-  rel_mse[i] <- res[[i]][9]
+  flb[i] <- res[[i]][10]
+  mse[i] <- res[[i]][11]
+  rel_mse[i] <- res[[i]][12]
 }
 res_BR <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_BR <- ave_results(res_BR,tot_sim)
@@ -138,9 +157,9 @@ flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  flb[i] <- res[[i]][10]
-  mse[i] <- res[[i]][11]
-  rel_mse[i] <- res[[i]][12]
+  flb[i] <- res[[i]][13]
+  mse[i] <- res[[i]][14]
+  rel_mse[i] <- res[[i]][15]
 }
 res_cl1 <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_cl1 <- ave_results(res_cl1,tot_sim)
@@ -150,9 +169,9 @@ flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  flb[i] <- res[[i]][13]
-  mse[i] <- res[[i]][14]
-  rel_mse[i] <- res[[i]][15]
+  flb[i] <- res[[i]][16]
+  mse[i] <- res[[i]][17]
+  rel_mse[i] <- res[[i]][18]
 }
 res_cl2 <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_cl2 <- ave_results(res_cl2,tot_sim)
@@ -162,9 +181,9 @@ flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  flb[i] <- res[[i]][16]
-  mse[i] <- res[[i]][17]
-  rel_mse[i] <- res[[i]][18]
+  flb[i] <- res[[i]][19]
+  mse[i] <- res[[i]][20]
+  rel_mse[i] <- res[[i]][21]
 }
 res_cl3 <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_cl3 <- ave_results(res_cl3,tot_sim)
@@ -174,17 +193,17 @@ flb <- c(rep(0,nrow(sim_params)))
 mse <- c(rep(0,nrow(sim_params)))
 rel_mse <- c(rep(0,nrow(sim_params)))
 for (i in 1:nrow(sim_params)){
-  flb[i] <- res[[i]][19]
-  mse[i] <- res[[i]][20]
-  rel_mse[i] <- res[[i]][21]
+  flb[i] <- res[[i]][22]
+  mse[i] <- res[[i]][23]
+  rel_mse[i] <- res[[i]][24]
 }
 res_rep <- cbind(sim_params,flb,mse,rel_mse)
 ave_res_rep <- ave_results(res_rep,tot_sim)
 
 ## Combine all results:
-results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3,ave_res_rep)
-results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)),rep("rep",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"results/skew_exp_5e-8_10sim.csv")
+results_all <- rbind(ave_res_EB,ave_res_EB2,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3,ave_res_rep)
+results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("EBscam",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)),rep("rep",(nrow(sim_params)/tot_sim)))
+write.csv(results_all,"results/skew_exp_5e-8_20sim.csv")
 
 ################################################################################
 
