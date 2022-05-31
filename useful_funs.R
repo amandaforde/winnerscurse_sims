@@ -126,8 +126,8 @@ ave_results <- function(res_vec, n_sim){
     sd_flb[i] <- std(res_vec$flb[(i*n_sim-(n_sim-1)):(i*n_sim)])
     ave_mse[i] <- average(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
     sd_mse[i] <- std(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
-    ave_rmse[i] <- average(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
-    sd_rmse[i] <- std(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    ave_rmse[i] <- average(res_vec$rmse[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    sd_rmse[i] <- std(res_vec$rmse[(i*n_sim-(n_sim-1)):(i*n_sim)])
     ave_rel_mse[i] <- average(res_vec$rel_mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
     sd_rel_mse[i] <- std(res_vec$rel_mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
   }

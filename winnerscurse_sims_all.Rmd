@@ -386,8 +386,8 @@ Running the code provided in `nsig_prop_bias_100sim.R`, we obtain the following 
 
 ```{r, echo=FALSE}
 
-results_nsig_5e_8 <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_nsig_prop_bias_5e-8.csv")
-results_nsig_5e_4 <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_nsig_prop_bias_5e-4.csv")
+results_nsig_5e_8 <- read.csv("results/norm_nsig_prop_bias_5e-8.csv")
+results_nsig_5e_4 <- read.csv("results/norm_nsig_prop_bias_5e-4.csv")
 results_nsig <- data.frame(Scenario=c(1:24),n_samples=c(rep(c("30,000","300,000"),12)),results_nsig_5e_8[3:5], nsig_5e_8=round(results_nsig_5e_8$n_sig,2), pb58 = round(results_nsig_5e_8$prop_bias,4), px58 = round(results_nsig_5e_8$prop_x,4), mse58 = round(results_nsig_5e_8$mse,6), nsig_5e_4=round(results_nsig_5e_4$n_sig,2), pb54 = round(results_nsig_5e_4$prop_bias,4), px54 = round(results_nsig_5e_4$prop_x,4), mse54 = round(results_nsig_5e_4$mse,6), nsig_5e_8_sd=round(results_nsig_5e_8$n_sig_sd,3), pb58sd=round(results_nsig_5e_8$prop_bias_sd,4), px58sd=round(results_nsig_5e_8$prop_x_sd,4), mse58sd=round(results_nsig_5e_8$mse_sd,6),  nsig_5e_4_sd=round(results_nsig_5e_4$n_sig_sd,3),  pb54sd=round(results_nsig_5e_4$prop_bias_sd,4), px54sd=round(results_nsig_5e_4$prop_x_sd,4), mse54sd=round(results_nsig_5e_4$mse_sd,6))
 
 names(results_nsig)[names(results_nsig) == "nsig_5e_8"] <- "n_sig 5e-8"
@@ -441,7 +441,7 @@ We show how the number of significant SNPs differs for the 8 different scenarios
 
 ```{r, echo=FALSE}
 
-results_nsig_5e_8_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_nsig_prop_bias_5e_8_all.csv")
+results_nsig_5e_8_all <- read.csv("results/norm_nsig_prop_bias_5e_8_all.csv")
 
 
 data_neutralS <- results_nsig_5e_8_all[which(results_nsig_5e_8_all$S==0),]
@@ -494,7 +494,7 @@ Summary of results for `mse` contained in `norm_5e-8_100sim_ave.csv`:
 
 ```{r,echo=FALSE}
 
-norm_5e_8_100sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-8_100sim_ave.csv")
+norm_5e_8_100sim <- read.csv("results/norm_5e-8_100sim_ave.csv")
 
 results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = norm_5e_8_100sim$h2[1:24], prop_effect = norm_5e_8_100sim$prop_effect[1:24], S= norm_5e_8_100sim$S[1:24], EB = round(norm_5e_8_100sim$mse[1:24],6), EB_df = round(norm_5e_8_100sim$mse[(1+24):(24+24)],6), EB_scam = round(norm_5e_8_100sim$mse[(1+2*24):(24+2*24)],6), EB_gam_po = round(norm_5e_8_100sim$mse[(1+3*24):(24+3*24)],6), EB_gam_nb = round(norm_5e_8_100sim$mse[(1+4*24):(24+4*24)],6), FIQT = round(norm_5e_8_100sim$mse[(1+5*24):(24+5*24)],6), boot = round(norm_5e_8_100sim$mse[(1+6*24):(24+6*24)],6), cl1 = round(norm_5e_8_100sim$mse[(1+7*24):(24+7*24)],6), cl2 = round(norm_5e_8_100sim$mse[(1+8*24):(24+8*24)],6), cl3 = round(norm_5e_8_100sim$mse[(1+9*24):(24+9*24)],6), rep = round(norm_5e_8_100sim$mse[(1+10*24):(24+10*24)],6))
 
@@ -535,7 +535,7 @@ $~$ $~$ $~$ $~$
 ```{r,echo=FALSE}
 
 ## plotting full data set! 
-norm_5e_8_100sim_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-8_100sim_all.csv")
+norm_5e_8_100sim_all <- read.csv("results/norm_5e-8_100sim_all.csv")
 
 data_neutralS <- norm_5e_8_100sim_all[which(norm_5e_8_100sim_all$S==0),]
 data_neutralS <- data_neutralS[data_neutralS$flb != 100,]
@@ -567,7 +567,7 @@ $~$ $~$ $~$ $~$
 Summary of results for `rmse` contained in `norm_5e-8_100sim_ave.csv`:
 
 ```{r,echo=FALSE}
-norm_5e_8_100sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-8_100sim_ave.csv")
+norm_5e_8_100sim <- read.csv("results/norm_5e-8_100sim_ave.csv")
 results_rmse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = norm_5e_8_100sim$h2[1:24], prop_effect = norm_5e_8_100sim$prop_effect[1:24], S= norm_5e_8_100sim$S[1:24], EB = round(norm_5e_8_100sim$rmse[1:24],6), EB_df = round(norm_5e_8_100sim$rmse[(1+24):(24+24)],6), EB_scam = round(norm_5e_8_100sim$rmse[(1+2*24):(24+2*24)],6), EB_gam_po = round(norm_5e_8_100sim$rmse[(1+3*24):(24+3*24)],6), EB_gam_nb = round(norm_5e_8_100sim$rmse[(1+4*24):(24+4*24)],6), FIQT = round(norm_5e_8_100sim$rmse[(1+5*24):(24+5*24)],6), boot = round(norm_5e_8_100sim$rmse[(1+6*24):(24+6*24)],6), cl1 = round(norm_5e_8_100sim$rmse[(1+7*24):(24+7*24)],6), cl2 = round(norm_5e_8_100sim$rmse[(1+8*24):(24+8*24)],6), cl3 = round(norm_5e_8_100sim$rmse[(1+9*24):(24+9*24)],6), rep = round(norm_5e_8_100sim$rmse[(1+10*24):(24+10*24)],6))
 
 results_rmse %>%
@@ -739,7 +739,7 @@ $~$ $~$ $~$ $~$
 Summary of results for `mse` contained in `norm_5e-4_100sim_ave.csv`:
 
 ```{r,echo=FALSE}
-norm_5e_8_100sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-4_100sim_ave.csv")
+norm_5e_8_100sim <- read.csv("results/norm_5e-4_100sim_ave.csv")
 results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = norm_5e_8_100sim$h2[1:24], prop_effect = norm_5e_8_100sim$prop_effect[1:24], S= norm_5e_8_100sim$S[1:24], EB = round(norm_5e_8_100sim$mse[1:24],6), EB_df = round(norm_5e_8_100sim$mse[(1+24):(24+24)],6), EB_scam = round(norm_5e_8_100sim$mse[(1+2*24):(24+2*24)],6), EB_gam_po = round(norm_5e_8_100sim$mse[(1+3*24):(24+3*24)],6), EB_gam_nb = round(norm_5e_8_100sim$mse[(1+4*24):(24+4*24)],6), FIQT = round(norm_5e_8_100sim$mse[(1+5*24):(24+5*24)],6), boot = round(norm_5e_8_100sim$mse[(1+6*24):(24+6*24)],6), cl1 = round(norm_5e_8_100sim$mse[(1+7*24):(24+7*24)],6), cl2 = round(norm_5e_8_100sim$mse[(1+8*24):(24+8*24)],6), cl3 = round(norm_5e_8_100sim$mse[(1+9*24):(24+9*24)],6), rep = round(norm_5e_8_100sim$mse[(1+10*24):(24+10*24)],6))
 
 results_mse %>%
@@ -778,7 +778,7 @@ $~$ $~$ $~$ $~$
 
 ```{r,echo=FALSE}
 ## plotting full data set! 
-norm_5e_4_100sim_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-4_100sim_all.csv")
+norm_5e_4_100sim_all <- read.csv("results/norm_5e-4_100sim_all.csv")
 
 data_neutralS <- norm_5e_4_100sim_all[which(norm_5e_4_100sim_all$S==0),]
 data_neutralS <- data_neutralS[data_neutralS$flb != 100,]
@@ -879,7 +879,7 @@ Summary of results for `mse` contained in `bim_5e-8_10sim_ave.csv`:
 
 ```{r,echo=FALSE}
 
-bim_5e_8_10sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/bim_5e-8_10sim_ave.csv")
+bim_5e_8_10sim <- read.csv("results/bim_5e-8_10sim_ave.csv")
 
 results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = bim_5e_8_10sim$h2[1:24], prop_effect = bim_5e_8_10sim$prop_effect[1:8], S= bim_5e_8_10sim$S[1:24], EB = round(bim_5e_8_10sim$mse[1:24],6), FIQT = round(bim_5e_8_10sim$mse[(1+24):(24+24)],6), boot = round(bim_5e_8_10sim$mse[(1+2*24):(24+2*24)],6), cl1 = round(bim_5e_8_10sim$mse[(1+3*24):(24+3*24)],6), cl2 = round(bim_5e_8_10sim$mse[(1+4*24):(24+4*24)],6), cl3 = round(bim_5e_8_10sim$mse[(1+5*24):(24+5*24)],6), rep = round(bim_5e_8_10sim$mse[(1+6*24):(24+6*24)],6))
 
@@ -921,7 +921,7 @@ $~$ $~$ $~$ $~$
 
 ## plotting full data set! 
 
-bim_5e_8_100sim_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/bim_5e-8_10sim_all.csv")
+bim_5e_8_100sim_all <- read.csv("results/bim_5e-8_10sim_all.csv")
 
 data_neutralS <- bim_5e_8_100sim_all[which(bim_5e_8_100sim_all$S==0),]
 data_neutralS <- data_neutralS[data_neutralS$flb != 100,]
@@ -954,7 +954,7 @@ Summary of results for `mse` contained in `bim_5e-4_10sim_ave.csv`:
 
 ```{r,echo=FALSE}
 
-bim_5e_4_10sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/bim_5e-4_10sim_ave.csv")
+bim_5e_4_10sim <- read.csv("results/bim_5e-4_10sim_ave.csv")
 
 results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = bim_5e_4_10sim$h2[1:24], prop_effect = bim_5e_4_10sim$prop_effect[1:8], S= bim_5e_4_10sim$S[1:24], EB = round(bim_5e_4_10sim$mse[1:24],6), FIQT = round(bim_5e_4_10sim$mse[(1+24):(24+24)],6), boot = round(bim_5e_4_10sim$mse[(1+2*24):(24+2*24)],6), cl1 = round(bim_5e_4_10sim$mse[(1+3*24):(24+3*24)],6), cl2 = round(bim_5e_4_10sim$mse[(1+4*24):(24+4*24)],6), cl3 = round(bim_5e_4_10sim$mse[(1+5*24):(24+5*24)],6), rep = round(bim_5e_4_10sim$mse[(1+6*24):(24+6*24)],6))
 
@@ -996,7 +996,7 @@ $~$ $~$ $~$ $~$
 
 ## plotting full data set! 
 
-bim_5e_4_100sim_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/bim_5e-4_10sim_all.csv")
+bim_5e_4_100sim_all <- read.csv("results/bim_5e-4_10sim_all.csv")
 
 data_neutralS <- bim_5e_4_100sim_all[which(bim_5e_4_100sim_all$S==0),]
 data_neutralS <- data_neutralS[data_neutralS$flb != 100,]
@@ -1088,7 +1088,7 @@ Summary of results for `mse` contained in `skew_5e-8_10sim_ave.csv`:
 
 ```{r,echo=FALSE}
 
-skew_5e_8_10sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/skew_5e-8_10sim_ave.csv")
+skew_5e_8_10sim <- read.csv("results/skew_5e-8_10sim_ave.csv")
 
 results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = skew_5e_8_10sim$h2[1:24], prop_effect = skew_5e_8_10sim$prop_effect[1:8], S= skew_5e_8_10sim$S[1:24], EB = round(skew_5e_8_10sim$mse[1:24],6), FIQT = round(skew_5e_8_10sim$mse[(1+24):(24+24)],6), boot = round(skew_5e_8_10sim$mse[(1+2*24):(24+2*24)],6), cl1 = round(skew_5e_8_10sim$mse[(1+3*24):(24+3*24)],6), cl2 = round(skew_5e_8_10sim$mse[(1+4*24):(24+4*24)],6), cl3 = round(skew_5e_8_10sim$mse[(1+5*24):(24+5*24)],6), rep = round(skew_5e_8_10sim$mse[(1+6*24):(24+6*24)],6))
 
@@ -1130,7 +1130,7 @@ $~$ $~$ $~$ $~$
 
 ## plotting full data set! 
 
-skew_5e_8_100sim_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/skew_5e-8_10sim_all.csv")
+skew_5e_8_100sim_all <- read.csv("results/skew_5e-8_10sim_all.csv")
 
 data_neutralS <- skew_5e_8_100sim_all[which(skew_5e_8_100sim_all$S==0),]
 data_neutralS <- data_neutralS[data_neutralS$flb != 100,]
@@ -1163,7 +1163,7 @@ Summary of results for `mse` contained in `skew_5e-4_10sim_ave.csv`:
 
 ```{r,echo=FALSE}
 
-skew_5e_4_10sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/skew_5e-4_10sim_ave.csv")
+skew_5e_4_10sim <- read.csv("results/skew_5e-4_10sim_ave.csv")
 
 results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = skew_5e_4_10sim$h2[1:24], prop_effect = skew_5e_4_10sim$prop_effect[1:8], S= skew_5e_4_10sim$S[1:24], EB = round(skew_5e_4_10sim$mse[1:24],6), FIQT = round(skew_5e_4_10sim$mse[(1+24):(24+24)],6), boot = round(skew_5e_4_10sim$mse[(1+2*24):(24+2*24)],6), cl1 = round(skew_5e_4_10sim$mse[(1+3*24):(24+3*24)],6), cl2 = round(skew_5e_4_10sim$mse[(1+4*24):(24+4*24)],6), cl3 = round(skew_5e_4_10sim$mse[(1+5*24):(24+5*24)],6), rep = round(skew_5e_4_10sim$mse[(1+6*24):(24+6*24)],6))
 
@@ -1205,7 +1205,7 @@ $~$ $~$ $~$ $~$
 
 ## plotting full data set! 
 
-skew_5e_4_100sim_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/skew_5e-4_10sim_all.csv")
+skew_5e_4_100sim_all <- read.csv("results/skew_5e-4_10sim_all.csv")
 
 data_neutralS <- skew_5e_4_100sim_all[which(skew_5e_4_100sim_all$S==0),]
 data_neutralS <- data_neutralS[data_neutralS$flb != 100,]
@@ -1413,7 +1413,7 @@ Summary of results for `mse` contained in `bin_5e-8_10sim_ave.csv`:
 
 ```{r,echo=FALSE}
 
-bin_5e_8_10sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/bin_5e-8_10sim_ave.csv")
+bin_5e_8_10sim <- read.csv("results/bin_5e-8_10sim_ave.csv")
 
 results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = bin_5e_8_10sim$h2[1:24], prop_effect = bin_5e_8_10sim$prop_effect[1:8], S= bin_5e_8_10sim$S[1:24], EB = round(bin_5e_8_10sim$mse[1:24],6), FIQT = round(bin_5e_8_10sim$mse[(1+24):(24+24)],6), boot = round(bin_5e_8_10sim$mse[(1+2*24):(24+2*24)],6), cl1 = round(bin_5e_8_10sim$mse[(1+3*24):(24+3*24)],6), cl2 = round(bin_5e_8_10sim$mse[(1+4*24):(24+4*24)],6), cl3 = round(bin_5e_8_10sim$mse[(1+5*24):(24+5*24)],6), rep = round(bin_5e_8_10sim$mse[(1+6*24):(24+6*24)],6))
 
@@ -1455,7 +1455,7 @@ $~$ $~$ $~$ $~$
 
 ## plotting full data set! 
 
-bin_5e_8_10sim_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/bin_5e-8_10sim_all.csv")
+bin_5e_8_10sim_all <- read.csv("results/bin_5e-8_10sim_all.csv")
 
 data_neutralS <- bin_5e_8_10sim_all[which(bin_5e_8_10sim_all$S==0),]
 data_neutralS <- data_neutralS[data_neutralS$flb != 100,]
@@ -1491,7 +1491,7 @@ Summary of results for `mse` contained in `bin_5e-4_10sim_ave.csv`:
 
 ```{r,echo=FALSE}
 
-bin_5e_4_10sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/bin_5e-4_10sim_ave.csv")
+bin_5e_4_10sim <- read.csv("results/bin_5e-4_10sim_ave.csv")
 
 results_mse <- data.frame(Scenario=c(1:24),n_samples = c(rep(c("30,000","300,000"),12)), h2 = bin_5e_4_10sim$h2[1:24], prop_effect = bin_5e_4_10sim$prop_effect[1:8], S= bin_5e_4_10sim$S[1:24], EB = round(bin_5e_4_10sim$mse[1:24],6), FIQT = round(bin_5e_4_10sim$mse[(1+24):(24+24)],6), boot = round(bin_5e_4_10sim$mse[(1+2*24):(24+2*24)],6), cl1 = round(bin_5e_4_10sim$mse[(1+3*24):(24+3*24)],6), cl2 = round(bin_5e_4_10sim$mse[(1+4*24):(24+4*24)],6), cl3 = round(bin_5e_4_10sim$mse[(1+5*24):(24+5*24)],6), rep = round(bin_5e_4_10sim$mse[(1+6*24):(24+6*24)],6))
 
@@ -1533,7 +1533,7 @@ $~$ $~$ $~$ $~$
 
 ## plotting full data set! 
 
-bin_5e_4_100sim_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/bin_5e-4_10sim_all.csv")
+bin_5e_4_100sim_all <- read.csv("results/bin_5e-4_10sim_all.csv")
 
 data_neutralS <- bin_5e_4_100sim_all[which(bin_5e_4_100sim_all$S==0),]
 data_neutralS <- data_neutralS[data_neutralS$flb != 100,]
@@ -1902,7 +1902,7 @@ Summary of results for `mse` contained in `norm_5e-8_100sim_LD_ave.csv`:
 ```{r,echo=FALSE}
 
 ## summary results - mean! 
-norm_5e_8_100sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-8_100sim_LD_ave.csv")
+norm_5e_8_100sim <- read.csv("results/norm_5e-8_100sim_LD_ave.csv")
 
 results_mse <- data.frame(Scenario=c(1:8),n_samples = c(rep(c("30,000","300,000"),4)), h2 = norm_5e_8_100sim$h2[1:8], prop_effect = norm_5e_8_100sim$prop_effect[1:8], S= norm_5e_8_100sim$S[1:8], EB = round(norm_5e_8_100sim$mse[1:8],6), EB_df = round(norm_5e_8_100sim$mse[(1+8):(8+8)],6), EB_scam = round(norm_5e_8_100sim$mse[(1+2*8):(8+2*8)],6), EB_gam_po = round(norm_5e_8_100sim$mse[(1+3*8):(8+3*8)],6), EB_gam_nb = round(norm_5e_8_100sim$mse[(1+4*8):(8+4*8)],6), FIQT = round(norm_5e_8_100sim$mse[(1+5*8):(8+5*8)],6), boot = round(norm_5e_8_100sim$mse[(1+6*8):(8+6*8)],6), cl1 = round(norm_5e_8_100sim$mse[(1+7*8):(8+7*8)],6), cl2 = round(norm_5e_8_100sim$mse[(1+8*8):(8+8*8)],6), cl3 = round(norm_5e_8_100sim$mse[(1+9*8):(8+9*8)],6))
 
@@ -1943,7 +1943,7 @@ $~$ $~$ $~$ $~$
 ```{r,echo=FALSE}
 
 ## plotting full data set! 
-norm_5e_8_100sim_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-8_100sim_LD_all.csv")
+norm_5e_8_100sim_all <- read.csv("results/norm_5e-8_100sim_LD_all.csv")
 
 norm_5e_8_100sim_all$scenario <- c(rep(c(1:8),10))
 norm_5e_8_100sim_all$scenario <- factor(norm_5e_8_100sim_all$scenario)
@@ -1981,7 +1981,7 @@ $~$ $~$ $~$ $~$
 Summary of results for `rmse` contained in `norm_5e-8_100sim_LD_ave.csv`:
 
 ```{r,echo=FALSE}
-norm_5e_8_100sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-8_100sim_LD_ave.csv")
+norm_5e_8_100sim <- read.csv("results/norm_5e-8_100sim_LD_ave.csv")
 results_rmse <- data.frame(Scenario=c(1:8),n_samples = c(rep(c("30,000","300,000"),4)), h2 = norm_5e_8_100sim$h2[1:8], prop_effect = norm_5e_8_100sim$prop_effect[1:8], S= norm_5e_8_100sim$S[1:8], EB = round(norm_5e_8_100sim$rmse[1:8],6), EB_df = round(norm_5e_8_100sim$rmse[(1+8):(8+8)],6), EB_scam = round(norm_5e_8_100sim$rmse[(1+2*8):(8+2*8)],6), EB_gam_po = round(norm_5e_8_100sim$rmse[(1+3*8):(8+3*8)],6), EB_gam_nb = round(norm_5e_8_100sim$rmse[(1+4*8):(8+4*8)],6), FIQT = round(norm_5e_8_100sim$rmse[(1+5*8):(8+5*8)],6), boot = round(norm_5e_8_100sim$rmse[(1+6*8):(8+6*8)],6), cl1 = round(norm_5e_8_100sim$rmse[(1+7*8):(8+7*8)],6), cl2 = round(norm_5e_8_100sim$rmse[(1+8*8):(8+8*8)],6), cl3 = round(norm_5e_8_100sim$rmse[(1+9*8):(8+9*8)],6))
 
 results_rmse %>%
@@ -2016,13 +2016,9 @@ rank(summary2)
 
 $~$ $~$ $~$ $~$
 
-*Change* in =RMSE over all significant SNPs due to method implementation, using a significance threshold of $5 \times 10^{-8}$:
+*Change* in RMSE over all significant SNPs due to method implementation, using a significance threshold of $5 \times 10^{-8}$:
 
 ```{r,echo=FALSE}
-
-## plot results
-norm_5e_8_100sim_all$scenario <- c(rep(c(1:8),10))
-norm_5e_8_100sim_all$scenario <- factor(norm_5e_8_100sim_all$scenario)
 
 
 data_neutralS <- norm_5e_8_100sim_all[which(norm_5e_8_100sim_all$S==0),]
@@ -2042,7 +2038,7 @@ ggplot(data_neutralSa,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(posi
    ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs"))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
 
 
-ggplot(data_neutralSb,aes(x=n_samples,y=mse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_shape_manual(values=c(6,20,20,20,15,18,18,18,18,10)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11])) + xlab("Sample size") + 
+ggplot(data_neutralSb,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_shape_manual(values=c(6,20,20,20,15,18,18,18,18,10)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11])) + xlab("Sample size") + 
    ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs"))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
 ```
 
@@ -2171,7 +2167,7 @@ $~$ $~$ $~$ $~$
 Summary of results for `mse` contained in `norm_5e-4_100sim_LD_ave.csv`:
 
 ```{r,echo=FALSE}
-norm_5e_4_100sim <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-4_100sim_LD_ave.csv")
+norm_5e_4_100sim <- read.csv("results/norm_5e-4_100sim_LD_ave.csv")
 results_mse <- data.frame(Scenario=c(1:8),n_samples = c(rep(c("30,000","300,000"),4)), h2 = norm_5e_4_100sim$h2[1:8], prop_effect = norm_5e_4_100sim$prop_effect[1:8], S= norm_5e_4_100sim$S[1:8], EB = round(norm_5e_4_100sim$mse[1:8],6), EB_df = round(norm_5e_4_100sim$mse[(1+8):(8+8)],6), EB_scam = round(norm_5e_4_100sim$mse[(1+2*8):(8+2*8)],6), EB_gam_po = round(norm_5e_4_100sim$mse[(1+3*8):(8+3*8)],6), EB_gam_nb = round(norm_5e_4_100sim$mse[(1+4*8):(8+4*8)],6), FIQT = round(norm_5e_4_100sim$mse[(1+5*8):(8+5*8)],6), boot = round(norm_5e_4_100sim$mse[(1+6*8):(8+6*8)],6), cl1 = round(norm_5e_4_100sim$mse[(1+7*8):(8+7*8)],6), cl2 = round(norm_5e_4_100sim$mse[(1+8*8):(8+8*8)],6), cl3 = round(norm_5e_4_100sim$mse[(1+9*8):(8+9*8)],6))
 
 results_mse %>%
@@ -2210,10 +2206,7 @@ $~$ $~$ $~$ $~$
 
 ```{r,echo=FALSE}
 ## plotting full data set! 
-norm_5e_4_100sim_all <- read.csv("C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-4_100sim_LD_all.csv")
-
-norm_5e_4_100sim_all$scenario <- c(rep(c(1:8),10))
-norm_5e_4_100sim_all$scenario <- factor(norm_5e_4_100sim_all$scenario)
+norm_5e_4_100sim_all <- read.csv("results/norm_5e-4_100sim_LD_all.csv")
 
 
 data_neutralS <- norm_5e_4_100sim_all[which(norm_5e_4_100sim_all$S==0),]

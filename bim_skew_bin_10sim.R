@@ -211,17 +211,16 @@ ave_res_rep <- ave_results(res_rep,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3, ave_res_rep)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)), rep("rep",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/bim_5e-8_10sim_ave.csv")
+write.csv(results_all,"results/bim_5e-8_10sim_ave.csv")
 
 
 ## Combine all results:
 results_all <- rbind(res_EB,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3,res_rep)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)),rep("rep",nrow(sim_params)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/bim_5e-8_10sim_all.csv")
+write.csv(results_all,"results/bim_5e-8_10sim_all.csv")
 
 ################################################################################
 ################################################################################
-
 ## 1B) Quantitative trait with bimodal effect size distribution - 5e-4
 
 set.seed(1998)
@@ -389,16 +388,15 @@ ave_res_rep <- ave_results(res_rep,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3, ave_res_rep)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)), rep("rep",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/bim_5e-4_10sim_ave.csv")
+write.csv(results_all,"results/bim_5e-4_10sim_ave.csv")
 
 ## Combine all results:
 results_all <- rbind(res_EB,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3,res_rep)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)),rep("rep",nrow(sim_params)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/bim_5e-4_10sim_all.csv")
+write.csv(results_all,"results/bim_5e-4_10sim_all.csv")
 
 ################################################################################
 ################################################################################
-
 ## 2A) Quantitative trait with skewed effect size distribution - 5e-8
 
 set.seed(1998)
@@ -566,13 +564,12 @@ ave_res_rep <- ave_results(res_rep,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3, ave_res_rep)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)), rep("rep",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/skew_5e-8_10sim_ave.csv")
+write.csv(results_all,"results/skew_5e-8_10sim_ave.csv")
 
 ## Combine all results:
 results_all <- rbind(res_EB,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3,res_rep)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)),rep("rep",nrow(sim_params)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/skew_5e-8_10sim_all.csv")
-
+write.csv(results_all,"results/skew_5e-8_10sim_all.csv")
 ################################################################################
 ################################################################################
 
@@ -743,13 +740,12 @@ ave_res_rep <- ave_results(res_rep,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3, ave_res_rep)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)), rep("rep",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/skew_5e-4_10sim_ave.csv")
+write.csv(results_all,"results/skew_5e-4_10sim_ave.csv")
 
 ## Combine all results:
 results_all <- rbind(res_EB,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3,res_rep)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)),rep("rep",nrow(sim_params)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/skew_5e-4_10sim_all.csv")
-
+write.csv(results_all,"results/skew_5e-4_10sim_all.csv")
 ################################################################################
 ################################################################################
 
@@ -984,12 +980,12 @@ ave_res_rep <- ave_results(res_rep,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3, ave_res_rep)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)), rep("rep",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/bin_5e-8_10sim_ave.csv")
+write.csv(results_all,"results/bin_5e-8_10sim_ave.csv")
 
 ## Combine all results:
 results_all <- rbind(res_EB,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3,res_rep)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)),rep("rep",nrow(sim_params)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/bin_5e-8_10sim_all.csv")
+write.csv(results_all,"results/bin_5e-8_10sim_all.csv")
 
 ################################################################################
 ################################################################################
@@ -1162,12 +1158,12 @@ ave_res_rep <- ave_results(res_rep,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3, ave_res_rep)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)), rep("rep",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/bin_5e-4_10sim_ave.csv")
+write.csv(results_all,"results/bin_5e-4_10sim_ave.csv")
 
 ## Combine all results:
 results_all <- rbind(res_EB,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3,res_rep)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)),rep("rep",nrow(sim_params)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/bin_5e-4_10sim_all.csv")
+write.csv(results_all,"results/bin_5e-4_10sim_all.csv")
 
 ################################################################################
 ################################################################################

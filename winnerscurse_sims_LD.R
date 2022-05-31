@@ -97,17 +97,17 @@ simulate_ss_ld <- function(H,Pi,nid,sc,cormat=R,cormatsq=R_sqrt){
 ################################################################################
 
 ## Total number of simulations:
-tot_sim <- 100
+tot_sim <- 1
 ## Fixed total number of SNPs:
 n_snps <- 10^6
 
 ## Set of scenarios to be tested
 sim_params <- expand.grid(
   sim = c(1:tot_sim),
-  n_samples = c(30000,300000),
-  h2 = c(0.3,0.8),
-  prop_effect = c(0.01,0.001),
-  S = c(-1, 0, 1)
+  n_samples = c(30000),
+  h2 = c(0.8),
+  prop_effect = c(0.01),
+  S = c(0)
 )
 
 ## Run 'useful_funs.R' here in order to define extra functions required for the
@@ -589,5 +589,3 @@ results_all$method <- c(rep("EB",nrow(sim_params)),rep("EB_df",nrow(sim_params))
 write.csv(results_all,"results/norm_5e-4_100sim_LD_all.csv")
 ################################################################################
 ################################################################################
-
-

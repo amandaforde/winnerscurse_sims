@@ -74,8 +74,8 @@ for (i in 1:nrow(sim_params)){
 results <- cbind(sim_params,n_sig,prop_bias,prop_x,mse)
 ave_res <- ave_results1(results,tot_sim)
 
-write.csv(results, "C:/Users/GenDataSci025/winnerscurse_sims/results/norm_nsig_prop_bias_5e_8_all.csv")
-write.csv(ave_res, "C:/Users/GenDataSci025/winnerscurse_sims/results/norm_nsig_prop_bias_5e-8.csv")
+write.csv(results, "results/norm_nsig_prop_bias_5e_8_all.csv")
+write.csv(ave_res, "results/norm_nsig_prop_bias_5e-8.csv")
 
 ################################################################################
 ################################################################################
@@ -117,8 +117,8 @@ for (i in 1:nrow(sim_params)){
 results <- cbind(sim_params,n_sig,prop_bias,prop_x,mse)
 ave_res <- ave_results1(results,tot_sim)
 
-write.csv(results, "C:/Users/GenDataSci025/winnerscurse_sims/results/norm_nsig_prop_bias_5e_4_all.csv")
-write.csv(ave_res, "C:/Users/GenDataSci025/winnerscurse_sims/results/norm_nsig_prop_bias_5e-4.csv")
+write.csv(results, "results/norm_nsig_prop_bias_5e_4_all.csv")
+write.csv(ave_res, "results/norm_nsig_prop_bias_5e-4.csv")
 
 ################################################################################
 ################################################################################

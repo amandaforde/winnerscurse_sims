@@ -293,13 +293,12 @@ ave_res_rep <- ave_results(res_rep,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_EB_df,ave_res_EB_scam,ave_res_EB_gam_po,ave_res_EB_gam_nb,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3, ave_res_rep)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("EB_df",(nrow(sim_params)/tot_sim)),rep("EB_scam",(nrow(sim_params)/tot_sim)),rep("EB_gam_po",(nrow(sim_params)/tot_sim)),rep("EB_gam_nb",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)), rep("rep",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-8_100sim_ave.csv")
+write.csv(results_all,"results/norm_5e-8_100sim_ave.csv")
 
 ## Combine all results:
 results_all <- rbind(res_EB,res_EB_df,res_EB_scam,res_EB_gam_po,res_EB_gam_nb,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3,res_rep)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("EB_df",nrow(sim_params)),rep("EB_scam",nrow(sim_params)),rep("EB_gam_po",nrow(sim_params)),rep("EB_gam_nb",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)),rep("rep",nrow(sim_params)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-8_100sim_all.csv")
-
+write.csv(results_all,"results/norm_5e-8_100sim_all.csv")
 ################################################################################
 ################################################################################
 
@@ -556,14 +555,12 @@ ave_res_rep <- ave_results(res_rep,tot_sim)
 ## Combine all results:
 results_all <- rbind(ave_res_EB,ave_res_EB_df,ave_res_EB_scam,ave_res_EB_gam_po,ave_res_EB_gam_nb,ave_res_FIQT,ave_res_BR,ave_res_cl1,ave_res_cl2,ave_res_cl3, ave_res_rep)
 results_all$method <- c(rep("EB",(nrow(sim_params)/tot_sim)),rep("EB_df",(nrow(sim_params)/tot_sim)),rep("EB_scam",(nrow(sim_params)/tot_sim)),rep("EB_gam_po",(nrow(sim_params)/tot_sim)),rep("EB_gam_nb",(nrow(sim_params)/tot_sim)),rep("FIQT",(nrow(sim_params)/tot_sim)),rep("BR",(nrow(sim_params)/tot_sim)),rep("cl1",(nrow(sim_params)/tot_sim)),rep("cl2",(nrow(sim_params)/tot_sim)),rep("cl3",(nrow(sim_params)/tot_sim)), rep("rep",(nrow(sim_params)/tot_sim)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-4_100sim_ave.csv")
+write.csv(results_all,"results/norm_5e-4_100sim_ave.csv")
 
 ## Combine all results:
 results_all <- rbind(res_EB,res_EB_df,res_EB_scam,res_EB_gam_po,res_EB_gam_nb,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3,res_rep)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("EB_df",nrow(sim_params)),rep("EB_scam",nrow(sim_params)),rep("EB_gam_po",nrow(sim_params)),rep("EB_gam_nb",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)),rep("rep",nrow(sim_params)))
-write.csv(results_all,"C:/Users/GenDataSci025/winnerscurse_sims/results/norm_5e-4_100sim_all.csv")
+write.csv(results_all,"results/norm_5e-4_100sim_all.csv")
 
 ################################################################################
 ################################################################################
-
-
