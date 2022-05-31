@@ -93,7 +93,7 @@ $~$
 
 ## Preliminary investigation 
 
-In this section, we focus on a quantitative trait with a normal effect size distribution and investigate a number of different statistics with respect to the 24 genetic architectures described above. First, in order to gain a better insight into what patterns may be present in the sets of summary statistics, we simulate a single set of GWAS summary statistics and plot $z$ vs $\text{bias}$  in which $\text{bias} = \hat\beta - \beta$ for each of the 8 scenarios with selection coefficient equal to zero. On all figures, the <span style="color: red;"> bright red </span> line corresponds to the significance threshold of $5 \times 10^{-8}$ while the <span style="color: darkred;"> darker red </span> line relates to $5 \times 10^{-4}$. The points corresponding to SNPs which are *significantly* overestimated and are significant at a threshold of $5 \times 10^{-4}$ are coloured in <span style="color: navy;"> navy </span>. A SNP is determined to be *significantly* overestimated if it satisfies $\left| \hat\beta_{i} \right| > \left| \beta_{i} \right| + 1.96\cdot\sigma_{i}$. In this instance, $\sigma_i = \hat{\text{se}(\hat\beta_i)}$
+In this section, we focus on a quantitative trait with a normal effect size distribution and investigate a number of different statistics with respect to the 24 genetic architectures described above. First, in order to gain a better insight into what patterns may be present in the sets of summary statistics, we simulate a single set of GWAS summary statistics and plot $z$ vs $\text{bias}$  in which $\text{bias} = \hat\beta - \beta$ for each of the 8 scenarios with selection coefficient equal to zero. On all figures, the <span style="color: red;"> bright red </span> line corresponds to the significance threshold of $5 \times 10^{-8}$ while the <span style="color: darkred;"> darker red </span> line relates to $5 \times 10^{-4}$. The points corresponding to SNPs which are *significantly* overestimated and are significant at a threshold of $5 \times 10^{-4}$ are coloured in <span style="color: navy;"> navy </span>. A SNP is determined to be *significantly* overestimated if it satisfies $\left| \hat\beta_{i} \right| > \left| \beta_{i} \right| + 1.96\cdot\sigma_{i}$. In this instance, $\sigma_i = \hat{\text{se}(\hat\beta_i)}$.
 
 $~$
 $~$
@@ -1879,6 +1879,82 @@ geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",siz
 
 
 ```
+
+
+$~$ $~$ 
+
+In a similar manner to the preliminary investigation of the first part of this extensive study, over a total of 10 simulations, we look at the number of significant SNPs, the proportion of these SNPs that have association estimates more extreme than their true effect size, the proportion of these SNPs which are *significantly* overestimated and the MSE of significant SNPs at the common genome-wide significance threshold of $5 \times 10^{-8}$. Large values for the proportion of *significantly* overestimated SNPs and the MSE of significant SNPs provide evidence for a great degree of bias induced by Winner's Curse. 
+
+Running the code provided in `nsig_prop_bias_LD_10sim.R`, we obtain the following results:
+
+```{r, echo=FALSE}
+
+results_nsig_5e_8 <- read.csv("results/nsig_prop_bias_5e-8_LD.csv")
+results_nsig <- data.frame(Scenario=c(1:8),n_samples=c(rep(c("30,000","300,000"),4)),results_nsig_5e_8[3:5], nsig_5e_8=round(results_nsig_5e_8$n_sig,2), pb58 = round(results_nsig_5e_8$prop_bias,4), px58 = round(results_nsig_5e_8$prop_x,4), mse58 = round(results_nsig_5e_8$mse,6), nsig_5e_8_sd=round(results_nsig_5e_8$n_sig_sd,3), pb58sd=round(results_nsig_5e_8$prop_bias_sd,4), px58sd=round(results_nsig_5e_8$prop_x_sd,4), mse58sd=round(results_nsig_5e_8$mse_sd,6))
+
+names(results_nsig)[names(results_nsig) == "nsig_5e_8"] <- "n_sig 5e-8"
+names(results_nsig)[names(results_nsig) == "nsig_5e_8_sd"] <- "sd(n_sig) 5e-8"
+names(results_nsig)[names(results_nsig) == "pb58"] <- "prop_bias 5e-8"
+names(results_nsig)[names(results_nsig) == "pb58sd"] <- "sd(prop_bias) 5e-8"
+names(results_nsig)[names(results_nsig) == "px58"] <- "prop_x 5e-8"
+names(results_nsig)[names(results_nsig) == "px58sd"] <- "sd(prop_x) 5e-8"
+names(results_nsig)[names(results_nsig) == "mse58"] <- "mse 5e-8"
+names(results_nsig)[names(results_nsig) == "mse58sd"] <- "sd(mse) 5e-8"
+
+
+results_nsig %>%
+kable() %>%
+  kable_classic_2() %>%
+kable_styling(bootstrap_options = "bordered",
+full_width = FALSE,position="center") %>%
+  row_spec(row = 0,bold = TRUE) %>%
+  column_spec(1,background="#FAE5D3") %>%
+  column_spec(2,background="#FDF2E9") %>%
+  column_spec(3,background="#FDF2E9") %>%
+  column_spec(4,background="#FDF2E9") %>%
+  column_spec(5,background="#FDF2E9", extra_css="border-right: 1px solid") %>% 
+  column_spec(9, extra_css="border-right: 1px solid") %>%
+  column_spec(10, background = "#F5F5F5", italic=TRUE) %>%
+  column_spec(11, background = "#F5F5F5", italic=TRUE) %>%
+  column_spec(12, background = "#F5F5F5", italic=TRUE) %>%
+  column_spec(13, background = "#F5F5F5", italic=TRUE) %>%
+  scroll_box(width = "100%", height = "300px")
+
+```
+
+$~$
+$~$
+$~$
+
+
+We show how the number of significant SNPs differs for the 8 different scenarios with $S=0$ at the significance threshold $5 \times 10^{-8}$:
+
+```{r, echo=FALSE}
+
+results_nsig_5e_8_all <- read.csv("results/nsig_prop_bias_5e_8_LD_all.csv")
+
+
+data_neutralS <- results_nsig_5e_8_all[which(results_nsig_5e_8_all$S==0),]
+data_neutralS$scenario <- c(rep("Scenario 09",10), rep("Scenario 10",10), rep("Scenario 11",10), rep("Scenario 12",10), rep("Scenario 13",10), rep("Scenario 14",10), rep("Scenario 15",10), rep("Scenario 16",10))
+data_neutralS$n_samples <- c(rep("30,000",10), rep("300,000",10), rep("30,000",10), rep("300,000",10), rep("30,000",10), rep("300,000",10), rep("30,000",10), rep("300,000",10))
+data_neutralS <- data_neutralS[data_neutralS$n_sig != 0,]
+
+
+ggplot(data_neutralS,aes(x=n_samples,y=n_sig,colour=scenario)) + geom_boxplot(position=position_dodge(0.2),size=0.5,aes(color=scenario)) +  scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7])) + facet_grid(h2~prop_effect,labeller=label_both) + xlab("Sample size") + ylab("No. sig SNPs") + theme_bw() + theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank())
+
+```
+
+
+
+We can also visualise the proportion of significant SNPs that are *significantly* overestimated and the MSE of significant SNPs at the significance threshold of $5 \times 10^{-8}$ as follows: 
+
+```{r, echo=FALSE}
+ggplot(data_neutralS,aes(x=n_samples,y=prop_x,colour=scenario)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=scenario)) +  scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7])) + xlab("Sample size")+ facet_grid(h2~prop_effect,labeller=label_both) + ylab(expression(paste("Prop. sig SNPs", italic(" significantly "), "overestimated"))) + theme_bw() + theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank())
+
+ggplot(data_neutralS,aes(x=n_samples,y=mse,colour=scenario)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=scenario)) +  scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7])) + xlab("Sample size")+ facet_grid(h2~prop_effect,labeller=label_both) + ylab("MSE of sig. SNPs") + theme_bw() + theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank())
+```
+
+
 
 
 ## Application of Winner's Curse correction methods

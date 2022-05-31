@@ -97,7 +97,7 @@ simulate_ss_ld <- function(H,Pi,nid,sc,cormat=R,cormatsq=R_sqrt){
 ################################################################################
 
 ## Total number of simulations:
-tot_sim <- 1
+tot_sim <- 100
 ## Fixed total number of SNPs:
 n_snps <- 10^6
 
