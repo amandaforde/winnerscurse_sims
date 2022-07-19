@@ -460,6 +460,8 @@ We can also visualise the proportion of SNPs that are *significantly* overestima
 
 ```{r, echo=FALSE}
 ggplot(data_neutralS,aes(x=n_samples,y=prop_x,colour=scenario)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=scenario)) +  scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7])) + xlab("Sample size")+ facet_grid(h2~prop_effect,labeller=label_both) + ylab(expression(paste("Prop. sig SNPs", italic(" significantly "), "overestimated"))) + theme_bw() + theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank())
+
+ggplot(data_neutralS,aes(x=n_sig,y=prop_x,colour=scenario)) + geom_point(aes(color=scenario)) +  scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7])) + xlab("No. sig SNPs")+ ylab(expression(paste("Prop. sig SNPs", italic(" significantly "), "overestimated"))) + theme_bw() + theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank())
 ```
 
 
@@ -553,7 +555,7 @@ data_neutralSb$n_samples <- c(rep(c("300,000"),nrow(data_neutralSb)))
 ## two plots, one for n_samples = 30,000 and one for n_samples = 300,000
 
 ggplot(data_neutralSa,aes(x=n_samples,y=mse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_shape_manual(values=c(6,20,20,20,15,18,18,18,18,10,16)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11],col2[11])) + xlab("Sample size") + 
-   ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+   ylab(expression(paste(italic("Change "), "in MSE of sig. SNPs"))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic")) 
 
 
 ggplot(data_neutralSb,aes(x=n_samples,y=mse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_shape_manual(values=c(6,20,20,20,15,18,18,18,18,10,16)) + scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11],col2[11])) + xlab("Sample size") + 
@@ -1632,7 +1634,7 @@ Using the mathematical details provided above, the following steps were executed
     \rho^{99} & \rho^{98} & \rho^{97} & \rho^{96} & \cdots & 1 
     \end{pmatrix}
     \end{equation*}
-    $$ The task is now to choose a suitable value for $\rho$. We choose a value of $\approx 0.997$ for $\rho$ which permitted the construction of $\boldsymbol{R}$. Within each block of 100 SNPs, we then simulated values for $E(\hat\beta) = \boldsymbol{D}^{-1/2}\boldsymbol{R}\boldsymbol{D}^{1/2}\boldsymbol{b}$ and $\hat\beta$. We obtained $\hat\beta$ using the `rnorm` function with $\hat\beta = E(\hat\beta) + \boldsymbol{R}^{1/2}\boldsymbol{D}^{-1/2}\cdot$`rnorm(100)`. The standard errors for each SNP were easily obtained from the diagonal entries of $\boldsymbol{D}^{-1/2}$.
+    $$ The task is now to choose a suitable value for $\rho$. We choose a value of $\approx 0.9825$ for $\rho$ which permitted the construction of $\boldsymbol{R}$. Within each block of 100 SNPs, we then simulated values for $E(\hat\beta) = \boldsymbol{D}^{-1/2}\boldsymbol{R}\boldsymbol{D}^{1/2}\boldsymbol{b}$ and $\hat\beta$. We obtained $\hat\beta$ using the `rnorm` function with $\hat\beta = E(\hat\beta) + \boldsymbol{R}^{1/2}\boldsymbol{D}^{-1/2}\cdot$`rnorm(100)`. The standard errors for each SNP were easily obtained from the diagonal entries of $\boldsymbol{D}^{-1/2}$.
 
 7.  The above process thus provided values for $E(\hat\beta_j)$, $\hat\beta_j$ and $\text{se}(\hat\beta_j)$ for each SNP $j=1,...,N$, in which the same LD structure described by the simple matrix $\boldsymbol{R}$ has been imposed for each independent block of 100 SNPs.
 
@@ -1640,15 +1642,11 @@ Firstly, in order to gain a better insight into the various scenarios by means o
 
 ```{r, echo=FALSE}
 n_snps <- 10^6
-#f <- function(x){100^2/10 - 100 - 2*(99*x + 98*x^2 + 97*x^3 + 96*x^4 + 95*x^5 + 94*x^6 + 93*x^7 + 92*x^8 + 91*x^9 + 90*x^10 + 89*x^11 + 88*x^12 + 87*x^13 + 86*x^14 + 85*x^15 + 84*x^16 + 83*x^17 + 82*x^18 + 81*x^19 + 80*x^20 + 79*x^21 + 78*x^22 + 77*x^23 + 76*x^24 + 75*x^25 + 74*x^26 + 73*x^27 + 72*x^28 + 71*x^29 + 70*x^30 + 69*x^31 + 68*x^32 + 67*x^33 + 66*x^34 + 65*x^35 + 64*x^36 + 63*x^37 + 62*x^38 + 61*x^39 + 60*x^40 + 59*x^41 + 58*x^42 + 57*x^43 + 56*x^44 + 55*x^45 + 54*x^46 + 53*x^47 + 52*x^48 + 51*x^49 + 50*x^50 + 49*x^51 + 48*x^52 + 47*x^53 + 46*x^54 + 45*x^55 + 44*x^56 + 43*x^57 + 42*x^58 + 41*x^59 + 40*x^60 + 39*x^61 + 38*x^62 + 37*x^63 + 36*x^64 + 35*x^65 + 34*x^66 + 33*x^67 + 32*x^68 + 31*x^69 + 30*x^70 + 29*x^71 + 28*x^72 + 27*x^73 + 26*x^74 + 25*x^75 + 24*x^76 + 23*x^77 + 22*x^78 + 21*x^79 + 20*x^80 + 19*x^81 + 18*x^82 + 17*x^83 + 16*x^84 + 15*x^85 + 14*x^86 + 13*x^87 + 12*x^88 + 11*x^89 + 10*x^90 + 9*x^91 + 8*x^92 + 7*x^93 + 6*x^94 + 5*x^95 + 4*x^96 + 3*x^97 + 2*x^98 + 1*x^99)}
-
-# x = 0.82687, f(x) = -0.0288
-# use x = 0.82687!
 
 ## now to specify R!
-x <- 0.997
+x <- 0.9825
 
-s <- function(n,x=0.997){
+s <- function(n,x=0.9825){
   vector <- c()
   for (i in 1:n){
     vector[i] <- x^(i-1)
@@ -1730,7 +1728,7 @@ par(mar = c(4, 4, .1, .1))
 
 
 
-## Scenario 9
+## Scenario 1
 out <- simulate_ss_ld(H=0.3,Pi=0.01,nid=30000,sc=0)
 out$z <- out$beta/out$se
 out$bias <- out$beta - out$true_beta
@@ -1739,7 +1737,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
              aes(x=z,y=bias), 
              color='navy',
              size=1) + xlab("z") +
-  ylab("bias") + ggtitle("Scenario 9", subtitle="n_samples=30,000   h2=0.3   prop_effect=0.01   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
+  ylab("bias") + ggtitle("Scenario 1", subtitle="n_samples=30,000   h2=0.3   prop_effect=0.01   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
 geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) +
   geom_hline(yintercept=0) +
   theme(
@@ -1749,7 +1747,7 @@ geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",siz
   ylim(-0.1, 0.1) 
 
 
-## Scenario 10
+## Scenario 2
 out <- simulate_ss_ld(H=0.3,Pi=0.01,nid=300000,sc=0)
 out$z <- out$beta/out$se
 out$bias <- out$beta - out$true_beta
@@ -1758,7 +1756,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
              aes(x=z,y=bias), 
              color='navy',
              size=1) + xlab("z") +
-  ylab("bias") + ggtitle("Scenario 10", subtitle="n_samples=300,000   h2=0.3   prop_effect=0.01   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
+  ylab("bias") + ggtitle("Scenario 2", subtitle="n_samples=300,000   h2=0.3   prop_effect=0.01   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
   geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) +
   geom_hline(yintercept=0) +
   theme(
@@ -1767,7 +1765,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
   ) +
   ylim(-0.1, 0.1) 
 
-## Scenario 11
+## Scenario 3
 out <- simulate_ss_ld(H=0.8,Pi=0.01,nid=30000,sc=0)
 out$z <- out$beta/out$se
 out$bias <- out$beta - out$true_beta
@@ -1776,7 +1774,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
              aes(x=z,y=bias), 
              color='navy',
              size=1) + xlab("z") +
-  ylab("bias") + ggtitle("Scenario 11", subtitle="n_samples=30,000   h2=0.8   prop_effect=0.01   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
+  ylab("bias") + ggtitle("Scenario 3", subtitle="n_samples=30,000   h2=0.8   prop_effect=0.01   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
   geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) +
   geom_hline(yintercept=0) +
   theme(
@@ -1785,7 +1783,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
   ) +
   ylim(-0.1, 0.1)
 
-## Scenario 12
+## Scenario 4
 out <- simulate_ss_ld(H=0.8,Pi=0.01,nid=300000,sc=0)
 out$z <- out$beta/out$se
 out$bias <- out$beta - out$true_beta
@@ -1794,7 +1792,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
              aes(x=z,y=bias), 
              color='navy',
              size=1) + xlab("z") +
-  ylab("bias") + ggtitle("Scenario 12", subtitle="n_samples=300,000   h2=0.8   prop_effect=0.01   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
+  ylab("bias") + ggtitle("Scenario 4", subtitle="n_samples=300,000   h2=0.8   prop_effect=0.01   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
   geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) +
   geom_hline(yintercept=0) +
   theme(
@@ -1803,7 +1801,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
   ) +
   ylim(-0.1, 0.1) 
 
-## Scenario 13
+## Scenario 5
 out <- simulate_ss_ld(H=0.3,Pi=0.001,nid=30000,sc=0)
 out$z <- out$beta/out$se
 out$bias <- out$beta - out$true_beta
@@ -1812,7 +1810,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
              aes(x=z,y=bias), 
              color='navy',
              size=1) + xlab("z") +
-  ylab("bias") + ggtitle("Scenario 13", subtitle="n_samples=30,000   h2=0.3   prop_effect=0.001   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
+  ylab("bias") + ggtitle("Scenario 5", subtitle="n_samples=30,000   h2=0.3   prop_effect=0.001   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
 geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) +
   geom_hline(yintercept=0) +
   theme(
@@ -1822,7 +1820,7 @@ geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",siz
   ylim(-0.1, 0.1) 
 
 
-## Scenario 14
+## Scenario 6
 out <- simulate_ss_ld(H=0.3,Pi=0.001,nid=300000,sc=0)
 out$z <- out$beta/out$se
 out$bias <- out$beta - out$true_beta
@@ -1831,7 +1829,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
              aes(x=z,y=bias), 
              color='navy',
              size=1) + xlab("z") +
-  ylab("bias") + ggtitle("Scenario 14", subtitle="n_samples=300,000   h2=0.3   prop_effect=0.001   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
+  ylab("bias") + ggtitle("Scenario 6", subtitle="n_samples=300,000   h2=0.3   prop_effect=0.001   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
 geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) +
   geom_hline(yintercept=0) +
   theme(
@@ -1841,7 +1839,7 @@ geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",siz
   ylim(-0.1, 0.1) 
 
 
-## Scenario 15
+## Scenario 7
 out <- simulate_ss_ld(H=0.8,Pi=0.001,nid=30000,sc=0)
 out$z <- out$beta/out$se
 out$bias <- out$beta - out$true_beta
@@ -1850,7 +1848,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
              aes(x=z,y=bias), 
              color='navy',
              size=1) + xlab("z") +
-  ylab("bias") + ggtitle("Scenario 15", subtitle="n_samples=30,000   h2=0.8   prop_effect=0.001   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
+  ylab("bias") + ggtitle("Scenario 7", subtitle="n_samples=30,000   h2=0.8   prop_effect=0.001   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
 geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) +
   geom_hline(yintercept=0) +
   theme(
@@ -1859,7 +1857,7 @@ geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",siz
   ) +
   ylim(-0.1, 0.1)
 
-## Scenario 16
+## Scenario 8
 out <- simulate_ss_ld(H=0.8,Pi=0.001,nid=300000,sc=0)
 out$z <- out$beta/out$se
 out$bias <- out$beta - out$true_beta
@@ -1868,7 +1866,7 @@ ggplot(out,aes(x=z,y=bias)) + geom_point(size=1) + geom_point(data=subout,
              aes(x=z,y=bias), 
              color='navy',
              size=1) + xlab("z") +
-  ylab("bias") + ggtitle("Scenario 16", subtitle="n_samples=300,000   h2=0.8   prop_effect=0.001   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
+  ylab("bias") + ggtitle("Scenario 8", subtitle="n_samples=300,000   h2=0.8   prop_effect=0.001   S=0") +  theme_classic() + geom_vline(xintercept=qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-8)/2), colour="red", linetype="dashed",size=1) +
 geom_vline(xintercept=qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) + geom_vline(xintercept=-qnorm(1-(5e-4)/2), colour="darkred", linetype="dashed",size=1) +
   geom_hline(yintercept=0) +
   theme(
@@ -1935,7 +1933,7 @@ results_nsig_5e_8_all <- read.csv("results/nsig_prop_bias_5e_8_LD_all.csv")
 
 
 data_neutralS <- results_nsig_5e_8_all[which(results_nsig_5e_8_all$S==0),]
-data_neutralS$scenario <- c(rep("Scenario 09",10), rep("Scenario 10",10), rep("Scenario 11",10), rep("Scenario 12",10), rep("Scenario 13",10), rep("Scenario 14",10), rep("Scenario 15",10), rep("Scenario 16",10))
+data_neutralS$scenario <- c(rep("Scenario 1",10), rep("Scenario 2",10), rep("Scenario 3",10), rep("Scenario 4",10), rep("Scenario 5",10), rep("Scenario 6",10), rep("Scenario 7",10), rep("Scenario 8",10))
 data_neutralS$n_samples <- c(rep("30,000",10), rep("300,000",10), rep("30,000",10), rep("300,000",10), rep("30,000",10), rep("300,000",10), rep("30,000",10), rep("300,000",10))
 data_neutralS <- data_neutralS[data_neutralS$n_sig != 0,]
 
@@ -1952,6 +1950,9 @@ We can also visualise the proportion of significant SNPs that are *significantly
 ggplot(data_neutralS,aes(x=n_samples,y=prop_x,colour=scenario)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=scenario)) +  scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7])) + xlab("Sample size")+ facet_grid(h2~prop_effect,labeller=label_both) + ylab(expression(paste("Prop. sig SNPs", italic(" significantly "), "overestimated"))) + theme_bw() + theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank())
 
 ggplot(data_neutralS,aes(x=n_samples,y=mse,colour=scenario)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=scenario)) +  scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7])) + xlab("Sample size")+ facet_grid(h2~prop_effect,labeller=label_both) + ylab("MSE of sig. SNPs") + theme_bw() + theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank())
+
+
+ggplot(data_neutralS,aes(x=n_sig,y=prop_x,colour=scenario)) + geom_point(aes(color=scenario)) +  scale_color_manual(values=c(col[1],col[2],col[8],col[4],col[5],col[3],col[6],col[7])) + xlab("No. sig SNPs")+ ylab(expression(paste("Prop. sig SNPs", italic(" significantly "), "overestimated"))) + theme_bw() + theme(legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank())
 ```
 
 
@@ -2313,13 +2314,13 @@ $~$ $~$ $~$ $~$
 
 **Discussion:**
 
-In our discussion of the results in this case, we focus on the first evaluation metric, namely 'change in MSE of significant SNPs' defined as above. At the $5 \times 10^-8$ significance threshold, we see the conditional likelihood methods perform poorly especially when sample sizes are 300,000. In most instances, they provide worse association estimates than the naïve approach. That said, it cannot be ignored that `cl2` seems to be one of the best adjustment methods when the proportion of effect SNPs is 0.01 and the sample size is 30,000. 
+In our discussion of the results in this case, we focus on the first evaluation metric, namely 'change in MSE of significant SNPs' defined as above. At the $5 \times 10^{-8}$ significance threshold, we see the conditional likelihood methods perform poorly especially when sample sizes are 300,000. In most instances, they provide worse association estimates than the naïve approach. That said, it cannot be ignored that `cl2` seems to be one of the best adjustment methods when the proportion of effect SNPs is 0.01 and the sample size is 30,000. 
 
 Interestingly, it appears that our proposed bootstrap method comes out on top overall here. In all situations depicted, it has one of the largest negative values for change in MSE of significant SNPs. FIQT tends to perform in a somewhat similar manner to this bootstrap method.
 
 With respect to the empirical Bayes method and its variations, for sample sizes of 300,000, the most consistent forms are undeniably `EB`, `EB_gam_nb` and `EB_scam`. With the lower sample size, all versions seem to perform very similarly but with the original empirical Bayes method tending to have the smallest negative change in MSE when the proportion of effect SNPs is 0.01 and the heritability is 0.3. It is worth taking note here the considerable improvement in `EB_scam` when applied to this situation in which a simple correlation structure exists compared with the case of independent SNPs simulated previously. 
 
-At the greater threshold of $5 \times 10^{-4}$, the first thing that comes to our attention is that positive values for change in MSE of significant SNPs are witnessed. This is in contrast to the previous simulation setting where the assumption of independence was presence. There, at this threshold, all methods always led to better association estimates than the naive approach. The same was observed upon application of the methods to the UKBB real data sets. We will not place a great emphasis on the results at this threshold. That said, the most consistent and best performing methods here seem to be the bootstrap method, the original empirical Bayes method and the empirical Bayes method which uses shape constrained additive models (SCAMs).  
+At the greater threshold of $5 \times 10^{-4}$, the first thing that comes to our attention is that positive values for change in MSE of significant SNPs are witnessed. This is in contrast to the previous simulation setting where the assumption of independence was present. There, at this threshold, all methods always led to better association estimates than the naive approach. The same was observed upon application of the methods to the UKBB real data sets. We will not place a great emphasis on the results at this threshold. That said, the most consistent and best performing methods here seem to be the bootstrap method, the original empirical Bayes method and the empirical Bayes method which uses shape constrained additive models (SCAMs).  
 
 
 
