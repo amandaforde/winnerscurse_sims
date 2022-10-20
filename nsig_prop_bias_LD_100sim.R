@@ -1,4 +1,5 @@
-## PRELIMINARY SIMULATION SET-UP with CORRELATION STRUCTURE:
+## WINNER'S CURSE SIMULATION STUDY SCRIPT 1:
+## Preliminary investigation with correlation structure
 
 ## This script obtains the number of significant SNPs, the proportion of these
 ## SNPs for which their association estimate is more extreme than their true
@@ -7,23 +8,17 @@
 
 ## 1) Quantitative trait with normal effect size distribution
 
-## Number of repetitions: 100
+## Number of repetitions: 10
 ## Significance thresholds: alpha=5e-8
 ## Assumption: simple correlation structure imposed on independent blocks of 100
 ## SNPs
 
 ###############################################################################
 
-library(tidyverse)
-library(parallel)
-library(expm)
-
-################################################################################
-
 ## 1) Extra functions required to simulate correlation structure:
 
-x <- 0.997
-s <- function(n,x=0.997){
+x <- 0.9825
+s <- function(n,x=0.9825){
   vector <- c()
   for (i in 1:n){
     vector[i] <- x^(i-1)
@@ -92,8 +87,8 @@ simulate_ss_ld <- function(H,Pi,nid,sc,cormat=R,cormatsq=R_sqrt){
 ################################################################################
 ################################################################################
 
-## Total number of simulations: 10
-tot_sim <- 10
+## Total number of simulations: 100
+tot_sim <- 100
 ## Fixed total number of SNPs:
 n_snps <- 10^6
 
@@ -106,10 +101,6 @@ sim_params <- expand.grid(
   S = c(0)
 )
 
-## Run 'useful_funs.R' here in order to define functions required for the
-## simulations below.
-## NOTE: Simulations currently being run on Windows, hence mc.cores=1.
-
 ################################################################################
 ################################################################################
 
@@ -120,7 +111,7 @@ set.seed(1998)
 run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
   out <- simulate_ss_ld(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
-  snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(5e-8)/2),]
+  snp_sig <- out[abs(out$beta/out$se) > qnorm((5e-8)/2, lower.tail=FALSE),]
   n_sig <- nrow(snp_sig)
   if (n_sig == 0){
     prop_bias <- -1
@@ -133,7 +124,9 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   }
   return(c(n_sig,prop_bias,prop_x,mse))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+res <- mclapply(1:nrow(sim_params), function(i){
+  #print(paste(round(i*100/nrow(sim_params), 2),"%"))
+  do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
 
 n_sig <- c(rep(0,nrow(sim_params)))
 prop_bias <- c(rep(0,nrow(sim_params)))
@@ -152,6 +145,53 @@ ave_res <- ave_results1(results,tot_sim)
 write.csv(results, "results/nsig_prop_bias_5e_8_LD_all.csv")
 write.csv(ave_res, "results/nsig_prop_bias_5e-8_LD.csv")
 
+print("PART 1A) complete!")
+
 ################################################################################
 ################################################################################
 
+## 1B) Quantitative trait with normal effect size distribution - 5e-4
+
+set.seed(1998)
+
+run_sim <- function(n_samples, h2, prop_effect, S,sim)
+{
+  out <- simulate_ss_ld(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
+  snp_sig <- out[abs(out$beta/out$se) > qnorm((5e-4)/2, lower.tail=FALSE),]
+  n_sig <- nrow(snp_sig)
+  if (n_sig == 0){
+    prop_bias <- -1
+    mse <- -1
+    prop_x <- -1
+  }else{
+    prop_bias <- sum(abs(snp_sig$beta) > abs(out$true_beta[snp_sig$rsid]))/n_sig
+    prop_x <- sum(abs(snp_sig$beta) > (abs(out$true_beta[snp_sig$rsid]) + 1.96*out$se[snp_sig$rsid]))/n_sig
+    mse <- mean((out$true_beta[snp_sig$rsid]-snp_sig$beta)^2)
+  }
+  return(c(n_sig,prop_bias,prop_x,mse))
+}
+res <- mclapply(1:nrow(sim_params), function(i){
+  #print(paste(round(i*100/nrow(sim_params), 2),"%"))
+  do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+
+n_sig <- c(rep(0,nrow(sim_params)))
+prop_bias <- c(rep(0,nrow(sim_params)))
+prop_x <- c(rep(0,nrow(sim_params)))
+mse <- c(rep(0,nrow(sim_params)))
+for (i in 1:nrow(sim_params)){
+  n_sig[i] <- res[[i]][1]
+  prop_bias[i] <- res[[i]][2]
+  prop_x[i] <- res[[i]][3]
+  mse[i] <- res[[i]][4]
+}
+
+results <- cbind(sim_params,n_sig,prop_bias,prop_x,mse)
+ave_res <- ave_results1(results,tot_sim)
+
+write.csv(results, "results/nsig_prop_bias_5e_4_LD_all.csv")
+write.csv(ave_res, "results/nsig_prop_bias_5e-4_LD.csv")
+
+print("PART 1B) complete!")
+
+################################################################################
+################################################################################

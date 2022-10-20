@@ -46,7 +46,7 @@ simulate_est <- function(stats){
 
 ## 4. Evaluating MSE for significant SNPs
 mse_sig_evaluate <- function(out,true_beta,i=5,alpha=5e-8){
-  snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(alpha)/2),]
+  snp_sig <- out[abs(out$beta/out$se) > qnorm((alpha)/2, lower.tail=FALSE),]
   if (nrow(snp_sig) == 0){return(100)}
   mse_sig <- mean((true_beta[snp_sig$rsid]-snp_sig[,i])^2)
   return(mse_sig)
@@ -55,7 +55,7 @@ mse_sig_evaluate <- function(out,true_beta,i=5,alpha=5e-8){
 ## 5. Evaluating improvement of average MSE for significant SNPs due to method
 ## implementation
 mse_sig_improve <- function(out,true_beta,i=5,alpha=5e-8){
-  snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(alpha)/2),]
+  snp_sig <- out[abs(out$beta/out$se) > qnorm((alpha)/2, lower.tail=FALSE),]
   if (nrow(snp_sig) == 0){return(100)}
   mse_sig_improve <- mean((true_beta[snp_sig$rsid]-snp_sig[,i])^2)-mean((true_beta[snp_sig$rsid]-snp_sig$beta)^2)
   return(mse_sig_improve)
@@ -64,7 +64,7 @@ mse_sig_improve <- function(out,true_beta,i=5,alpha=5e-8){
 ## 5. Evaluating improvement of average RMSE for significant SNPs due to method
 ## implementation
 mse_sig_improve_root <- function(out,true_beta,i=5,alpha=5e-8){
-  snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(alpha)/2),]
+  snp_sig <- out[abs(out$beta/out$se) > qnorm((alpha)/2, lower.tail=FALSE),]
   if (nrow(snp_sig) == 0){return(100)}
   mse_sig_improve <- sqrt(mean((true_beta[snp_sig$rsid]-snp_sig[,i])^2))-sqrt(mean((true_beta[snp_sig$rsid]-snp_sig$beta)^2))
   return(mse_sig_improve)
@@ -73,7 +73,7 @@ mse_sig_improve_root <- function(out,true_beta,i=5,alpha=5e-8){
 ## 6. Evaluating relative improvement of average MSE for significant SNPs due
 ## to method implementation
 mse_sig_improve_per <- function(out,true_beta,i=5,alpha=5e-8){
-  snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(alpha)/2),]
+  snp_sig <- out[abs(out$beta/out$se) > qnorm((alpha)/2, lower.tail=FALSE),]
   if (nrow(snp_sig) == 0){return(100)}
   mse_sig_improve <- (mean((true_beta[snp_sig$rsid]-snp_sig[,i])^2)-mean((true_beta[snp_sig$rsid]-snp_sig$beta)^2))/(mean((true_beta[snp_sig$rsid]-snp_sig$beta)^2))
   return(mse_sig_improve)
@@ -83,7 +83,7 @@ mse_sig_improve_per <- function(out,true_beta,i=5,alpha=5e-8){
 ## 7. Evaluating fraction of significant SNPs that are less biased due to method
 ## implementation
 frac_sig_less_bias <- function(out,true_beta,i=5,alpha=5e-8){
-  snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(alpha)/2),]
+  snp_sig <- out[abs(out$beta/out$se) > qnorm((alpha)/2, lower.tail=FALSE),]
   if (nrow(snp_sig) == 0){return(100)}
   flb <- sum(abs(true_beta[snp_sig$rsid] - snp_sig$beta)>abs(true_beta[snp_sig$rsid] - snp_sig[,i]))/length(snp_sig$rsid)
   return(flb)
@@ -308,7 +308,7 @@ conditional_likelihood_old <- function(summary_data, alpha=5e-8){
 
 
   z <- summary_data$beta/summary_data$se
-  p_val <- 2*(1-stats::pnorm(abs(z)))
+  p_val <- 2*(stats::pnorm(abs(z), lower.tail=FALSE))
   summary_data <- cbind(summary_data, z, p_val)
 
 
@@ -319,7 +319,7 @@ conditional_likelihood_old <- function(summary_data, alpha=5e-8){
 
   summary_data_sig <- summary_data[summary_data$p_val<alpha,]
 
-  c <- stats::qnorm(1-(alpha)/2)
+  c <- stats::qnorm((alpha)/2, lower.tail=FALSE)
 
   beta.cl1 <- c(rep(0,nrow(summary_data_sig)))
   beta.cl2 <- c(rep(0,nrow(summary_data_sig)))
@@ -383,7 +383,7 @@ conditional_likelihood_ind <- function(summary_data, alpha=5e-8){
 
 
   z <- summary_data$beta/summary_data$se
-  p_val <- 2*(1-stats::pnorm(abs(z)))
+  p_val <- 2*(stats::pnorm(abs(z), lower.tail=FALSE))
   summary_data <- cbind(summary_data, z, p_val)
 
 
@@ -394,7 +394,7 @@ conditional_likelihood_ind <- function(summary_data, alpha=5e-8){
 
   summary_data_sig <- summary_data[summary_data$p_val<alpha,]
 
-  c <- stats::qnorm(1-(alpha)/2)
+  c <- stats::qnorm((alpha)/2, lower.tail=FALSE)
 
   beta.cl1 <- c(rep(0,nrow(summary_data_sig)))
   beta.cl2 <- c(rep(0,nrow(summary_data_sig)))

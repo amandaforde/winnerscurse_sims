@@ -1,4 +1,6 @@
-## SIMULATION SET-UP:
+## WINNER'S CURSE SIMULATION STUDY SCRIPT 4:
+## Method evaluation and comparison with independence and normal effect size
+## distribution
 
 ## 1) Quantitative trait with normal effect size distribution - simulate_ss()
 
@@ -11,15 +13,6 @@
 ## Assumption: SNPs are independent
 
 ################################################################################
-
-library(devtools)
-devtools::install_github("amandaforde/winnerscurse")
-library(winnerscurse)
-library(tidyverse)
-library(parallel)
-library(scam)
-library(mgcv)
-
 
 ## Total number of simulations:
 tot_sim <- 100
@@ -34,10 +27,6 @@ sim_params <- expand.grid(
   prop_effect = c(0.01,0.001),
   S = c(-1, 0, 1)
 )
-
-## Run 'useful_funs.R' here in order to define extra functions required for the
-## simulations below.
-## NOTE: Simulations currently being run on Windows, hence mc.cores=1.
 
 ################################################################################
 ################################################################################
@@ -130,7 +119,9 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
 
   return(c(flb_EB,mse_EB,rmse_EB,rel_mse_EB,flb_EB_df,mse_EB_df,rmse_EB_df,rel_mse_EB_df,flb_EB_scam,mse_EB_scam,rmse_EB_scam,rel_mse_EB_scam,flb_EB_gam_po,mse_EB_gam_po,rmse_EB_gam_po,rel_mse_EB_gam_po,flb_EB_gam_nb,mse_EB_gam_nb,rmse_EB_gam_po,rel_mse_EB_gam_nb,flb_FIQT,mse_FIQT,rmse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rmse_BR,rel_mse_BR,flb_cl1,mse_cl1,rmse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rmse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rmse_cl3,rel_mse_cl3,flb_rep,mse_rep,rmse_rep,rel_mse_rep))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+res <- mclapply(1:nrow(sim_params), function(i){
+  #print(paste(round(i*100/nrow(sim_params), 2),"%"))
+  do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
 
 ################################################################################
 
@@ -299,6 +290,9 @@ write.csv(results_all,"results/norm_5e-8_100sim_ave.csv")
 results_all <- rbind(res_EB,res_EB_df,res_EB_scam,res_EB_gam_po,res_EB_gam_nb,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3,res_rep)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("EB_df",nrow(sim_params)),rep("EB_scam",nrow(sim_params)),rep("EB_gam_po",nrow(sim_params)),rep("EB_gam_nb",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)),rep("rep",nrow(sim_params)))
 write.csv(results_all,"results/norm_5e-8_100sim_all.csv")
+
+print("PART 1A) complete!")
+
 ################################################################################
 ################################################################################
 
@@ -313,59 +307,59 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
 
   ## Empirical Bayes:
   out_EB <- empirical_bayes(disc_stats)
-  flb_EB <- frac_sig_less_bias(out_EB,ss$true_beta,alpha=5e-4)
-  mse_EB <- mse_sig_improve(out_EB,ss$true_beta,alpha=5e-4)
-  rmse_EB <- mse_sig_improve_root(out_EB,ss$true_beta,alpha=5e-4)
-  rel_mse_EB <- mse_sig_improve_per(out_EB,ss$true_beta,alpha=5e-4)
+  flb_EB <- frac_sig_less_bias(out_EB,ss$true_beta,i=4,alpha=5e-4)
+  mse_EB <- mse_sig_improve(out_EB,ss$true_beta,i=4,alpha=5e-4)
+  rmse_EB <- mse_sig_improve_root(out_EB,ss$true_beta,i=4,alpha=5e-4)
+  rel_mse_EB <- mse_sig_improve_per(out_EB,ss$true_beta,i=4,alpha=5e-4)
 
   ## Empirical Bayes df=7:
   out_EB_df <- empirical_bayes(disc_stats, method="fix_df")
-  flb_EB_df <- frac_sig_less_bias(out_EB_df,ss$true_beta,alpha=5e-4)
-  mse_EB_df <- mse_sig_improve(out_EB_df,ss$true_beta,alpha=5e-4)
-  rmse_EB_df <- mse_sig_improve_root(out_EB_df,ss$true_beta,alpha=5e-4)
-  rel_mse_EB_df <- mse_sig_improve_per(out_EB_df,ss$true_beta,alpha=5e-4)
+  flb_EB_df <- frac_sig_less_bias(out_EB_df,ss$true_beta,i=4,alpha=5e-4)
+  mse_EB_df <- mse_sig_improve(out_EB_df,ss$true_beta,i=4,alpha=5e-4)
+  rmse_EB_df <- mse_sig_improve_root(out_EB_df,ss$true_beta,i=4,alpha=5e-4)
+  rel_mse_EB_df <- mse_sig_improve_per(out_EB_df,ss$true_beta,i=4,alpha=5e-4)
 
   ## Empirical Bayes scam:
   out_EB_scam <- empirical_bayes(disc_stats, method="scam")
-  flb_EB_scam <- frac_sig_less_bias(out_EB_scam,ss$true_beta,alpha=5e-4)
-  mse_EB_scam <- mse_sig_improve(out_EB_scam,ss$true_beta,alpha=5e-4)
-  rmse_EB_scam <- mse_sig_improve_root(out_EB_scam,ss$true_beta,alpha=5e-4)
-  rel_mse_EB_scam <- mse_sig_improve_per(out_EB_scam,ss$true_beta,alpha=5e-4)
+  flb_EB_scam <- frac_sig_less_bias(out_EB_scam,ss$true_beta,i=4,alpha=5e-4)
+  mse_EB_scam <- mse_sig_improve(out_EB_scam,ss$true_beta,i=4,alpha=5e-4)
+  rmse_EB_scam <- mse_sig_improve_root(out_EB_scam,ss$true_beta,i=4,alpha=5e-4)
+  rel_mse_EB_scam <- mse_sig_improve_per(out_EB_scam,ss$true_beta,i=4,alpha=5e-4)
 
   ## Empirical Bayes gam_po:
   out_EB_gam_po <- empirical_bayes(disc_stats, method="gam_po")
-  flb_EB_gam_po <- frac_sig_less_bias(out_EB_gam_po,ss$true_beta,alpha=5e-4)
-  mse_EB_gam_po <- mse_sig_improve(out_EB_gam_po,ss$true_beta,alpha=5e-4)
-  rmse_EB_gam_po <- mse_sig_improve_root(out_EB_gam_po,ss$true_beta,alpha=5e-4)
-  rel_mse_EB_gam_po <- mse_sig_improve_per(out_EB_gam_po,ss$true_beta,alpha=5e-4)
+  flb_EB_gam_po <- frac_sig_less_bias(out_EB_gam_po,ss$true_beta,i=4,alpha=5e-4)
+  mse_EB_gam_po <- mse_sig_improve(out_EB_gam_po,ss$true_beta,i=4,alpha=5e-4)
+  rmse_EB_gam_po <- mse_sig_improve_root(out_EB_gam_po,ss$true_beta,i=4,alpha=5e-4)
+  rel_mse_EB_gam_po <- mse_sig_improve_per(out_EB_gam_po,ss$true_beta,i=4,alpha=5e-4)
 
   ## Empirical Bayes gam_nb:
   out_EB_gam_nb <- empirical_bayes(disc_stats, method="gam_nb")
-  flb_EB_gam_nb <- frac_sig_less_bias(out_EB_gam_nb,ss$true_beta,alpha=5e-4)
-  mse_EB_gam_nb <- mse_sig_improve(out_EB_gam_nb,ss$true_beta,alpha=5e-4)
-  rmse_EB_gam_nb <- mse_sig_improve_root(out_EB_gam_nb,ss$true_beta,alpha=5e-4)
-  rel_mse_EB_gam_nb <- mse_sig_improve_per(out_EB_gam_nb,ss$true_beta,alpha=5e-4)
+  flb_EB_gam_nb <- frac_sig_less_bias(out_EB_gam_nb,ss$true_beta,i=4,alpha=5e-4)
+  mse_EB_gam_nb <- mse_sig_improve(out_EB_gam_nb,ss$true_beta,i=4,alpha=5e-4)
+  rmse_EB_gam_nb <- mse_sig_improve_root(out_EB_gam_nb,ss$true_beta,i=4,alpha=5e-4)
+  rel_mse_EB_gam_nb <- mse_sig_improve_per(out_EB_gam_nb,ss$true_beta,i=4,alpha=5e-4)
 
   ## FIQT:
   out_FIQT <- FDR_IQT(disc_stats)
-  flb_FIQT <- frac_sig_less_bias(out_FIQT,ss$true_beta,alpha=5e-4)
-  mse_FIQT <- mse_sig_improve(out_FIQT,ss$true_beta,alpha=5e-4)
-  rmse_FIQT <- mse_sig_improve_root(out_FIQT,ss$true_beta,alpha=5e-4)
-  rel_mse_FIQT <- mse_sig_improve_per(out_FIQT,ss$true_beta,alpha=5e-4)
+  flb_FIQT <- frac_sig_less_bias(out_FIQT,ss$true_beta,i=4,alpha=5e-4)
+  mse_FIQT <- mse_sig_improve(out_FIQT,ss$true_beta,i=4,alpha=5e-4)
+  rmse_FIQT <- mse_sig_improve_root(out_FIQT,ss$true_beta,i=4,alpha=5e-4)
+  rel_mse_FIQT <- mse_sig_improve_per(out_FIQT,ss$true_beta,i=4,alpha=5e-4)
 
   ## Bootstrap:
   out_BR <- BR_ss(disc_stats)
-  flb_BR <- frac_sig_less_bias(out_BR,ss$true_beta,alpha=5e-4)
-  mse_BR <- mse_sig_improve(out_BR,ss$true_beta,alpha=5e-4)
-  rmse_BR <- mse_sig_improve_root(out_BR,ss$true_beta,alpha=5e-4)
-  rel_mse_BR <- mse_sig_improve_per(out_BR,ss$true_beta,alpha=5e-4)
+  flb_BR <- frac_sig_less_bias(out_BR,ss$true_beta,i=4,alpha=5e-4)
+  mse_BR <- mse_sig_improve(out_BR,ss$true_beta,i=4,alpha=5e-4)
+  rmse_BR <- mse_sig_improve_root(out_BR,ss$true_beta,i=4,alpha=5e-4)
+  rel_mse_BR <- mse_sig_improve_per(out_BR,ss$true_beta,i=4,alpha=5e-4)
 
   ## cl1:
-  out_cl <- conditional_likelihood_old(disc_stats,alpha=5e-4)
-  flb_cl1 <- frac_sig_less_bias(out_cl,ss$true_beta,alpha=5e-4)
-  mse_cl1 <- mse_sig_improve(out_cl,ss$true_beta,alpha=5e-4)
-  rmse_cl1 <- mse_sig_improve_root(out_cl,ss$true_beta,alpha=5e-4)
-  rel_mse_cl1 <- mse_sig_improve_per(out_cl,ss$true_beta,alpha=5e-4)
+  out_cl <- conditional_likelihood_ind(disc_stats,alpha=5e-4)
+  flb_cl1 <- frac_sig_less_bias(out_cl,ss$true_beta,i=4,alpha=5e-4)
+  mse_cl1 <- mse_sig_improve(out_cl,ss$true_beta,i=4,alpha=5e-4)
+  rmse_cl1 <- mse_sig_improve_root(out_cl,ss$true_beta,i=4,alpha=5e-4)
+  rel_mse_cl1 <- mse_sig_improve_per(out_cl,ss$true_beta,i=4,alpha=5e-4)
 
   ## cl2:
   flb_cl2 <- frac_sig_less_bias(out_cl,ss$true_beta,alpha=5e-4,i=5)
@@ -383,14 +377,17 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   ss2 <- data.frame(true_beta=ss$true_beta,se=ss$rep_se)
   rep_stats <- simulate_est(ss2)
   out_rep <- cbind(disc_stats,rep_stats$beta)
-  flb_rep <- frac_sig_less_bias(out_rep,ss$true_beta,alpha=5e-4)
-  mse_rep <- mse_sig_improve(out_rep,ss$true_beta,alpha=5e-4)
-  rmse_rep <- mse_sig_improve_root(out_rep,ss$true_beta,alpha=5e-4)
-  rel_mse_rep <- mse_sig_improve_per(out_rep,ss$true_beta,alpha=5e-4)
+  flb_rep <- frac_sig_less_bias(out_rep,ss$true_beta,i=4,alpha=5e-4)
+  mse_rep <- mse_sig_improve(out_rep,ss$true_beta,i=4,alpha=5e-4)
+  rmse_rep <- mse_sig_improve_root(out_rep,ss$true_beta,i=4,alpha=5e-4)
+  rel_mse_rep <- mse_sig_improve_per(out_rep,ss$true_beta,i=4,alpha=5e-4)
+
 
   return(c(flb_EB,mse_EB,rmse_EB,rel_mse_EB,flb_EB_df,mse_EB_df,rmse_EB_df,rel_mse_EB_df,flb_EB_scam,mse_EB_scam,rmse_EB_scam,rel_mse_EB_scam,flb_EB_gam_po,mse_EB_gam_po,rmse_EB_gam_po,rel_mse_EB_gam_po,flb_EB_gam_nb,mse_EB_gam_nb,rmse_EB_gam_po,rel_mse_EB_gam_nb,flb_FIQT,mse_FIQT,rmse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rmse_BR,rel_mse_BR,flb_cl1,mse_cl1,rmse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rmse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rmse_cl3,rel_mse_cl3,flb_rep,mse_rep,rmse_rep,rel_mse_rep))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+res <- mclapply(1:nrow(sim_params), function(i){
+  #print(paste(round(i*100/nrow(sim_params), 2),"%"))
+  do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
 
 ################################################################################
 
@@ -561,6 +558,8 @@ write.csv(results_all,"results/norm_5e-4_100sim_ave.csv")
 results_all <- rbind(res_EB,res_EB_df,res_EB_scam,res_EB_gam_po,res_EB_gam_nb,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3,res_rep)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("EB_df",nrow(sim_params)),rep("EB_scam",nrow(sim_params)),rep("EB_gam_po",nrow(sim_params)),rep("EB_gam_nb",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)),rep("rep",nrow(sim_params)))
 write.csv(results_all,"results/norm_5e-4_100sim_all.csv")
+
+print("PART 1B) complete!")
 
 ################################################################################
 ################################################################################

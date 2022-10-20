@@ -1,4 +1,6 @@
-## SIMULATION SET-UP with CORRELATION STRUCTURE:
+## WINNER'S CURSE SIMULATION STUDY SCRIPT 2:
+## Method evaluation and comparison with correlation structure
+
 
 ## 1) Quantitative trait with normal effect size distribution - simulate_ss_ld()
 
@@ -13,21 +15,10 @@
 
 ################################################################################
 
-library(devtools)
-devtools::install_github("amandaforde/winnerscurse")
-library(winnerscurse)
-library(tidyverse)
-library(parallel)
-library(scam)
-library(mgcv)
-library(expm)
-
-################################################################################
-
 ## 1) Extra functions required to simulate correlation structure:
 
-x <- 0.997
-s <- function(n,x=0.997){
+x <- 0.9825
+s <- function(n,x=0.9825){
   vector <- c()
   for (i in 1:n){
     vector[i] <- x^(i-1)
@@ -104,15 +95,11 @@ n_snps <- 10^6
 ## Set of scenarios to be tested
 sim_params <- expand.grid(
   sim = c(1:tot_sim),
-  n_samples = c(30000),
-  h2 = c(0.8),
-  prop_effect = c(0.01),
+  n_samples = c(30000,300000),
+  h2 = c(0.3,0.8),
+  prop_effect = c(0.01, 0.001),
   S = c(0)
 )
-
-## Run 'useful_funs.R' here in order to define extra functions required for the
-## simulations below.
-## NOTE: Simulations currently being run on Windows, hence mc.cores=1.
 
 ################################################################################
 ################################################################################
@@ -195,7 +182,9 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
 
   return(c(flb_EB,mse_EB,rmse_EB,rel_mse_EB,flb_EB_df,mse_EB_df,rmse_EB_df,rel_mse_EB_df,flb_EB_scam,mse_EB_scam,rmse_EB_scam,rel_mse_EB_scam,flb_EB_gam_po,mse_EB_gam_po,rmse_EB_gam_po,rel_mse_EB_gam_po,flb_EB_gam_nb,mse_EB_gam_nb,rmse_EB_gam_nb,rel_mse_EB_gam_nb,flb_FIQT,mse_FIQT,rmse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rmse_BR,rel_mse_BR,flb_cl1,mse_cl1,rmse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rmse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rmse_cl3,rel_mse_cl3))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+res <- mclapply(1:nrow(sim_params), function(i){
+  #print(paste(round(i*100/nrow(sim_params), 2),"%"))
+  do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
 
 ################################################################################
 
@@ -350,6 +339,9 @@ write.csv(results_all,"results/norm_5e-8_100sim_LD_ave.csv")
 results_all <- rbind(res_EB,res_EB_df,res_EB_scam,res_EB_gam_po,res_EB_gam_nb,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("EB_df",nrow(sim_params)),rep("EB_scam",nrow(sim_params)),rep("EB_gam_po",nrow(sim_params)),rep("EB_gam_nb",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)))
 write.csv(results_all,"results/norm_5e-8_100sim_LD_all.csv")
+
+print("PART 1A) complete!")
+
 ################################################################################
 ################################################################################
 
@@ -431,7 +423,10 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
 
   return(c(flb_EB,mse_EB,rmse_EB,rel_mse_EB,flb_EB_df,mse_EB_df,rmse_EB_df,rel_mse_EB_df,flb_EB_scam,mse_EB_scam,rmse_EB_scam,rel_mse_EB_scam,flb_EB_gam_po,mse_EB_gam_po,rmse_EB_gam_po,rel_mse_EB_gam_po,flb_EB_gam_nb,mse_EB_gam_nb,rmse_EB_gam_nb,rel_mse_EB_gam_nb,flb_FIQT,mse_FIQT,rmse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rmse_BR,rel_mse_BR,flb_cl1,mse_cl1,rmse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rmse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rmse_cl3,rel_mse_cl3))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+
+res <- mclapply(1:nrow(sim_params), function(i){
+  #print(paste(round(i*100/nrow(sim_params), 2),"%"))
+  do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
 
 ################################################################################
 
@@ -587,5 +582,8 @@ write.csv(results_all,"results/norm_5e-4_100sim_LD_ave.csv")
 results_all <- rbind(res_EB,res_EB_df,res_EB_scam,res_EB_gam_po,res_EB_gam_nb,res_FIQT,res_BR,res_cl1,res_cl2,res_cl3)
 results_all$method <- c(rep("EB",nrow(sim_params)),rep("EB_df",nrow(sim_params)),rep("EB_scam",nrow(sim_params)),rep("EB_gam_po",nrow(sim_params)),rep("EB_gam_nb",nrow(sim_params)),rep("FIQT",nrow(sim_params)),rep("BR",nrow(sim_params)),rep("cl1",nrow(sim_params)),rep("cl2",nrow(sim_params)),rep("cl3",nrow(sim_params)))
 write.csv(results_all,"results/norm_5e-4_100sim_LD_all.csv")
+
+print("PART 1B) complete!")
+
 ################################################################################
 ################################################################################

@@ -1,4 +1,6 @@
-## PRELIMINARY SIMULATION SET-UP:
+## WINNER'S CURSE SIMULATION STUDY SCRIPT 3:
+## Preliminary investigation with independence and normal effect size
+## distribution
 
 ## This script obtains the number of significant SNPs, the proportion of these
 ## SNPs for which their association estimate is more extreme than their true
@@ -12,9 +14,6 @@
 ## Assumption: SNPs are independent
 
 ###############################################################################
-
-library(tidyverse)
-library(parallel)
 
 ## Total number of simulations: 100
 tot_sim <- 100
@@ -30,10 +29,6 @@ sim_params <- expand.grid(
   S = c(-1, 0, 1)
 )
 
-## Run 'useful_funs.R' here in order to define functions required for the
-## simulations below.
-## NOTE: Simulations currently being run on Windows, hence mc.cores=1.
-
 ################################################################################
 ################################################################################
 
@@ -45,7 +40,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
   ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
   out <- simulate_est(ss)
-  snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(5e-8)/2),]
+  snp_sig <- out[abs(out$beta/out$se) > qnorm((5e-8)/2, lower.tail=FALSE),]
   n_sig <- nrow(snp_sig)
   if (n_sig == 0){
     prop_bias <- -1
@@ -58,7 +53,9 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   }
   return(c(n_sig,prop_bias,prop_x,mse))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+res <- mclapply(1:nrow(sim_params), function(i){
+  #print(paste(round(i*100/nrow(sim_params), 2),"%"))
+  do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
 
 n_sig <- c(rep(0,nrow(sim_params)))
 prop_bias <- c(rep(0,nrow(sim_params)))
@@ -77,6 +74,8 @@ ave_res <- ave_results1(results,tot_sim)
 write.csv(results, "results/norm_nsig_prop_bias_5e_8_all.csv")
 write.csv(ave_res, "results/norm_nsig_prop_bias_5e-8.csv")
 
+print("PART 1A) complete!")
+
 ################################################################################
 ################################################################################
 
@@ -88,7 +87,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
 {
   ss <- simulate_ss(H=h2,Pi=prop_effect,nid=n_samples,sc=S)
   out <- simulate_est(ss)
-  snp_sig <- out[abs(out$beta/out$se) > qnorm(1-(5e-4)/2),]
+  snp_sig <- out[abs(out$beta/out$se) > qnorm((5e-4)/2, lower.tail=FALSE),]
   n_sig <- nrow(snp_sig)
   if (n_sig == 0){
     prop_bias <- -1
@@ -101,7 +100,9 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   }
   return(c(n_sig,prop_bias,prop_x,mse))
 }
-res <- mclapply(1:nrow(sim_params), function(i){do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
+res <- mclapply(1:nrow(sim_params), function(i){
+  #print(paste(round(i*100/nrow(sim_params), 2),"%"))
+  do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
 
 n_sig <- c(rep(0,nrow(sim_params)))
 prop_bias <- c(rep(0,nrow(sim_params)))
@@ -119,6 +120,8 @@ ave_res <- ave_results1(results,tot_sim)
 
 write.csv(results, "results/norm_nsig_prop_bias_5e_4_all.csv")
 write.csv(ave_res, "results/norm_nsig_prop_bias_5e-4.csv")
+
+print("PART 1B) complete!")
 
 ################################################################################
 ################################################################################
