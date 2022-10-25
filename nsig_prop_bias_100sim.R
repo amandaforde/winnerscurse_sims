@@ -54,7 +54,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   return(c(n_sig,prop_bias,prop_x,mse))
 }
 res <- mclapply(1:nrow(sim_params), function(i){
-  #print(paste(round(i*100/nrow(sim_params), 2),"%"))
+  print(paste(round(i*100/nrow(sim_params), 2),"%"))
   do.call(run_sim, args=as.list(sim_params[i,]))}, mc.cores=1)
 
 n_sig <- c(rep(0,nrow(sim_params)))
@@ -72,7 +72,7 @@ results <- cbind(sim_params,n_sig,prop_bias,prop_x,mse)
 ave_res <- ave_results1(results,tot_sim)
 
 write.csv(results, "results/norm_nsig_prop_bias_5e_8_all.csv")
-write.csv(ave_res, "results/norm_nsig_prop_bias_5e-8.csv")
+write.csv(ave_res, "results/norm_nsig_prop_bias_5e_8.csv")
 
 print("PART 1A) complete!")
 
@@ -119,7 +119,7 @@ results <- cbind(sim_params,n_sig,prop_bias,prop_x,mse)
 ave_res <- ave_results1(results,tot_sim)
 
 write.csv(results, "results/norm_nsig_prop_bias_5e_4_all.csv")
-write.csv(ave_res, "results/norm_nsig_prop_bias_5e-4.csv")
+write.csv(ave_res, "results/norm_nsig_prop_bias_5e_4.csv")
 
 print("PART 1B) complete!")
 
