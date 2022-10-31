@@ -117,7 +117,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   rmse_rep <- mse_sig_improve_root(out_rep,ss$true_beta,i=4,alpha=5e-8)
   rel_mse_rep <- mse_sig_improve_per(out_rep,ss$true_beta,i=4,alpha=5e-8)
 
-  return(c(flb_EB,mse_EB,rmse_EB,rel_mse_EB,flb_EB_df,mse_EB_df,rmse_EB_df,rel_mse_EB_df,flb_EB_scam,mse_EB_scam,rmse_EB_scam,rel_mse_EB_scam,flb_EB_gam_po,mse_EB_gam_po,rmse_EB_gam_po,rel_mse_EB_gam_po,flb_EB_gam_nb,mse_EB_gam_nb,rmse_EB_gam_po,rel_mse_EB_gam_nb,flb_FIQT,mse_FIQT,rmse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rmse_BR,rel_mse_BR,flb_cl1,mse_cl1,rmse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rmse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rmse_cl3,rel_mse_cl3,flb_rep,mse_rep,rmse_rep,rel_mse_rep))
+  return(c(flb_EB,mse_EB,rmse_EB,rel_mse_EB,flb_EB_df,mse_EB_df,rmse_EB_df,rel_mse_EB_df,flb_EB_scam,mse_EB_scam,rmse_EB_scam,rel_mse_EB_scam,flb_EB_gam_po,mse_EB_gam_po,rmse_EB_gam_po,rel_mse_EB_gam_po,flb_EB_gam_nb,mse_EB_gam_nb,rmse_EB_gam_nb,rel_mse_EB_gam_nb,flb_FIQT,mse_FIQT,rmse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rmse_BR,rel_mse_BR,flb_cl1,mse_cl1,rmse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rmse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rmse_cl3,rel_mse_cl3,flb_rep,mse_rep,rmse_rep,rel_mse_rep))
 }
 res <- mclapply(1:nrow(sim_params), function(i){
   #print(paste(round(i*100/nrow(sim_params), 2),"%"))
@@ -383,7 +383,7 @@ run_sim <- function(n_samples, h2, prop_effect, S,sim)
   rel_mse_rep <- mse_sig_improve_per(out_rep,ss$true_beta,i=4,alpha=5e-4)
 
 
-  return(c(flb_EB,mse_EB,rmse_EB,rel_mse_EB,flb_EB_df,mse_EB_df,rmse_EB_df,rel_mse_EB_df,flb_EB_scam,mse_EB_scam,rmse_EB_scam,rel_mse_EB_scam,flb_EB_gam_po,mse_EB_gam_po,rmse_EB_gam_po,rel_mse_EB_gam_po,flb_EB_gam_nb,mse_EB_gam_nb,rmse_EB_gam_po,rel_mse_EB_gam_nb,flb_FIQT,mse_FIQT,rmse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rmse_BR,rel_mse_BR,flb_cl1,mse_cl1,rmse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rmse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rmse_cl3,rel_mse_cl3,flb_rep,mse_rep,rmse_rep,rel_mse_rep))
+  return(c(flb_EB,mse_EB,rmse_EB,rel_mse_EB,flb_EB_df,mse_EB_df,rmse_EB_df,rel_mse_EB_df,flb_EB_scam,mse_EB_scam,rmse_EB_scam,rel_mse_EB_scam,flb_EB_gam_po,mse_EB_gam_po,rmse_EB_gam_po,rel_mse_EB_gam_po,flb_EB_gam_nb,mse_EB_gam_nb,rmse_EB_gam_nb,rel_mse_EB_gam_nb,flb_FIQT,mse_FIQT,rmse_FIQT,rel_mse_FIQT,flb_BR,mse_BR,rmse_BR,rel_mse_BR,flb_cl1,mse_cl1,rmse_cl1,rel_mse_cl1,flb_cl2,mse_cl2,rmse_cl2,rel_mse_cl2,flb_cl3,mse_cl3,rmse_cl3,rel_mse_cl3,flb_rep,mse_rep,rmse_rep,rel_mse_rep))
 }
 res <- mclapply(1:nrow(sim_params), function(i){
   #print(paste(round(i*100/nrow(sim_params), 2),"%"))
