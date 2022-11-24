@@ -283,7 +283,7 @@ ggarrange(Scenario1, Scenario2, Scenario3, Scenario4, Scenario5, Scenario6, Scen
 ## Fig 1: change in RMSE of sig. SNPs (5e-8)
 
 MSE_5e_8 <- read.csv("results/norm_5e-8_100sim_LD_all.csv")
-MSE_5e_8 <- MSE_5e_8  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3'))
+MSE_5e_8 <- MSE_5e_8  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3', EB_df = "EB_df", EB_gam_nb = "EB_gam_nb", EB_gam_po = "EB_gam_po", EB_scam = "EB_scam"))
 MSE_5e_8$method <- factor(MSE_5e_8$method, levels=c("CL1", "CL2", "CL3", "EB", "EB_df", "EB_gam_nb", "EB_gam_po", "EB_scam", "boot", "FIQT"))
 
 MSE_5e_8a <- MSE_5e_8[which(MSE_5e_8$n_samples==30000),]
@@ -291,12 +291,12 @@ MSE_5e_8a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_8a)))
 MSE_5e_8b <- MSE_5e_8[which(MSE_5e_8$n_samples==300000),]
 MSE_5e_8b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_8b)))
 
-plotA <- ggplot(MSE_5e_8a,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
-plotB <- ggplot(MSE_5e_8b,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+plotA <- ggplot(MSE_5e_8a,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_8b,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
-figure <- plotA + plotB & theme(legend.position = "bottom", legend.box.background = element_rect(colour = "black"))
+figure <- plotA + plotB
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
 
@@ -311,12 +311,12 @@ MSE_5e_4a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_4a)))
 MSE_5e_4b <- MSE_5e_4[which(MSE_5e_4$n_samples==300000),]
 MSE_5e_4b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_4b)))
 
-plotA <- ggplot(MSE_5e_4a,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
-plotB <- ggplot(MSE_5e_4b,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+plotA <- ggplot(MSE_5e_4a,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_4b,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
-figure <- plotA + plotB & theme(legend.position = "bottom", legend.box.background = element_rect(colour = "black"))
+figure <- plotA + plotB
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
 
@@ -341,12 +341,12 @@ MSE_5e_8a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_8a)))
 MSE_5e_8b <- MSE_5e_8[which(MSE_5e_8$n_samples==300000),]
 MSE_5e_8b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_8b)))
 
-plotA <- ggplot(MSE_5e_8a,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
-plotB <- ggplot(MSE_5e_8b,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+plotA <- ggplot(MSE_5e_8a,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_8b,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
-figure <- plotA + plotB & theme(legend.position = "bottom", legend.box.background = element_rect(colour = "black"))
+figure <- plotA + plotB
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
 
@@ -363,12 +363,12 @@ MSE_5e_4a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_4a)))
 MSE_5e_4b <- MSE_5e_4[which(MSE_5e_4$n_samples==300000),]
 MSE_5e_4b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_4b)))
 
-plotA <- ggplot(MSE_5e_4a,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
-plotB <- ggplot(MSE_5e_4b,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+plotA <- ggplot(MSE_5e_4a,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_4b,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
-figure <- plotA + plotB & theme(legend.position = "bottom", legend.box.background = element_rect(colour = "black"))
+figure <- plotA + plotB
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
 
@@ -389,12 +389,12 @@ MSE_5e_8a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_8a)))
 MSE_5e_8b <- MSE_5e_8[which(MSE_5e_8$n_samples==300000),]
 MSE_5e_8b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_8b)))
 
-plotA <- ggplot(MSE_5e_8a,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
-plotB <- ggplot(MSE_5e_8b,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+plotA <- ggplot(MSE_5e_8a,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_8b,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
-figure <- plotA + plotB & theme(legend.position = "bottom", legend.box.background = element_rect(colour = "black"))
+figure <- plotA + plotB
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
 
@@ -411,12 +411,12 @@ MSE_5e_4a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_4a)))
 MSE_5e_4b <- MSE_5e_4[which(MSE_5e_4$n_samples==300000),]
 MSE_5e_4b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_4b)))
 
-plotA <- ggplot(MSE_5e_4a,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
-plotB <- ggplot(MSE_5e_4b,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+plotA <- ggplot(MSE_5e_4a,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_4b,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
-figure <- plotA + plotB & theme(legend.position = "bottom", legend.box.background = element_rect(colour = "black"))
+figure <- plotA + plotB
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
 
@@ -437,12 +437,12 @@ MSE_5e_8a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_8a)))
 MSE_5e_8b <- MSE_5e_8[which(MSE_5e_8$n_samples==300000),]
 MSE_5e_8b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_8b)))
 
-plotA <- ggplot(MSE_5e_8a,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
-plotB <- ggplot(MSE_5e_8b,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+plotA <- ggplot(MSE_5e_8a,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_8b,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
-figure <- plotA + plotB & theme(legend.position = "bottom", legend.box.background = element_rect(colour = "black"))
+figure <- plotA + plotB
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
 
@@ -459,12 +459,12 @@ MSE_5e_4a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_4a)))
 MSE_5e_4b <- MSE_5e_4[which(MSE_5e_4$n_samples==300000),]
 MSE_5e_4b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_4b)))
 
-plotA <- ggplot(MSE_5e_4a,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
-plotB <- ggplot(MSE_5e_4b,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+plotA <- ggplot(MSE_5e_4a,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_4b,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
-figure <- plotA + plotB & theme(legend.position = "bottom", legend.box.background = element_rect(colour = "black"))
+figure <- plotA + plotB
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
 
@@ -485,12 +485,12 @@ MSE_5e_8a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_8a)))
 MSE_5e_8b <- MSE_5e_8[which(MSE_5e_8$n_samples==300000),]
 MSE_5e_8b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_8b)))
 
-plotA <- ggplot(MSE_5e_8a,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
-plotB <- ggplot(MSE_5e_8b,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+plotA <- ggplot(MSE_5e_8a,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_8b,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
-figure <- plotA + plotB & theme(legend.position = "bottom", legend.box.background = element_rect(colour = "black"))
+figure <- plotA + plotB
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
 
@@ -507,11 +507,12 @@ MSE_5e_4a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_4a)))
 MSE_5e_4b <- MSE_5e_4[which(MSE_5e_4$n_samples==300000),]
 MSE_5e_4b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_4b)))
 
-plotA <- ggplot(MSE_5e_4a,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
-plotB <- ggplot(MSE_5e_4b,aes(x=n_samples,y=rmse,colour=method)) + geom_boxplot(position=position_dodge(1),size=0.5,aes(color=method)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Sample size") +
-  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(text = element_text(size=12),legend.title = element_blank(),legend.box.background = element_rect(colour = "black"),legend.spacing.y = unit(0, "mm"), legend.background=element_blank(), strip.text = element_text(face="italic"))
+plotA <- ggplot(MSE_5e_4a,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_4b,aes(x=method,y=rmse,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col1[11], col1[9], col2[11])) + xlab("Method") +
+  ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
-figure <- plotA + plotB & theme(legend.position = "bottom", legend.box.background = element_rect(colour = "black"))
+figure <- plotA + plotB
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
+
