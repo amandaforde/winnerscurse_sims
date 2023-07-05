@@ -378,7 +378,8 @@ figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
 
 ## S6 Fig: change in RMSE of sig. SNPs (5e-8)
 
-MSE_5e_8 <- read.csv("results/bim_5e-8_50sim_all.csv")
+MSE_5e_8 <- read.csv("results/bim_5e-8_100sim_all.csv")
+MSE_5e_8 <- MSE_5e_8[MSE_5e_8$method != "naive",]
 MSE_5e_8 <- MSE_5e_8  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3'))
 MSE_5e_8$method <- factor(MSE_5e_8$method, levels=c("CL1", "CL2", "CL3", "EB", "boot", "FIQT", "rep"))
 
@@ -400,7 +401,8 @@ figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
 
 ## S7 Fig: change in RMSE of sig. SNPs (5e-4)
 
-MSE_5e_4 <- read.csv("results/bim_5e-4_50sim_all.csv")
+MSE_5e_4 <- read.csv("results/bim_5e-4_100sim_all.csv")
+MSE_5e_4 <- MSE_5e_4[MSE_5e_4$method != "naive",]
 MSE_5e_4 <- MSE_5e_4  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3'))
 MSE_5e_4$method <- factor(MSE_5e_4$method, levels=c("CL1", "CL2", "CL3", "EB", "boot", "FIQT", "rep"))
 
@@ -426,7 +428,8 @@ figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
 
 ## S8 Fig: change in RMSE of sig. SNPs (5e-8)
 
-MSE_5e_8 <- read.csv("results/skew_5e-8_50sim_all.csv")
+MSE_5e_8 <- read.csv("results/skew_5e-8_100sim_all.csv")
+MSE_5e_8 <- MSE_5e_8[MSE_5e_8$method != "naive",]
 MSE_5e_8 <- MSE_5e_8  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3'))
 MSE_5e_8$method <- factor(MSE_5e_8$method, levels=c("CL1", "CL2", "CL3", "EB", "boot", "FIQT", "rep"))
 
@@ -448,7 +451,8 @@ figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
 
 ## S9 Fig: change in RMSE of sig. SNPs (5e-4)
 
-MSE_5e_4 <- read.csv("results/skew_5e-4_50sim_all.csv")
+MSE_5e_4 <- read.csv("results/skew_5e-4_100sim_all.csv")
+MSE_5e_4 <- MSE_5e_4[MSE_5e_4$method != "naive",]
 MSE_5e_4 <- MSE_5e_4  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3'))
 MSE_5e_4$method <- factor(MSE_5e_4$method, levels=c("CL1", "CL2", "CL3", "EB", "boot", "FIQT", "rep"))
 
@@ -474,7 +478,8 @@ figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
 
 ## S10 Fig: change in RMSE of sig. SNPs (5e-8)
 
-MSE_5e_8 <- read.csv("results/bin_5e-8_50sim_all.csv")
+MSE_5e_8 <- read.csv("results/bin_5e-8_100sim_all.csv")
+MSE_5e_8 <- MSE_5e_8[MSE_5e_8$method != "naive",]
 MSE_5e_8 <- MSE_5e_8  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3'))
 MSE_5e_8$method <- factor(MSE_5e_8$method, levels=c("CL1", "CL2", "CL3", "EB", "boot", "FIQT", "rep"))
 
@@ -496,7 +501,8 @@ figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
 
 ## S11 Fig: change in RMSE of sig. SNPs (5e-4)
 
-MSE_5e_4 <- read.csv("results/bin_5e-4_50sim_all.csv")
+MSE_5e_4 <- read.csv("results/bin_5e-4_100sim_all.csv")
+MSE_5e_4 <- MSE_5e_4[MSE_5e_4$method != "naive",]
 MSE_5e_4 <- MSE_5e_4  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3'))
 MSE_5e_4$method <- factor(MSE_5e_4$method, levels=c("CL1", "CL2", "CL3", "EB", "boot", "FIQT", "rep"))
 
@@ -513,6 +519,170 @@ plotB <- ggplot(MSE_5e_4b,aes(x=method,y=rmse,fill=method, color=method)) + geom
   ylab(expression(paste(italic("Change "), "in RMSE of sig. SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
 
 figure <- plotA + plotB
+figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
+  theme(plot.tag = element_text(face = "bold"))
+
+
+################################################################################
+
+## Fig 1: Bias of positive sig. SNPs (5e-8)
+
+MSE_5e_8 <- read.csv("results/norm_5e-8_100sim_LD_all_2.csv")
+MSE_5e_8 <- MSE_5e_8  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3', EB_df = "EB_df", EB_gam_nb = "EB_gam_nb", EB_gam_po = "EB_gam_po", EB_scam = "EB_scam", naive = "naive"))
+MSE_5e_8$method <- factor(MSE_5e_8$method, levels=c("naive","CL1", "CL2", "CL3", "EB", "EB_df", "EB_gam_nb", "EB_gam_po", "EB_scam", "boot", "FIQT"))
+
+MSE_5e_8a <- MSE_5e_8[which(MSE_5e_8$n_samples==30000),]
+MSE_5e_8a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_8a)))
+MSE_5e_8b <- MSE_5e_8[which(MSE_5e_8$n_samples==300000),]
+MSE_5e_8b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_8b)))
+
+plotA <- ggplot(MSE_5e_8a,aes(x=method,y=bias_up,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + xlab("Method") +
+  ylab(expression(paste(italic("Average "), "bias of positive SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_8b,aes(x=method,y=bias_up,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + xlab("Method") +
+  ylab(expression(paste(italic("Average "), "bias of positive SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
+
+figure <- plotA + plotB
+figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
+  theme(plot.tag = element_text(face = "bold"))
+
+
+## Fig 1: Bias of negative sig. SNPs (5e-8)
+
+MSE_5e_8 <- read.csv("results/norm_5e-8_100sim_LD_all_2.csv")
+MSE_5e_8 <- MSE_5e_8  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3', EB_df = "EB_df", EB_gam_nb = "EB_gam_nb", EB_gam_po = "EB_gam_po", EB_scam = "EB_scam", naive = "naive"))
+MSE_5e_8$method <- factor(MSE_5e_8$method, levels=c("naive","CL1", "CL2", "CL3", "EB", "EB_df", "EB_gam_nb", "EB_gam_po", "EB_scam", "boot", "FIQT"))
+
+MSE_5e_8a <- MSE_5e_8[which(MSE_5e_8$n_samples==30000),]
+MSE_5e_8a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_8a)))
+MSE_5e_8b <- MSE_5e_8[which(MSE_5e_8$n_samples==300000),]
+MSE_5e_8b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_8b)))
+
+plotA <- ggplot(MSE_5e_8a,aes(x=method,y=bias_down,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + xlab("Method") +
+  ylab(expression(paste(italic("Average "), "bias of negative SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_8b,aes(x=method,y=bias_down,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + xlab("Method") +
+  ylab(expression(paste(italic("Average "), "bias of negative SNPs at  ", 5%*%10^-8))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
+
+figure <- plotA + plotB
+figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
+  theme(plot.tag = element_text(face = "bold"))
+
+
+## Fig 2: Bias of positive sig. SNPs (5e-4)
+
+MSE_5e_8 <- read.csv("results/norm_5e-4_100sim_LD_all_2.csv")
+MSE_5e_8 <- MSE_5e_8  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3', EB_df = "EB_df", EB_gam_nb = "EB_gam_nb", EB_gam_po = "EB_gam_po", EB_scam = "EB_scam", naive = "naive"))
+MSE_5e_8$method <- factor(MSE_5e_8$method, levels=c("naive","CL1", "CL2", "CL3", "EB", "EB_df", "EB_gam_nb", "EB_gam_po", "EB_scam", "boot", "FIQT"))
+
+MSE_5e_8a <- MSE_5e_8[which(MSE_5e_8$n_samples==30000),]
+MSE_5e_8a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_8a)))
+MSE_5e_8b <- MSE_5e_8[which(MSE_5e_8$n_samples==300000),]
+MSE_5e_8b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_8b)))
+
+plotA <- ggplot(MSE_5e_8a,aes(x=method,y=bias_up,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + xlab("Method") +
+  ylab(expression(paste(italic("Average "), "bias of positive SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_8b,aes(x=method,y=bias_up,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + xlab("Method") +
+  ylab(expression(paste(italic("Average "), "bias of positive SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
+
+figure <- plotA + plotB
+figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
+  theme(plot.tag = element_text(face = "bold"))
+
+
+## Fig 2: Bias of negative sig. SNPs (5e-4)
+
+MSE_5e_8 <- read.csv("results/norm_5e-4_100sim_LD_all_2.csv")
+MSE_5e_8 <- MSE_5e_8  %>% mutate(method = recode(method, BR = 'boot', cl1 = 'CL1', cl2 = 'CL2', cl3 = 'CL3', EB_df = "EB_df", EB_gam_nb = "EB_gam_nb", EB_gam_po = "EB_gam_po", EB_scam = "EB_scam", naive = "naive"))
+MSE_5e_8$method <- factor(MSE_5e_8$method, levels=c("naive","CL1", "CL2", "CL3", "EB", "EB_df", "EB_gam_nb", "EB_gam_po", "EB_scam", "boot", "FIQT"))
+
+MSE_5e_8a <- MSE_5e_8[which(MSE_5e_8$n_samples==30000),]
+MSE_5e_8a$n_samples <- c(rep(c("30,000"),nrow(MSE_5e_8a)))
+MSE_5e_8b <- MSE_5e_8[which(MSE_5e_8$n_samples==300000),]
+MSE_5e_8b$n_samples <- c(rep(c("300,000"),nrow(MSE_5e_8b)))
+
+plotA <- ggplot(MSE_5e_8a,aes(x=method,y=bias_down,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + xlab("Method") +
+  ylab(expression(paste(italic("Average "), "bias of negative SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 30,000")
+plotB <- ggplot(MSE_5e_8b,aes(x=method,y=bias_down,fill=method, color=method)) + geom_boxplot(size=0.7,aes(fill=method, color=method, alpha=0.2)) + facet_grid(h2~prop_effect,labeller=label_both) + scale_fill_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + scale_color_manual(values=c(col[2],col[8],col[4],col[5],col[3],col[6],col[7],col1[1],col1[11], col1[9], col2[4])) + xlab("Method") +
+  ylab(expression(paste(italic("Avergae "), "bias of negative SNPs at  ", 5%*%10^-4))) + theme_bw() + geom_hline(yintercept=0, colour="black") +  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),text = element_text(size=12),legend.position = "none", strip.text = element_text(face="italic")) + ggtitle("Sample size: 300,000")
+
+figure <- plotA + plotB
+figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
+  theme(plot.tag = element_text(face = "bold"))
+
+
+
+
+
+################################################################################
+################################################################################
+
+
+
+mu <- rep(seq(from=4, to = 8, by = 0.05),10000)
+z <- c()
+
+for(i in 1:length(mu)){
+  z <- c(z,rnorm(1,mu[i],1))
+}
+
+data <- data.frame(rsid = 1:length(mu), beta = z, se = rep(1,length(mu)), mu = mu)
+
+data_sig <- data[abs(data$beta) > qnorm((5e-8)/2, lower.tail=FALSE),]
+
+out_CL <- conditional_likelihood(data[,1:3])
+
+out_CL$mu <- data$mu[out_CL$rsid]
+
+mu1 <- unique(mu)
+bias <- c()
+bias_1 <-c()
+se <- c()
+se_1 <- c()
+RMSE <- c()
+RMSE_1 <- c()
+
+for(i in 1:length(mu1)){
+  bias <- c(bias,sum(out_CL$beta.cl1[out_CL$mu == mu1[i]] - mu1[i])/length(out_CL$beta.cl1[out_CL$mu == mu1[i]]))
+  bias_1 <- c(bias_1,sum(out_CL$beta[out_CL$mu == mu1[i]] - mu1[i])/length(out_CL$beta[out_CL$mu == mu1[i]]))
+  RMSE <- c(RMSE, sqrt(sum((out_CL$beta.cl1[out_CL$mu == mu1[i]] - mu1[i])^2)/length(out_CL$beta.cl1[out_CL$mu == mu1[i]])))
+  RMSE_1 <- c(RMSE_1, sqrt(sum((out_CL$beta[out_CL$mu == mu1[i]] - mu1[i])^2)/length(out_CL$beta[out_CL$mu == mu1[i]])))
+  se <- c(se, sqrt(sum((out_CL$beta.cl1[out_CL$mu == mu1[i]] - mean(out_CL$beta.cl1[out_CL$mu == mu1[i]]))^2)/length(out_CL$beta.cl1[out_CL$mu == mu1[i]])))
+  se_1 <- c(se_1, sqrt(sum((out_CL$beta[out_CL$mu == mu1[i]] - mean(out_CL$beta[out_CL$mu == mu1[i]]))^2)/length(out_CL$beta[out_CL$mu == mu1[i]])))
+}
+
+
+results <- data.frame(mu = mu1, bias = bias, RMSE = RMSE, se = se, bias_1 = bias_1, RMSE_1 = RMSE_1, se_1 = se_1)
+
+bias_plot <- ggplot(results, aes(x=mu, y=bias)) + geom_point(size=1.5) + geom_point(data=results,
+                                                                                  aes(x=mu,y=bias_1),
+                                                                                  color='blue3',
+                                                                                  size=1.5,
+                                                                                  shape=15) +
+  geom_vline(xintercept=qnorm((5e-8)/2, lower.tail=FALSE), colour="red", linetype="dashed",size=1) +
+  geom_hline(yintercept=0) + ylab("bias") +
+  xlab(expression(paste("True standardized effect size, ", mu )))
+
+se_plot <- ggplot(results, aes(x=mu, y=se)) + geom_point(size=1.5) + geom_point(data=results,
+                                                                              aes(x=mu,y=se_1),
+                                                                              color='blue3',
+                                                                              size=1.5,
+                                                                              shape=15) +
+  geom_vline(xintercept=qnorm((5e-8)/2, lower.tail=FALSE), colour="red", linetype="dashed",size=1) +
+  geom_hline(yintercept=1) + ylab("SE") +
+  xlab(expression(paste("True standardized effect size, ", mu )))
+
+RMSE_plot <- ggplot(results, aes(x=mu, y=RMSE)) + geom_point(size=1.5) + geom_point(data=results,
+                                                                                  aes(x=mu,y=RMSE_1),
+                                                                                  color='blue3',
+                                                                                  size=1.5,
+                                                                                  shape=15) +
+  geom_vline(xintercept=qnorm((5e-8)/2, lower.tail=FALSE), colour="red", linetype="dashed",size=1) +
+  geom_hline(yintercept=1) + ylab("RMSE") +
+  xlab(expression(paste("True standardized effect size, ", mu )))
+
+library(patchwork)
+library(ggpubr)
+
+figure <- bias_plot + se_plot + RMSE_plot
 figure + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold"))
 

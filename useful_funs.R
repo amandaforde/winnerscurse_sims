@@ -119,6 +119,10 @@ ave_results <- function(res_vec, n_sim){
   sd_mse <- c(rep(0,nrow(res_vec)/n_sim))
   ave_rmse <- c(rep(0,nrow(res_vec)/n_sim))
   sd_rmse <- c(rep(0,nrow(res_vec)/n_sim))
+  ave_bias_up <- c(rep(0,nrow(res_vec)/n_sim))
+  sd_bias_up <- c(rep(0,nrow(res_vec)/n_sim))
+  ave_bias_down <- c(rep(0,nrow(res_vec)/n_sim))
+  sd_bias_down <- c(rep(0,nrow(res_vec)/n_sim))
   ave_rel_mse <- c(rep(0,nrow(res_vec)/n_sim))
   sd_rel_mse <- c(rep(0,nrow(res_vec)/n_sim))
   for (i in 1:(nrow(res_vec)/n_sim)){
@@ -128,6 +132,10 @@ ave_results <- function(res_vec, n_sim){
     sd_mse[i] <- std(res_vec$mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
     ave_rmse[i] <- average(res_vec$rmse[(i*n_sim-(n_sim-1)):(i*n_sim)])
     sd_rmse[i] <- std(res_vec$rmse[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    ave_bias_up[i] <- average(res_vec$bias_up[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    sd_bias_up[i] <- std(res_vec$bias_up[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    ave_bias_down[i] <- average(res_vec$bias_down[(i*n_sim-(n_sim-1)):(i*n_sim)])
+    sd_bias_down[i] <- std(res_vec$bias_down[(i*n_sim-(n_sim-1)):(i*n_sim)])
     ave_rel_mse[i] <- average(res_vec$rel_mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
     sd_rel_mse[i] <- std(res_vec$rel_mse[(i*n_sim-(n_sim-1)):(i*n_sim)])
   }
@@ -139,6 +147,10 @@ ave_results <- function(res_vec, n_sim){
   res_vec_ave$mse_error <- sd_mse
   res_vec_ave$rmse <- ave_rmse
   res_vec_ave$rmse_error <- sd_rmse
+  res_vec_ave$bias_up <- ave_bias_up
+  res_vec_ave$bias_up_error <- sd_bias_up
+  res_vec_ave$bias_down <- ave_bias_down
+  res_vec_ave$bias_down_error <- sd_bias_down
   res_vec_ave$rel_mse <- ave_rel_mse
   res_vec_ave$rel_mse_error <- sd_rel_mse
   res_vec_ave <- subset(res_vec_ave, select = -sim )
@@ -204,7 +216,32 @@ simulate_ss_exp <- function(H,Pi,nid,sc,rep_nid=1){
 }
 
 
-## 13. Empirical Bayes using scam function, very similar to that in the
+## 13. Evaluating bias for significant SNPs
+bias_sig_evaluate <- function(out,true_beta,i=5,alpha=5e-8){
+  snp_sig <- out[abs(out$beta/out$se) > qnorm((alpha)/2, lower.tail=FALSE),]
+  if (nrow(snp_sig) == 0){return(100)}
+  bias_sig <- mean((snp_sig[,i] - true_beta[snp_sig$rsid]))
+  return(bias_sig)
+}
+
+## 14. Evaluating average bias for significant SNPs due to method
+## implementation
+bias_sig_up <- function(out,true_beta,i=5,alpha=5e-8){
+  snp_sig <- out[(out$beta/out$se) > qnorm((alpha)/2, lower.tail=FALSE),]
+  if (nrow(snp_sig) == 0){return(100)}
+  bias_sig <- mean((snp_sig[,i]-true_beta[snp_sig$rsid]))
+  return(bias_sig)
+}
+
+
+bias_sig_down <- function(out,true_beta,i=5,alpha=5e-8){
+  snp_sig <- out[(out$beta/out$se) < qnorm((alpha)/2),]
+  if (nrow(snp_sig) == 0){return(100)}
+  bias_sig <- mean((snp_sig[,i]-true_beta[snp_sig$rsid]))
+  return(bias_sig)
+}
+
+## 15. Empirical Bayes using scam function, very similar to that in the
 ## winnerscurse package
 empirical_bayes_scam <- function(summary_data){
   z <- summary_data$beta/summary_data$se
@@ -237,7 +274,7 @@ empirical_bayes_scam <- function(summary_data){
 }
 
 
-## 14. Empirical Bayes using gam function with poisson
+## 16. Empirical Bayes using gam function with poisson
 empirical_bayes_gam_po <- function(summary_data){
   z <- summary_data$beta/summary_data$se
   bins <- seq(min(z),max(z),length.out=120)
@@ -267,7 +304,7 @@ empirical_bayes_gam_po <- function(summary_data){
 
 
 
-## 15. Empirical Bayes using gam function with negative binomial
+## 17. Empirical Bayes using gam function with negative binomial
 empirical_bayes_gam_nb <- function(summary_data){
   z <- summary_data$beta/summary_data$se
   bins <- seq(min(z),max(z),length.out=120)
@@ -296,7 +333,7 @@ empirical_bayes_gam_nb <- function(summary_data){
 }
 
 
-## 16. Original conditional likelihood function, doesn't include warning -
+## 18. Original conditional likelihood function, doesn't include warning -
 ## better for simulations possibly also introduced conditions to help avoid
 ## unusual occurrences in beta.cl2, one function for LD and one for ind
 conditional_likelihood_old <- function(summary_data, alpha=5e-8){
